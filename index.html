@@ -253,6 +253,171 @@ button.day { cursor: pointer; }
   .pub-ticker .pt-seg:last-child { display: none; }
   .pub-ticker .pt-seg { white-space: normal; padding-right: 0; }
 }
+
+/* 🎉 เอฟเฟกต์เทศกาลหน้าบ้าน: พลุ / หิมะ — เปิดได้จากหลังร้าน (ตั้งค่า > ปรับแต่งหน้าบ้าน) */
+@media (prefers-reduced-motion: no-preference) {
+html[data-pubeffect="fireworks"] body::before,
+html[data-pubeffect="fireworks"] body::after,
+html[data-pubeffect="fireworks"] #root::before,
+html[data-pubeffect="fireworks"] #root::after {
+  content: ''; position: fixed; width: 4px; height: 4px; border-radius: 50%;
+  pointer-events: none; z-index: 60; will-change: transform, opacity;
+}
+html[data-pubeffect="fireworks"] body::before { left: 18%; top: 82%; animation: fwBurst 5.2s ease-out infinite; }
+html[data-pubeffect="fireworks"] body::after   { left: 50%; top: 86%; animation: fwBurst 4.6s ease-out infinite; animation-delay: 1.3s; filter: hue-rotate(300deg); }
+html[data-pubeffect="fireworks"] #root::before { left: 78%; top: 80%; animation: fwBurst 5.8s ease-out infinite; animation-delay: 2.5s; filter: hue-rotate(190deg); }
+html[data-pubeffect="fireworks"] #root::after  { left: 34%; top: 84%; animation: fwBurst 5s ease-out infinite; animation-delay: 3.6s; filter: hue-rotate(110deg); }
+@keyframes fwBurst {
+  0%   { transform: translateY(0); opacity: 0; background: rgba(255,213,74,.9); box-shadow:
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0);
+  }
+  14%  { opacity: 1; background: rgba(255,213,74,.9); }
+  22%  { transform: translateY(-42vh); opacity: 1; background: rgba(255,213,74,.9); box-shadow:
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0);
+  }
+  23%  { background: transparent; }
+  36%  { transform: translateY(-42vh); opacity: 1; background: transparent; box-shadow:
+      70px 0px 2px 1px rgba(255,213,74,0.9),
+      61px 35px 2px 1px rgba(255,213,74,0.9),
+      35px 61px 2px 1px rgba(255,213,74,0.9),
+      0px 70px 2px 1px rgba(255,213,74,0.9),
+      -35px 61px 2px 1px rgba(255,213,74,0.9),
+      -61px 35px 2px 1px rgba(255,213,74,0.9),
+      -70px 0px 2px 1px rgba(255,213,74,0.9),
+      -61px -35px 2px 1px rgba(255,213,74,0.9),
+      -35px -61px 2px 1px rgba(255,213,74,0.9),
+      0px -70px 2px 1px rgba(255,213,74,0.9),
+      35px -61px 2px 1px rgba(255,213,74,0.9),
+      61px -35px 2px 1px rgba(255,213,74,0.9);
+  }
+  58%  { transform: translateY(-42vh); opacity: .9; background: transparent; box-shadow:
+      95px 0px 2px 1px rgba(255,213,74,0.75),
+      82px 47px 2px 1px rgba(255,213,74,0.75),
+      48px 82px 2px 1px rgba(255,213,74,0.75),
+      0px 95px 2px 1px rgba(255,213,74,0.75),
+      -47px 82px 2px 1px rgba(255,213,74,0.75),
+      -82px 47px 2px 1px rgba(255,213,74,0.75),
+      -95px 0px 2px 1px rgba(255,213,74,0.75),
+      -82px -48px 2px 1px rgba(255,213,74,0.75),
+      -48px -82px 2px 1px rgba(255,213,74,0.75),
+      0px -95px 2px 1px rgba(255,213,74,0.75),
+      48px -82px 2px 1px rgba(255,213,74,0.75),
+      82px -48px 2px 1px rgba(255,213,74,0.75);
+  }
+  80%  { opacity: 0; background: transparent; box-shadow:
+      95px 0px 2px 1px rgba(255,213,74,0),
+      82px 47px 2px 1px rgba(255,213,74,0),
+      48px 82px 2px 1px rgba(255,213,74,0),
+      0px 95px 2px 1px rgba(255,213,74,0),
+      -47px 82px 2px 1px rgba(255,213,74,0),
+      -82px 47px 2px 1px rgba(255,213,74,0),
+      -95px 0px 2px 1px rgba(255,213,74,0),
+      -82px -48px 2px 1px rgba(255,213,74,0),
+      -48px -82px 2px 1px rgba(255,213,74,0),
+      0px -95px 2px 1px rgba(255,213,74,0),
+      48px -82px 2px 1px rgba(255,213,74,0),
+      82px -48px 2px 1px rgba(255,213,74,0);
+  }
+  100% { opacity: 0; background: transparent; box-shadow:
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0),
+      0px 0px 0px 0px rgba(255,213,74,0);
+  }
+}
+
+html[data-pubeffect="snow"] body::before,
+html[data-pubeffect="snow"] body::after,
+html[data-pubeffect="snow"] #root::before {
+  content: ''; position: fixed; top: 0; left: 0; width: 2px; height: 2px; border-radius: 50%;
+  pointer-events: none; z-index: 60; will-change: transform;
+}
+html[data-pubeffect="snow"] body::before {
+  box-shadow:
+      63.7vw -133.0vh 0 rgba(255,255,255,0.41),
+      22.9vw 66.2vh 0 rgba(255,255,255,0.49),
+      88.4vw -115.7vh 0 rgba(255,255,255,0.43),
+      3.9vw -78.8vh 0 rgba(255,255,255,0.45),
+      3.6vw -84.3vh 0 rgba(255,255,255,0.48),
+      54.4vw -78.3vh 0 rgba(255,255,255,0.47),
+      80.3vw -138.2vh 0 rgba(255,255,255,0.51),
+      69.4vw -44.7vh 0 rgba(255,255,255,0.38),
+      94.8vw -45.8vh 0 rgba(255,255,255,0.37),
+      10.5vw 97.3vh 0 rgba(255,255,255,0.47),
+      80.1vw 64.3vh 0 rgba(255,255,255,0.46),
+      96.4vw -34.0vh 0 rgba(255,255,255,0.46),
+      82.3vw 33.2vh 0 rgba(255,255,255,0.52),
+      57.6vw 57.3vh 0 rgba(255,255,255,0.36);
+  animation: snowFall 14s linear infinite;
+}
+html[data-pubeffect="snow"] body::after {
+  box-shadow:
+      23.3vw -59.0vh 0 rgba(255,255,255,0.52),
+      23.8vw -111.7vh 0 rgba(255,255,255,0.57),
+      63.3vw -37.8vh 0 rgba(255,255,255,0.59),
+      21.5vw -65.2vh 0 rgba(255,255,255,0.73),
+      64.5vw 30.6vh 0 rgba(255,255,255,0.54),
+      72.5vw -94.2vh 0 rgba(255,255,255,0.59),
+      98.0vw 39.2vh 0 rgba(255,255,255,0.64),
+      68.1vw 96.0vh 0 rgba(255,255,255,0.69),
+      23.4vw -131.0vh 0 rgba(255,255,255,0.58),
+      27.2vw -80.9vh 0 rgba(255,255,255,0.74),
+      86.9vw -51.9vh 0 rgba(255,255,255,0.66),
+      39.8vw 116.1vh 0 rgba(255,255,255,0.61);
+  animation: snowFall 10s linear infinite;
+  animation-delay: -3s;
+}
+html[data-pubeffect="snow"] #root::before {
+  box-shadow:
+      27.0vw -70.9vh 0 rgba(255,255,255,0.84),
+      26.7vw 23.7vh 0 rgba(255,255,255,0.92),
+      40.1vw -78.6vh 0 rgba(255,255,255,0.95),
+      50.9vw -114.5vh 0 rgba(255,255,255,0.71),
+      11.7vw 35.7vh 0 rgba(255,255,255,0.9),
+      42.4vw -122.2vh 0 rgba(255,255,255,0.8),
+      98.6vw 8.2vh 0 rgba(255,255,255,0.94),
+      85.4vw -136.8vh 0 rgba(255,255,255,0.88),
+      67.8vw 10.4vh 0 rgba(255,255,255,0.77),
+      63.8vw -108.8vh 0 rgba(255,255,255,0.81);
+  animation: snowFall 7s linear infinite;
+  animation-delay: -1.5s;
+}
+@keyframes snowFall {
+  0%   { transform: translateY(-50vh) translateX(0); }
+  50%  { transform: translateY(50vh) translateX(1.5vw); }
+  100% { transform: translateY(150vh) translateX(0); }
+}
+}
 </style>
 <style id="pubCustomStyle"></style>
 </head>
@@ -381,6 +546,7 @@ function render(d) {
   if (d.hidden) { root.innerHTML = '<div class="card" style="position:relative;text-align:center"><button type="button" class="iconbtn refresh pub-refresh" id="pubRefresh" data-refresh="1" aria-label="รีเฟรช" title="รีเฟรชข้อมูล">' + ICON.refresh + '</button><h1 style="font-size:1.2rem">หน้านี้ปิดอยู่ชั่วคราว</h1></div>'; return; }
   const p = d.profile || {};
   document.documentElement.dataset.theme = (['midnight','sunset','xmas','songkran','loykrathong','national'].indexOf(p.theme) >= 0 ? p.theme : 'sky');
+  document.documentElement.dataset.pubeffect = (['fireworks','snow'].indexOf(p.pubEffect) >= 0 ? p.pubEffect : '');
   if (p.pubCustomBrand && /^#[0-9a-fA-F]{3,6}$/.test(String(p.pubCustomBrand).trim())) {
     document.documentElement.style.setProperty('--brand', String(p.pubCustomBrand).trim());
   } else {
