@@ -5,35 +5,73 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ตารางงาน DIT</title>
 <meta name="description" content="ตารางงาน คิวจอง และติดต่อ">
-<meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/AKfycbz4WaFl5I4NNDPDHoCTMf0rflVD0oe3burRytttlyIBCypmda1jz6oEpEveL63UF2gV/exec">
 <style>
-  html, body { margin: 0; height: 100%; background: #f3f8fd; }
-  #loader { position: fixed; inset: 0; display: grid; place-items: center;
-            background: #f3f8fd; font-family: "Prompt", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  html, body { margin: 0; min-height: 100%; background: #f3f8fd; font-family: "Prompt", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #loader { position: fixed; inset: 0; display: grid; place-items: center; background: #f3f8fd; padding: 24px; box-sizing: border-box; }
   .spin { width: 42px; height: 42px; margin: 0 auto; border: 4px solid #cfe3f5; border-top-color: #2a72b3; border-radius: 50%; animation: s 1s linear infinite; }
   @keyframes s { to { transform: rotate(360deg); } }
   .lt { margin-top: 14px; color: #687a8e; font-size: .95rem; text-align: center; }
-  .lt a { color: #2a72b3; font-weight: 600; }
+
+  #howto { position: fixed; inset: 0; display: none; place-items: center; background: #f3f8fd; padding: 24px; box-sizing: border-box; }
+  #howto.show { display: grid; }
+  .card { max-width: 340px; background: #fff; border-radius: 20px; padding: 24px 20px; text-align: center;
+          box-shadow: 0 1px 2px rgba(30,60,100,.06), 0 8px 24px rgba(30,80,140,.08); }
+  .card h1 { font-size: 1.1rem; margin: 0 0 10px; color: #1e2b3a; }
+  .card p { color: #687a8e; font-size: .92rem; line-height: 1.7; margin: 0 0 16px; }
+  .card b { color: #2a72b3; }
+  .steps { text-align: left; font-size: .9rem; color: #1e2b3a; margin: 0 0 18px; padding-left: 20px; line-height: 1.8; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; box-sizing: border-box;
+         padding: 13px 18px; border-radius: 14px; font-weight: 600; font-size: .98rem; border: 1px solid #2a72b3;
+         background: #2a72b3; color: #fff; text-decoration: none; cursor: pointer; }
+  .btn.ghost { background: #fff; color: #2a72b3; margin-top: 10px; }
+  .copybox { margin-top: 12px; font-size: .78rem; color: #687a8e; word-break: break-all; background: #f4faff; border-radius: 10px; padding: 8px 10px; }
 </style>
 </head>
 <body>
-<div id="loader">
-  <div>
-    <div class="spin"></div>
-    <div class="lt">กำลังเปิดหน้าตารางงาน…<br>
-      <span id="fallback" style="display:none">ถ้าไม่เปิดอัตโนมัติ <a id="fallbackLink" href="#">แตะที่นี่</a></span>
-    </div>
+<div id="loader"><div><div class="spin"></div><div class="lt">กำลังเปิดหน้าตารางงาน…</div></div></div>
+
+<div id="howto">
+  <div class="card">
+    <h1>เปิดจากแอป Instagram อยู่</h1>
+    <p>หน้าตารางงานต้องเปิดผ่านเบราว์เซอร์จริง (เช่น Safari/Chrome) ถ้าเปิดในแอป Instagram/Facebook ตรงๆ หน้าจะว่างเปล่า</p>
+    <ol class="steps">
+      <li>แตะปุ่ม <b>•••</b> ที่มุมขวาบนของหน้านี้</li>
+      <li>เลือก <b>“เปิดในเบราว์เซอร์”</b> (Open in browser)</li>
+    </ol>
+    <a class="btn" id="openBtn" href="#">เปิดในเบราว์เซอร์เลย</a>
+    <a class="btn ghost" id="copyBtn" href="#">คัดลอกลิงก์</a>
+    <div class="copybox" id="urlShown"></div>
   </div>
 </div>
+
 <script>
   var url = "https://script.google.com/macros/s/AKfycbz4WaFl5I4NNDPDHoCTMf0rflVD0oe3burRytttlyIBCypmda1jz6oEpEveL63UF2gV/exec";
-  document.getElementById('fallbackLink').href = url;
-  // redirect แบบ full navigation (ไม่ใช้ iframe) เพื่อให้เปิดได้ปกติใน in-app browser เช่น Instagram/Facebook
-  // ที่มักแสดงหน้าขาวถ้าเจอ iframe ซ้อน iframe
-  window.location.replace(url);
-  setTimeout(function () {
-    document.getElementById('fallback').style.display = 'inline';
-  }, 2500);
+  var ua = navigator.userAgent || "";
+  // in-app browser ของ Instagram/Facebook/Line ฯลฯ มักเรนเดอร์หน้า Apps Script ไม่ได้ (จอขาว)
+  var inApp = /Instagram|FBAN|FBAV|FB_IAB|FB4A|Line\/|MicroMessenger/i.test(ua);
+
+  function showHowTo() {
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('howto').classList.add('show');
+    document.getElementById('openBtn').href = url;
+    document.getElementById('urlShown').textContent = url;
+    document.getElementById('copyBtn').addEventListener('click', function (e) {
+      e.preventDefault();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function () {
+          document.getElementById('copyBtn').textContent = 'คัดลอกแล้ว ✓';
+        });
+      }
+    });
+  }
+
+  if (inApp) {
+    showHowTo();
+  } else {
+    // เบราว์เซอร์ปกติ (Safari/Chrome) ใช้งานได้จริง -> redirect ตรงไปเลย
+    window.location.replace(url);
+    setTimeout(showHowTo, 2500); // กันเหนียวถ้า redirect ไม่สำเร็จ
+  }
 </script>
 </body>
 </html>
