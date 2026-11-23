@@ -1,77 +1,526 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+<base target="_top">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ตารางงาน DIT</title>
-<meta name="description" content="ตารางงาน คิวจอง และติดต่อ">
+<title>โปรไฟล์ · เช็คคิว</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai+Looped:wght@400;500;600&family=Prompt:wght@500;600&display=swap">
 <style>
-  html, body { margin: 0; min-height: 100%; background: #f3f8fd; font-family: "Prompt", system-ui, -apple-system, "Segoe UI", sans-serif; }
-  #loader { position: fixed; inset: 0; display: grid; place-items: center; background: #f3f8fd; padding: 24px; box-sizing: border-box; }
-  .spin { width: 42px; height: 42px; margin: 0 auto; border: 4px solid #cfe3f5; border-top-color: #2a72b3; border-radius: 50%; animation: s 1s linear infinite; }
-  @keyframes s { to { transform: rotate(360deg); } }
-  .lt { margin-top: 14px; color: #687a8e; font-size: .95rem; text-align: center; }
+/* Layout: การ์ดโปรไฟล์ → บริการ → ปฏิทินคิว → ฟอร์มขอจองคิว (คอลัมน์เดียว อ่านง่ายบนมือถือ) */
+:root {
+  --bg: #f3f8fd;
+  --surface: #ffffff;
+  --ink: #1e2b3a;
+  --muted: #687a8e;
+  --line: #e1eaf3;
+  --sky: #8ccaf2;
+  --sky-soft: #e6f3fd;
+  --sky-softer: #f4faff;
+  --brand: #2a72b3;
+  --mint: #23845f;
+  --mint-soft: #e2f5ec;
+  --amber: #a8680a;
+  --amber-soft: #fdf2dc;
+  --rose: #c9435b;
+  --rose-soft: #fde8ec;
+  --rest: #6b6fa8;
+  --rest-soft: #ecedf8;
+  --shadow: 0 1px 2px rgba(30, 60, 100, .06), 0 8px 24px rgba(30, 80, 140, .08);
+  --font: "IBM Plex Sans Thai Looped", "Noto Sans Thai", Tahoma, sans-serif;
+  --display: "Prompt", "IBM Plex Sans Thai Looped", Tahoma, sans-serif;
+  --brand-ink: #fff;
+  --skel-a: #eaf2fa;
+  --skel-b: #f6fafe;
+  --tint-a: #dff0fd;
+  --day-past-ink: #b5c1cd;
+  color-scheme: light;
+}
+html[data-theme="midnight"] {
+  --bg: #0f1623; --surface: #192436; --ink: #e8eef6; --muted: #93a4ba; --line: #2b3a50;
+  --sky: #3d6c96; --sky-soft: #1d2d42; --sky-softer: #16202f;
+  --brand: #4f9ae6; --brand-ink: #0b1826;
+  --mint: #58c79a; --mint-soft: #16342a; --amber: #e0a23c; --amber-soft: #352a16;
+  --rose: #e8687f; --rose-soft: #3a1f27; --rest: #9aa0e0; --rest-soft: #26263f;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.5);
+  --skel-a: #1c2838; --skel-b: #223047; --tint-a: #12304a; --tint-b: #16202f; --login-top: #12233a;
+  --chip-past: #222e40; --day-past: #1c2636; --switch-off: #334157; --day-past-ink: #5b6b82;
+  color-scheme: dark;
+}
+html[data-theme="sunset"] {
+  --bg: #fbf4ec; --surface: #fffdfb; --ink: #3a2c22; --muted: #8a7667; --line: #ece0d3;
+  --sky: #e8b98f; --sky-soft: #fbe9d9; --sky-softer: #fdf6ee;
+  --brand: #c2653a; --brand-ink: #ffffff;
+  --mint: #5a8a4a; --mint-soft: #ebf1df; --amber: #b07611; --amber-soft: #f8ecd0;
+  --rose: #c14a54; --rose-soft: #fbe6e3; --rest: #8a7bb0; --rest-soft: #efebf6;
+  --shadow: 0 1px 2px rgba(120,80,40,.07), 0 6px 20px rgba(140,90,40,.1);
+  --skel-a: #f3e7da; --skel-b: #fbf4ec; --tint-a: #fce7d4; --tint-b: #fdf6ee; --login-top: #fbe7d6;
+  --chip-past: #f1e8de; --day-past: #f2ebe2; --switch-off: #e0d3c4; --day-past-ink: #c3b3a2;
+}
+html[data-theme="xmas"] {
+  --bg: #f4f7f2; --surface: #ffffff; --ink: #1f2e26; --muted: #6a7d72; --line: #dde8df;
+  --sky: #9cc7ad; --sky-soft: #e6f3ea; --sky-softer: #f3f9f4;
+  --brand: #1f7a4d; --brand-ink: #ffffff;
+  --mint: #1f7a4d; --mint-soft: #e2f2e7; --amber: #b8860b; --amber-soft: #f8efd4;
+  --rose: #c0392b; --rose-soft: #fbe6e2; --rest: #8a6d3b; --rest-soft: #f0e9db;
+  --shadow: 0 1px 2px rgba(20,60,40,.06), 0 6px 20px rgba(20,80,50,.09);
+  --skel-a: #e9f1ea; --skel-b: #f6faf6; --tint-a: #e7f3ea; --tint-b: #f3f9f4; --login-top: #e4f2e7;
+  --chip-past: #eef2ee; --day-past: #edf2ee; --switch-off: #d2e2d6; --day-past-ink: #aebfb2;
+}
+html[data-theme="songkran"] {
+  --bg: #eef9fb; --surface: #ffffff; --ink: #123038; --muted: #5f8089; --line: #d4ebf0;
+  --sky: #7fd0dc; --sky-soft: #dcf2f5; --sky-softer: #f0fafb;
+  --brand: #0e9bb0; --brand-ink: #ffffff;
+  --mint: #1a9e8f; --mint-soft: #dcf3ef; --amber: #d98a2b; --amber-soft: #fbeccf;
+  --rose: #ef6f5e; --rose-soft: #fde7e2; --rest: #6aa0c0; --rest-soft: #e4f0f7;
+  --shadow: 0 1px 2px rgba(20,90,110,.06), 0 6px 20px rgba(20,120,140,.1);
+  --skel-a: #e0f2f5; --skel-b: #f2fbfc; --tint-a: #d8f2f6; --tint-b: #f0fafb; --login-top: #d6f1f5;
+  --chip-past: #e7f1f3; --day-past: #e6f2f4; --switch-off: #cbe8ed; --day-past-ink: #a7c4cc;
+}
+html[data-theme="loykrathong"] {
+  --bg: #1a1530; --surface: #271f45; --ink: #f0e9f5; --muted: #a99ec0; --line: #3b325c;
+  --sky: #6b5a9e; --sky-soft: #2b2350; --sky-softer: #221b40;
+  --brand: #d9a441; --brand-ink: #2a1e08;
+  --mint: #5cc7a0; --mint-soft: #1d3b34; --amber: #e8b84e; --amber-soft: #3a2f16;
+  --rose: #e68ab0; --rose-soft: #3c2236; --rest: #9a8ad0; --rest-soft: #2a2448;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 22px rgba(10,0,30,.5);
+  --skel-a: #271f45; --skel-b: #332a55; --tint-a: #2d2452; --tint-b: #221b40; --login-top: #241c42;
+  --chip-past: #2b2450; --day-past: #241d40; --switch-off: #43396a; --day-past-ink: #7a6e9c;
+  color-scheme: dark;
+}
+html[data-theme="national"] {
+  --bg: #f5f7fb; --surface: #ffffff; --ink: #1e2440; --muted: #6a7290; --line: #dde3f0;
+  --sky: #9fb2e0; --sky-soft: #e7ecf8; --sky-softer: #f4f7fc;
+  --brand: #2d2f8f; --brand-ink: #ffffff;
+  --mint: #1f7a4d; --mint-soft: #e2f2e7; --amber: #b8860b; --amber-soft: #f6edcf;
+  --rose: #c8102e; --rose-soft: #fbe2e5; --rest: #5a6bb0; --rest-soft: #e8ebf7;
+  --shadow: 0 1px 2px rgba(20,30,80,.06), 0 6px 20px rgba(20,40,120,.09);
+  --skel-a: #e9edf6; --skel-b: #f6f8fc; --tint-a: #e7ecf8; --tint-b: #f4f7fc; --login-top: #e5ebf8;
+  --chip-past: #eceef5; --day-past: #ebeef4; --switch-off: #d4dbec; --day-past-ink: #aeb6cc;
+}
 
-  #howto { position: fixed; inset: 0; display: none; place-items: center; background: #f3f8fd; padding: 24px; box-sizing: border-box; }
-  #howto.show { display: grid; }
-  .card { max-width: 340px; background: #fff; border-radius: 20px; padding: 24px 20px; text-align: center;
-          box-shadow: 0 1px 2px rgba(30,60,100,.06), 0 8px 24px rgba(30,80,140,.08); }
-  .card h1 { font-size: 1.1rem; margin: 0 0 10px; color: #1e2b3a; }
-  .card p { color: #687a8e; font-size: .92rem; line-height: 1.7; margin: 0 0 16px; }
-  .card b { color: #2a72b3; }
-  .steps { text-align: left; font-size: .9rem; color: #1e2b3a; margin: 0 0 18px; padding-left: 20px; line-height: 1.8; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; box-sizing: border-box;
-         padding: 13px 18px; border-radius: 14px; font-weight: 600; font-size: .98rem; border: 1px solid #2a72b3;
-         background: #2a72b3; color: #fff; text-decoration: none; cursor: pointer; }
-  .btn.ghost { background: #fff; color: #2a72b3; margin-top: 10px; }
-  .copybox { margin-top: 12px; font-size: .78rem; color: #687a8e; word-break: break-all; background: #f4faff; border-radius: 10px; padding: 8px 10px; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; }
+body { background: linear-gradient(180deg, var(--tint-a) 0, var(--bg) 320px); color: var(--ink); font: 16px/1.6 var(--font); min-height: 100vh; }
+button, input, textarea { font: inherit; color: inherit; }
+h1, h2 { font-family: var(--display); font-weight: 600; margin: 0; line-height: 1.3; text-wrap: balance; }
+a { color: var(--brand); }
+.num { font-variant-numeric: tabular-nums; }
+[hidden] { display: none !important; }
+.wrap { max-width: 640px; margin: 0 auto; padding: calc(28px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) calc(68px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); display: flex; flex-direction: column; gap: 16px; }
+.card { background: var(--surface); border-radius: 20px; box-shadow: var(--shadow); padding: 20px; }
+.profile { position: relative; text-align: center; padding-top: 28px; }
+.photo { width: 112px; height: 112px; border-radius: 50%; margin: 0 auto 12px; background: var(--sky-soft) center/cover; border: 4px solid var(--surface); box-shadow: var(--shadow); display: grid; place-items: center; font-family: var(--display); font-size: 2.6rem; color: var(--brand); }
+.profile h1 { font-size: 1.6rem; }
+.headline { color: var(--brand); font-weight: 500; margin-top: 2px; }
+.bio { color: var(--muted); margin: 12px auto 0; max-width: 46ch; white-space: pre-wrap; }
+.contacts { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; border-radius: 14px; text-decoration: none; font-weight: 600; min-height: 48px; border: 1px solid var(--line); color: var(--ink); background: var(--surface); cursor: pointer; }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.btn.block { width: 100%; }
+.btn:disabled { opacity: .55; cursor: default; }
+.btn svg { width: 18px; height: 18px; }
+.copy { font-size: .85rem; color: var(--muted); margin-top: 10px; overflow-wrap: anywhere; }
+.services { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.services span { background: var(--sky-soft); color: var(--brand); padding: 6px 12px; border-radius: 999px; font-size: .92rem; font-weight: 500; }
+.monthbar { display: flex; align-items: center; gap: 8px; margin: 4px 0 12px; }
+.monthbar h2 { flex: 1; text-align: center; font-size: 1.15rem; }
+.iconbtn { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); display: grid; place-items: center; cursor: pointer; color: var(--ink); }
+.iconbtn:disabled { opacity: .35; cursor: default; }
+.iconbtn svg { width: 20px; height: 20px; }
+.iconbtn.refresh { width: 38px; height: 38px; }
+.iconbtn.refresh svg { width: 18px; height: 18px; }
+.iconbtn.spin svg { animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.pub-refresh { position: absolute; top: 14px; right: 14px; }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+.dow { text-align: center; font-size: .78rem; color: var(--muted); font-weight: 600; padding-bottom: 4px; }
+.day { aspect-ratio: 1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; font-weight: 600; min-width: 0; border: 0; padding: 0; }
+button.day { cursor: pointer; }
+.day small { font-size: .6rem; font-weight: 500; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.day.free { background: var(--mint-soft); color: var(--mint); }
+.day.loose { background: var(--amber-soft); color: var(--amber); }
+.day.lock { background: var(--rose-soft); color: var(--rose); }
+.day.off { background: var(--rest-soft); color: var(--rest); }
+.day.past { color: var(--day-past-ink); background: transparent; }
+.day.today { box-shadow: inset 0 0 0 2px var(--brand); }
+.day.pick { box-shadow: inset 0 0 0 3px var(--brand); }
+.day.blank { visibility: hidden; }
+.legend { display: flex; gap: 8px 16px; justify-content: center; margin-top: 14px; font-size: .86rem; color: var(--muted); flex-wrap: wrap; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 4px; margin-right: 6px; vertical-align: -1px; }
+.sum { text-align: center; margin-top: 8px; font-size: .92rem; }
+.hint { font-size: .82rem; color: var(--muted); }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.grid2 .full { grid-column: 1 / -1; }
+@media (max-width: 480px) { .grid2 { grid-template-columns: 1fr; } }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: .86rem; color: var(--muted); font-weight: 500; min-width: 0; }
+.field input, .field textarea { padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--sky-softer); font-size: 16px; width: 100%; min-width: 0; color: var(--ink); }
+.field input:focus, .field textarea:focus { border-color: var(--sky); background: var(--surface); outline: none; box-shadow: 0 0 0 3px var(--sky-soft); }
+.field textarea { min-height: 90px; resize: vertical; }
+.msg { font-size: .92rem; padding: 10px 12px; border-radius: 12px; }
+.msg.bad { background: var(--rose-soft); color: var(--rose); }
+.msg.warn { background: var(--amber-soft); color: var(--amber); }
+.msg.ok { background: var(--mint-soft); color: var(--mint); }
+.qpick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.qpick label { border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; position: relative; }
+.qpick input { position: absolute; opacity: 0; pointer-events: none; }
+.qpick b { font-family: var(--display); font-weight: 600; color: var(--ink); }
+.qpick .hint { line-height: 1.35; }
+.qpick label:has(input:checked) { border-color: var(--brand); background: var(--sky-softer); }
+.qpick label.loose:has(input:checked) { border-color: var(--amber); background: var(--amber-soft); }
+.qpick label:focus-within { outline: 3px solid var(--sky); outline-offset: 2px; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.done { text-align: center; }
+.done .ic { width: 64px; height: 64px; border-radius: 50%; background: var(--mint-soft); color: var(--mint); display: grid; place-items: center; margin: 0 auto 10px; font-size: 2rem; }
+.foot { text-align: center; color: var(--muted); font-size: .8rem; }
+.foot a { color: var(--muted); }
+.skel { height: 260px; border-radius: 20px; background: linear-gradient(90deg, var(--skel-a), var(--skel-b), var(--skel-a)); background-size: 200% 100%; }
+@media (prefers-reduced-motion: no-preference) { .skel { animation: sh 1.2s infinite linear; } @keyframes sh { to { background-position: -200% 0; } } }
+:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--ink); color: var(--surface); padding: 10px 18px; border-radius: 12px; z-index: 40; font-size: .92rem; box-shadow: var(--shadow); max-width: calc(100vw - 32px); }
+
+/* ---------- floating mini clock (แบบที่ 5) ---------- */
+.float-clock {
+  position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 15;
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px;
+  border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow); color: var(--ink); cursor: pointer; user-select: none;
+  transition: transform .15s ease, padding .15s ease;
+}
+.float-clock:hover { border-color: var(--sky); }
+.float-clock:active { transform: scale(.97); }
+.float-clock .fc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); flex: 0 0 auto; box-shadow: 0 0 0 3px var(--mint-soft); }
+.float-clock .fc-time { font-family: var(--display); font-weight: 600; font-size: .95rem; letter-spacing: .3px; line-height: 1; }
+.float-clock .fc-date { font-size: .74rem; color: var(--muted); padding-left: 8px; border-left: 1px solid var(--line); line-height: 1; white-space: nowrap; }
+.float-clock .fc-ic { display: none; width: 18px; height: 18px; color: var(--brand); }
+.float-clock.min { padding: 9px; gap: 0; }
+.float-clock.min .fc-dot, .float-clock.min .fc-time, .float-clock.min .fc-date { display: none; }
+.float-clock.min .fc-ic { display: block; }
+@media (max-width: 420px) { .float-clock .fc-date { display: none; } }
+@media print { .float-clock { display: none !important; } }
+.pub-notice { background: var(--sky-soft); border: 1px solid var(--sky); color: var(--brand); border-radius: 16px; padding: 12px 16px; font-size: .94rem; font-weight: 500; text-align: center; white-space: pre-wrap; box-shadow: var(--shadow); }
+/* ---------- แถบประกาศวิ่ง แบบที่ 2 (News Badge Ticker) ---------- */
+.pub-ticker {
+  display: flex; align-items: center; gap: 10px; padding: 6px 10px 6px 6px;
+  border-radius: 16px; background: var(--surface); border: 1px solid var(--line);
+  box-shadow: var(--shadow); overflow: hidden;
+}
+.pub-ticker .pt-badge {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px;
+  background: var(--brand); color: var(--brand-ink);
+  font-family: var(--display); font-size: .78rem; font-weight: 600;
+  padding: 5px 11px; border-radius: 11px; white-space: nowrap; letter-spacing: .2px;
+}
+.pub-ticker .pt-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .9; animation: ptPulse 1.6s ease-in-out infinite; }
+@keyframes ptPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
+.pub-ticker .pt-track {
+  flex: 1; min-width: 0; overflow: hidden; position: relative;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 14px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 14px), transparent);
+}
+.pub-ticker .pt-move {
+  display: inline-flex; align-items: center; width: max-content;
+  animation: pubMarquee var(--mq-dur, 18s) linear infinite;
+  will-change: transform;
+}
+.pub-ticker:hover .pt-move, .pub-ticker:active .pt-move { animation-play-state: paused; }
+.pub-ticker .pt-seg {
+  display: inline-flex; align-items: center; white-space: nowrap;
+  padding-right: 48px; font-size: .92rem; font-weight: 500; color: var(--ink);
+}
+@keyframes pubMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .pub-ticker .pt-move { animation: none; }
+  .pub-ticker .pt-seg:last-child { display: none; }
+  .pub-ticker .pt-seg { white-space: normal; padding-right: 0; }
+}
 </style>
+<style id="pubCustomStyle"></style>
 </head>
 <body>
-<div id="loader"><div><div class="spin"></div><div class="lt">กำลังเปิดหน้าตารางงาน…</div></div></div>
-
-<div id="howto">
-  <div class="card">
-    <h1>เปิดจากแอป Instagram อยู่</h1>
-    <p>หน้าตารางงานต้องเปิดผ่านเบราว์เซอร์จริง (เช่น Safari/Chrome) ถ้าเปิดในแอป Instagram/Facebook ตรงๆ หน้าจะว่างเปล่า</p>
-    <ol class="steps">
-      <li>แตะปุ่ม <b>•••</b> ที่มุมขวาบนของหน้านี้</li>
-      <li>เลือก <b>“เปิดในเบราว์เซอร์”</b> (Open in browser)</li>
-    </ol>
-    <a class="btn" id="openBtn" href="#">เปิดในเบราว์เซอร์เลย</a>
-    <a class="btn ghost" id="copyBtn" href="#">คัดลอกลิงก์</a>
-    <div class="copybox" id="urlShown"></div>
-  </div>
+<div class="wrap" id="root">
+  <div class="skel"></div>
+  <div class="skel" style="height:360px"></div>
 </div>
-
+<div id="toastRoot"></div>
+<button type="button" class="float-clock" id="floatClock" title="แตะเพื่อย่อ/ขยายนาฬิกา" aria-label="นาฬิกาปัจจุบัน">
+  <span class="fc-dot" aria-hidden="true"></span>
+  <span class="fc-time num" id="fcTime">--:--:--</span>
+  <span class="fc-date" id="fcDate"></span>
+  <svg class="fc-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+</button>
 <script>
-  var url = "https://script.google.com/macros/s/AKfycbz4WaFl5I4NNDPDHoCTMf0rflVD0oe3burRytttlyIBCypmda1jz6oEpEveL63UF2gV/exec";
-  var ua = navigator.userAgent || "";
-  // in-app browser ของ Instagram/Facebook/Line ฯลฯ มักเรนเดอร์หน้า Apps Script ไม่ได้ (จอขาว)
-  var inApp = /Instagram|FBAN|FBAV|FB_IAB|FB4A|Line\/|MicroMessenger/i.test(ua);
+const EXEC_URL = 'https://script.google.com/macros/s/AKfycbz4WaFl5I4NNDPDHoCTMf0rflVD0oe3burRytttlyIBCypmda1jz6oEpEveL63UF2gV/exec';
+const APP_URL = EXEC_URL;
+const TH_M = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const TH_MS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const TH_D = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+const LBL = { free: 'ว่าง', loose: 'คิวหลวม', lock: 'ไม่ว่าง', off: 'วันพัก' };
+const pad = n => String(n).padStart(2, '0');
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const thFull = iso => { const p = iso.split('-').map(Number); return p[2] + ' ' + TH_M[p[1] - 1] + ' ' + (p[0] + 543); };
+const $ = id => document.getElementById(id);
+const ICON = {
+  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.6-.8L3 20.5l1.4-4.6A8 8 0 0 1 3 11.5 8.6 8.6 0 0 1 12 3a8.6 8.6 0 0 1 9 8.5z"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
+  left: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  right: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>'
+};
 
-  function showHowTo() {
-    document.getElementById('loader').style.display = 'none';
-    document.getElementById('howto').classList.add('show');
-    document.getElementById('openBtn').href = url;
-    document.getElementById('urlShown').textContent = url;
-    document.getElementById('copyBtn').addEventListener('click', function (e) {
-      e.preventDefault();
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(function () {
-          document.getElementById('copyBtn').textContent = 'คัดลอกแล้ว ✓';
-        });
-      }
-    });
+function toast(msg) {
+  const el = document.createElement('div'); el.className = 'toast'; el.textContent = msg; el.setAttribute('role', 'status');
+  $('toastRoot').replaceChildren(el); setTimeout(() => el.remove(), 2600);
+}
+
+function initFloatingClock_() {
+  const el = $('floatClock'), tEl = $('fcTime'), dEl = $('fcDate');
+  if (!el || !tEl || !dEl) return;
+  const setMin = m => {
+    el.classList.toggle('min', !!m);
+    try { m ? localStorage.setItem('wk_pub_clock_min', '1') : localStorage.removeItem('wk_pub_clock_min'); } catch (e) {}
+  };
+  try { if (localStorage.getItem('wk_pub_clock_min') === '1') el.classList.add('min'); } catch (e) {}
+  el.addEventListener('click', () => setMin(!el.classList.contains('min')));
+  const tick = () => {
+    const n = new Date();
+    tEl.textContent = pad(n.getHours()) + ':' + pad(n.getMinutes()) + ':' + pad(n.getSeconds());
+    dEl.textContent = TH_D[n.getDay()] + '. ' + n.getDate() + ' ' + TH_MS[n.getMonth()];
+  };
+  tick();
+  setInterval(tick, 1000);
+}
+
+function run(fn, data) {
+  if (fn === 'getPublicData') {
+    return fetch(EXEC_URL + '?api=public', { cache: 'no-store' }).then(r => r.json());
   }
+  if (fn === 'submitRequest') {
+    const params = new URLSearchParams();
+    Object.keys(data || {}).forEach(k => { if (data[k] != null && data[k] !== '') params.set(k, data[k]); });
+    return fetch(EXEC_URL + '?api=submit&' + params.toString(), { cache: 'no-store' })
+      .then(r => r.json())
+      .then(res => { if (!res || res.ok !== true) throw new Error((res && res.error) || 'ส่งคำขอไม่สำเร็จ'); return res; });
+  }
+  return Promise.reject(new Error('unknown fn: ' + fn));
+}
 
-  if (inApp) {
-    showHowTo();
+const S = { days: {}, today: '', y: 0, m: 0, minKey: 0, maxKey: 0, pick: '', canReq: false, loaded: false, refreshing: false };
+const stOf = iso => S.days[iso] || 'free';
+
+function renderCal() {
+  const { y, m } = S;
+  const first = new Date(Date.UTC(y, m, 1)).getUTCDay();
+  const dim = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  let h = TH_D.map(d => '<div class="dow">' + d + '</div>').join('');
+  for (let i = 0; i < first; i++) h += '<div class="day blank"></div>';
+  let free = 0;
+  for (let d = 1; d <= dim; d++) {
+    const iso = y + '-' + pad(m + 1) + '-' + pad(d);
+    const past = iso < S.today, st = stOf(iso);
+    if (!past && st === 'free') free++;
+    const cls = 'day ' + (past ? 'past' : st) + (iso === S.today ? ' today' : '') + (iso === S.pick ? ' pick' : '');
+    const label = d + ' ' + TH_M[m] + (past ? '' : ' ' + LBL[st]);
+    const canPick = !past && S.canReq && (st === 'free' || st === 'loose');
+    h += (canPick ? '<button type="button" class="' + cls + '" data-pick="' + iso + '" aria-label="' + label + ' แตะเพื่อขอจองคิว">' : '<div class="' + cls + '" aria-label="' + label + '">') +
+      '<span class="num">' + d + '</span>' + (past ? '' : '<small>' + LBL[st] + '</small>') + (canPick ? '</button>' : '</div>');
+  }
+  const key = y * 12 + m;
+  $('mTitle').textContent = TH_M[m] + ' ' + (y + 543);
+  $('cal').innerHTML = h;
+  $('sum').innerHTML = 'เดือนนี้ว่างอีก <b class="num">' + free + '</b> วัน' + (S.canReq ? '<div class="hint">แตะวันที่ว่างหรือคิวหลวม เพื่อขอจองคิว</div>' : '');
+  $('prev').disabled = key <= S.minKey;
+  $('next').disabled = key >= S.maxKey;
+}
+
+function requestForm(p) {
+  return '<section class="card" id="reqCard" hidden><div style="display:flex;align-items:center;gap:8px"><h2 style="font-size:1.15rem;flex:1">ขอจองคิว</h2><button type="button" class="iconbtn" data-close="1" aria-label="ปิดฟอร์ม">✕</button></div>' +
+    '<div class="hint" style="margin-bottom:14px">ส่งรายละเอียดมาก่อน ' + esc(p.displayName || '') + ' จะติดต่อกลับเพื่อยืนยันคิว</div>' +
+    '<form id="reqForm" class="grid2" novalidate>' +
+    '<label class="field" for="r_date">วันที่ต้องการ *<input id="r_date" type="date" required></label>' +
+    '<label class="field" for="r_end">ถึงวันที่ <span class="hint">(ถ้าหลายวัน)</span><input id="r_end" type="date"></label>' +
+    '<div class="full" id="r_state"></div>' +
+    '<div class="full field" role="radiogroup" aria-label="แบบการจองคิว"><span>แบบการจองคิว *</span><div class="qpick">' +
+    '<label><input type="radio" name="r_queue" value="lock" checked><b>🔒 ล็อกคิว</b><span class="hint">ยืนยันงานแน่นอน ขอให้กันวันไว้ให้</span></label>' +
+    '<label class="loose"><input type="radio" name="r_queue" value="loose"><b>คิวหลวม</b><span class="hint">จองไว้ก่อน ยังไม่ยืนยัน ถ้ามีงานอื่นอาจถูกแทน</span></label></div></div>' +
+    '<label class="field" for="r_time">Call time<input id="r_time" type="time"></label>' +
+    '<label class="field" for="r_house">House / Production<input id="r_house" autocomplete="organization"></label>' +
+    '<label class="field" for="r_name">ชื่อผู้ติดต่อ *<input id="r_name" autocomplete="name" required></label>' +
+    '<label class="field" for="r_phone">เบอร์โทร<input id="r_phone" type="tel" inputmode="tel" autocomplete="tel"></label>' +
+    '<label class="field full" for="r_line">LINE ID <span class="hint">(ใส่เบอร์หรือ LINE อย่างน้อย 1 ช่อง)</span><input id="r_line"></label>' +
+    '<label class="field full" for="r_loc">สถานที่ถ่าย<input id="r_loc" placeholder="ชื่อสถานที่ หรือวางลิงก์ Google Maps"></label>' +
+    '<label class="field full" for="r_detail">รายละเอียดงาน<textarea id="r_detail" placeholder="เช่น ประเภทงาน ตำแหน่งที่ต้องการ จำนวนวัน งบประมาณ"></textarea></label>' +
+    '<div class="hp" aria-hidden="true"><label>เว็บไซต์<input id="r_web" tabindex="-1" autocomplete="off"></label></div>' +
+    '<div class="full" id="r_msg"></div>' +
+    '<button class="btn primary block full" type="submit" id="r_send">ส่งคำขอจองคิว</button></form></section>';
+}
+
+function render(d) {
+  const root = $('root');
+  if (!d) { root.innerHTML = '<div class="card" style="text-align:center"><p>โหลดข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง</p><button type="button" class="btn primary" data-refresh="1">🔄 ลองโหลดใหม่</button></div>'; return; }
+  if (d.hidden) { root.innerHTML = '<div class="card" style="position:relative;text-align:center"><button type="button" class="iconbtn refresh pub-refresh" id="pubRefresh" data-refresh="1" aria-label="รีเฟรช" title="รีเฟรชข้อมูล">' + ICON.refresh + '</button><h1 style="font-size:1.2rem">หน้านี้ปิดอยู่ชั่วคราว</h1></div>'; return; }
+  const p = d.profile || {};
+  document.documentElement.dataset.theme = (['midnight','sunset','xmas','songkran','loykrathong','national'].indexOf(p.theme) >= 0 ? p.theme : 'sky');
+  if (p.pubCustomBrand && /^#[0-9a-fA-F]{3,6}$/.test(String(p.pubCustomBrand).trim())) {
+    document.documentElement.style.setProperty('--brand', String(p.pubCustomBrand).trim());
   } else {
-    // เบราว์เซอร์ปกติ (Safari/Chrome) ใช้งานได้จริง -> redirect ตรงไปเลย
-    window.location.replace(url);
-    setTimeout(showHowTo, 2500); // กันเหนียวถ้า redirect ไม่สำเร็จ
+    document.documentElement.style.removeProperty('--brand');
   }
+  const cStyle = $('pubCustomStyle');
+  if (cStyle) cStyle.textContent = String(p.pubCustomCss || '').replace(/<\/?style[^>]*>/gi, '');
+  LBL.free = String(p.pubLblFree || '').trim() || 'ว่าง';
+  LBL.loose = String(p.pubLblLoose || '').trim() || 'คิวหลวม';
+  LBL.lock = String(p.pubLblLock || '').trim() || 'ไม่ว่าง';
+  LBL.off = String(p.pubLblOff || '').trim() || 'วันพัก';
+  const reqBtnTxt = String(p.pubReqBtnText || '').trim() || '📅 ขอจองคิว';
+  document.title = (p.displayName || 'โปรไฟล์') + ' · เช็คคิว';
+  const phone = (p.phone || '').replace(/[^0-9+]/g, '');
+  const lineId = (p.line || '').replace(/^@/, '');
+  S.canReq = p.acceptRequests !== 'no';
+  const extraLinks = String(p.pubLinks || '').split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+    const parts = l.split('|').map(x => x.trim());
+    const url = parts.length >= 2 ? parts[1] : (parts[0] || '');
+    const lbl = parts.length >= 2 && parts[0] ? parts[0] : 'ลิงก์';
+    if (!/^https:\/\/[^\s"'<>]+$/i.test(url)) return '';
+    return '<a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(lbl) + ' ↗</a>';
+  }).filter(Boolean).join('');
+  const contacts = [
+    phone ? '<a class="btn primary" href="tel:' + esc(phone) + '">' + ICON.phone + 'โทร</a>' : '',
+    lineId ? '<a class="btn" href="https://line.me/ti/p/~' + encodeURIComponent(lineId) + '" target="_blank" rel="noopener">' + ICON.chat + 'LINE</a>' : '',
+    p.email ? '<a class="btn" href="mailto:' + esc(p.email) + '">' + ICON.mail + 'อีเมล</a>' : '',
+    extraLinks,
+    S.canReq ? '<button type="button" class="btn" data-jump="1">' + esc(reqBtnTxt) + '</button>' : ''
+  ].join('');
+  const copyLine = [p.phone ? 'โทร ' + esc(p.phone) : '', p.line ? 'LINE ' + esc(p.line) : '', p.email ? esc(p.email) : ''].filter(Boolean).join(' · ');
+  const services = String(p.services || '').split('\n').map(s => s.trim()).filter(Boolean);
+  const noticeRaw = String(p.pubNotice || '').trim();
+  const noticeLine = noticeRaw.replace(/\s*\n+\s*/g, '   •   ');
+  const mqDur = Math.min(60, Math.max(5, Number(p.pubNoticeSpeed) || 18));
+  const mqBadge = String(p.pubNoticeBadge || '').trim() || 'ประกาศ';
+  const noticeHtml = !noticeRaw ? '' : (p.pubNoticeMarquee !== 'no'
+    ? '<div class="pub-ticker" style="--mq-dur:' + mqDur + 's" role="region" aria-label="ประกาศ">' +
+        '<span class="pt-badge"><span class="pt-dot" aria-hidden="true"></span>' + esc(mqBadge) + '</span>' +
+        '<div class="pt-track"><div class="pt-move">' +
+          '<span class="pt-seg">' + esc(noticeLine) + '</span>' +
+          '<span class="pt-seg" aria-hidden="true">' + esc(noticeLine) + '</span>' +
+        '</div></div></div>'
+    : '<div class="pub-notice">' + esc(noticeRaw) + '</div>');
+  let h = noticeHtml +
+    '<section class="card profile">' +
+    '<button type="button" class="iconbtn refresh pub-refresh" id="pubRefresh" data-refresh="1" aria-label="รีเฟรช" title="รีเฟรชข้อมูล">' + ICON.refresh + '</button>' +
+    '<div class="photo" style="' + (p.photo ? 'background-image:url(&quot;' + p.photo + '&quot;)' : '') + '">' + (p.photo ? '' : esc((p.displayName || '?').charAt(0))) + '</div>' +
+    '<h1>' + esc(p.displayName) + '</h1>' + (p.headline ? '<div class="headline">' + esc(p.headline) + '</div>' : '') +
+    (p.bio ? '<p class="bio">' + esc(p.bio) + '</p>' : '') +
+    (contacts ? '<div class="contacts">' + contacts + '</div>' : '') +
+    (copyLine ? '<div class="copy">' + copyLine + '</div>' : '') + '</section>';
+  if (services.length) h += '<section class="card"><h2 style="font-size:1.1rem">บริการที่รับ</h2><div class="services">' + services.map(s => '<span>' + esc(s) + '</span>').join('') + '</div></section>';
+  if (p.showCalendar !== 'no') {
+    h += '<section class="card"><h2 style="font-size:1.1rem">เช็คคิวงาน</h2><div class="hint">อัปเดตตามตารางงานจริง</div>' +
+      '<div class="monthbar" style="margin-top:12px"><button class="iconbtn" id="prev" aria-label="เดือนก่อน">' + ICON.left + '</button><h2 id="mTitle"></h2><button class="iconbtn" id="next" aria-label="เดือนถัดไป">' + ICON.right + '</button></div>' +
+      '<div class="cal" id="cal"></div><div class="sum" id="sum"></div>' +
+      '<div class="legend"><span><i style="background:var(--mint-soft);border:1px solid var(--mint)"></i>' + esc(LBL.free) + '</span><span><i style="background:var(--amber-soft);border:1px solid var(--amber)"></i>' + esc(LBL.loose) + '</span>' +
+      '<span><i style="background:var(--rose-soft);border:1px solid var(--rose)"></i>' + esc(LBL.lock) + '</span><span><i style="background:var(--rest-soft);border:1px solid var(--rest)"></i>' + esc(LBL.off) + '</span></div></section>';
+  }
+  if (S.canReq) h += '<button type="button" class="btn primary block" id="reqOpen" data-jump="1" style="min-height:54px;font-size:1.05rem">' + esc(reqBtnTxt) + '</button>' + requestForm(p);
+  h += '<div class="foot">' + (APP_URL ? '<a href="' + esc(APP_URL) + '?page=admin">สำหรับเจ้าของ</a>' : '') + '</div>';
+  root.innerHTML = h;
+
+  const fallbackToday = (() => { const n = new Date(); return n.getFullYear() + '-' + pad(n.getMonth() + 1) + '-' + pad(n.getDate()); })();
+  S.days = d.days || {}; S.today = /^\d{4}-\d{2}-\d{2}$/.test(String(d.today || '')) ? d.today : fallbackToday; S.pick = '';
+  const [ty, tm] = S.today.split('-').map(Number);
+  S.minKey = ty * 12 + tm - 1; S.maxKey = S.minKey + 12;
+  const curKey = S.y * 12 + S.m;
+  if (!S.loaded || curKey < S.minKey || curKey > S.maxKey) { S.y = ty; S.m = tm - 1; }
+  S.loaded = true;
+  if (p.showCalendar !== 'no') {
+    $('prev').onclick = () => { if (--S.m < 0) { S.m = 11; S.y--; } renderCal(); };
+    $('next').onclick = () => { if (++S.m > 11) { S.m = 0; S.y++; } renderCal(); };
+    renderCal();
+  }
+  if (S.canReq) wireForm();
+}
+
+function checkDates() {
+  const s = $('r_date').value, e = $('r_end').value || s;
+  if (!s) { $('r_state').innerHTML = ''; return; }
+  if (s < S.today) { $('r_state').innerHTML = '<div class="msg bad">กรุณาเลือกวันที่ตั้งแต่วันนี้เป็นต้นไป</div>'; return; }
+  if (e < s) { $('r_state').innerHTML = '<div class="msg bad">“ถึงวันที่” ต้องไม่ก่อนวันเริ่ม</div>'; return; }
+  const bad = [], looses = [];
+  for (let d = s, n = 0; d <= e && n < 62; n++) {
+    const st = stOf(d);
+    if (st === 'lock' || st === 'off') bad.push(thFull(d) + ' ' + LBL[st]);
+    else if (st === 'loose') looses.push(thFull(d));
+    const p = d.split('-').map(Number); d = new Date(Date.UTC(p[0], p[1] - 1, p[2] + 1)).toISOString().slice(0, 10);
+  }
+  $('r_state').innerHTML = bad.length ? '<div class="msg warn">' + esc(bad.slice(0, 3).join(', ')) + (bad.length > 3 ? ' …' : '') + ' — ส่งคำขอได้ แต่อาจไม่ว่าง</div>'
+    : looses.length ? '<div class="msg warn">' + (looses.length === 1 && s === e ? 'วันนี้มีคิวหลวมอยู่' : 'ช่วงที่เลือกมีคิวหลวม (' + esc(looses.slice(0, 3).join(', ')) + (looses.length > 3 ? ' …' : '') + ')') + ' ส่งคำขอเป็นคิวสำรองได้</div>'
+    : '<div class="msg ok">วันที่เลือกว่าง ✓</div>';
+  S.pick = s; if ($('cal')) renderCal();
+}
+
+function wireForm() {
+  $('r_date').min = S.today; $('r_end').min = S.today;
+  ['r_date', 'r_end'].forEach(id => { $(id).addEventListener('input', checkDates); $(id).addEventListener('change', checkDates); });
+  $('reqForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const v = id => $(id).value.trim();
+    const bad = (m, id) => { $('r_msg').innerHTML = '<div class="msg bad">' + m + '</div>'; if (id) $(id).focus(); };
+    if (!v('r_date')) return bad('กรุณาเลือกวันที่ต้องการ', 'r_date');
+    if (v('r_end') && v('r_end') < v('r_date')) return bad('“ถึงวันที่” ต้องไม่ก่อนวันเริ่ม', 'r_end');
+    if (!v('r_name')) return bad('กรุณาใส่ชื่อผู้ติดต่อ', 'r_name');
+    if (!v('r_phone') && !v('r_line')) return bad('กรุณาใส่เบอร์โทรหรือ LINE อย่างน้อย 1 ช่อง', 'r_phone');
+    const loc = v('r_loc'), isUrl = /^https:\/\//i.test(loc);
+    $('r_send').disabled = true; $('r_send').textContent = 'กำลังส่ง…'; $('r_msg').innerHTML = '';
+    const reqDate = v('r_date'), reqEnd = v('r_end'), reqQ = (document.querySelector('input[name="r_queue"]:checked') || {}).value || 'lock';
+    try {
+      await run('submitRequest', { date: reqDate, endDate: reqEnd, time: v('r_time'), house: v('r_house'), name: v('r_name'), phone: v('r_phone'), line: v('r_line'), location: isUrl ? '' : loc, mapUrl: isUrl ? loc : '', detail: v('r_detail'), website: v('r_web'), queue: reqQ });
+      $('reqCard').innerHTML = '<div class="done"><div class="ic">✓</div><h2 style="font-size:1.2rem">ส่งคำขอแล้ว</h2><p class="hint">ขอคิววันที่ ' + esc(thFull(reqDate)) + (reqEnd ? ' – ' + esc(thFull(reqEnd)) : '') + '<br>แบบ: ' + (reqQ === 'loose' ? 'คิวหลวม' : '🔒 ล็อกคิว') + '<br>จะติดต่อกลับเพื่อยืนยันคิวโดยเร็ว</p><button type="button" class="btn" data-refresh="1" style="margin-top:8px">รีเฟรชหน้านี้</button></div>';
+    } catch (err) { $('r_send').disabled = false; $('r_send').textContent = 'ส่งคำขอจองคิว'; bad(esc(err)); }
+  });
+}
+
+async function loadPublic(fromBtn) {
+  if (S.refreshing) return;
+  S.refreshing = true;
+  if (fromBtn) { fromBtn.classList.add('spin'); fromBtn.disabled = true; }
+  try {
+    const d = await run('getPublicData');
+    render(d);
+    if (fromBtn) toast('อัปเดตข้อมูลแล้ว');
+  } catch (err) {
+    if (fromBtn) toast('อัปเดตไม่สำเร็จ ลองใหม่อีกครั้ง');
+    else $('root').innerHTML = '<div class="card" style="text-align:center"><p>โหลดข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง</p><button type="button" class="btn primary" data-refresh="1">🔄 ลองโหลดใหม่</button></div>';
+  } finally {
+    S.refreshing = false;
+    if (fromBtn && fromBtn.isConnected) { fromBtn.classList.remove('spin'); fromBtn.disabled = false; }
+  }
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-pick],[data-jump],[data-close],[data-refresh]'); if (!t) return;
+  e.preventDefault();
+  if (t.dataset.refresh) { loadPublic(t); return; }
+  if (t.dataset.close) {
+    $('reqCard').hidden = true; if ($('reqOpen')) $('reqOpen').hidden = false; S.pick = ''; if ($('cal')) renderCal();
+    if ($('reqOpen')) $('reqOpen').scrollIntoView({ block: 'center' }); return;
+  }
+  if (t.dataset.pick && $('r_date')) { $('r_date').value = t.dataset.pick; $('r_end').value = ''; checkDates(); }
+  const card = $('reqCard');
+  if (card) {
+    card.hidden = false;
+    if ($('reqOpen')) $('reqOpen').hidden = true;
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => { const fe = $(t.dataset.pick ? 'r_name' : 'r_date'); if (fe) fe.focus({ preventScroll: true }); }, 400);
+  }
+});
+
+initFloatingClock_();
+loadPublic(null);
 </script>
 </body>
 </html>
