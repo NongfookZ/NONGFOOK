@@ -6,8 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>NONGFOOK(DIT) · เช็คคิวว่าง</title>
 <meta name="description" content="บริการ DIT, COLOR GRADING ฟรีแลนซ์งานกองถ่าย — เช็คคิวว่างและจองคิวงานได้ที่นี่">
-<meta name="theme-color" content="#d9a441">
-<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#d9a441" id="themeColorMeta">
+<link rel="manifest" href="https://script.google.com/macros/s/AKfycbz4WaFl5I4NNDPDHoCTMf0rflVD0oe3burRytttlyIBCypmda1jz6oEpEveL63UF2gV/exec?api=manifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">
 <meta property="og:type" content="website">
@@ -385,6 +385,8 @@ function render(d) {
   } else {
     document.documentElement.style.removeProperty('--brand');
   }
+  const tc = $('themeColorMeta');
+  if (tc) { requestAnimationFrame(() => { tc.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--brand').trim() || '#2a72b3'); }); }
   const cStyle = $('pubCustomStyle');
   if (cStyle) cStyle.textContent = String(p.pubCustomCss || '').replace(/<\/?style[^>]*>/gi, '');
   LBL.free = String(p.pubLblFree || '').trim() || 'ว่าง';
