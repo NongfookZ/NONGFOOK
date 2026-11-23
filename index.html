@@ -178,8 +178,8 @@ button.day { cursor: pointer; }
 .msg.bad { background: var(--rose-soft); color: var(--rose); }
 .msg.warn { background: var(--amber-soft); color: var(--amber); }
 .msg.ok { background: var(--mint-soft); color: var(--mint); }
-.qpick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.qpick label { border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; position: relative; }
+.qpick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: stretch; }
+.qpick label { height: 100%; border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; position: relative; box-sizing: border-box; }
 .qpick input { position: absolute; opacity: 0; pointer-events: none; }
 .qpick b { font-family: var(--display); font-weight: 600; color: var(--ink); }
 .qpick .hint { line-height: 1.35; }
