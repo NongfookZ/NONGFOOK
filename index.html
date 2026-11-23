@@ -5,33 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ตารางงาน DIT</title>
 <meta name="description" content="ตารางงาน คิวจอง และติดต่อ">
+<meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/AKfycbz4WaFl5I4NNDPDHoCTMf0rflVD0oe3burRytttlyIBCypmda1jz6oEpEveL63UF2gV/exec">
 <style>
   html, body { margin: 0; height: 100%; background: #f3f8fd; }
-  #frame { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
-  #loader { position: fixed; inset: 0; z-index: 2; display: grid; place-items: center;
-            background: #f3f8fd; transition: opacity .45s ease; font-family: "Prompt", system-ui, -apple-system, "Segoe UI", sans-serif; }
-  #loader.hide { opacity: 0; pointer-events: none; }
+  #loader { position: fixed; inset: 0; display: grid; place-items: center;
+            background: #f3f8fd; font-family: "Prompt", system-ui, -apple-system, "Segoe UI", sans-serif; }
   .spin { width: 42px; height: 42px; margin: 0 auto; border: 4px solid #cfe3f5; border-top-color: #2a72b3; border-radius: 50%; animation: s 1s linear infinite; }
   @keyframes s { to { transform: rotate(360deg); } }
   .lt { margin-top: 14px; color: #687a8e; font-size: .95rem; text-align: center; }
-  .err { max-width: 300px; text-align: center; color: #687a8e; font-size: .92rem; line-height: 1.6; }
-  .err a { color: #2a72b3; }
+  .lt a { color: #2a72b3; font-weight: 600; }
 </style>
 </head>
 <body>
-<div id="loader"><div><div class="spin"></div><div class="lt">กำลังโหลด…</div></div></div>
-<iframe id="frame"
-        src="https://script.google.com/macros/s/AKfycbz4WaFl5I4NNDPDHoCTMf0rflVD0oe3burRytttlyIBCypmda1jz6oEpEveL63UF2gV/exec"
-        allow="geolocation; clipboard-write; clipboard-read"
-        title="ตารางงาน DIT"></iframe>
+<div id="loader">
+  <div>
+    <div class="spin"></div>
+    <div class="lt">กำลังเปิดหน้าตารางงาน…<br>
+      <span id="fallback" style="display:none">ถ้าไม่เปิดอัตโนมัติ <a id="fallbackLink" href="#">แตะที่นี่</a></span>
+    </div>
+  </div>
+</div>
 <script>
-  (function () {
-    var f = document.getElementById('frame'), l = document.getElementById('loader');
-    function hide() { if (l) { l.classList.add('hide'); setTimeout(function () { if (l) l.remove(); }, 600); } }
-    f.addEventListener('load', hide);
-    // เผื่อ iframe โหลดช้า/บล็อก ให้ซ่อน loader อัตโนมัติใน 8 วิ
-    setTimeout(hide, 8000);
-  })();
+  var url = "https://script.google.com/macros/s/AKfycbz4WaFl5I4NNDPDHoCTMf0rflVD0oe3burRytttlyIBCypmda1jz6oEpEveL63UF2gV/exec";
+  document.getElementById('fallbackLink').href = url;
+  // redirect แบบ full navigation (ไม่ใช้ iframe) เพื่อให้เปิดได้ปกติใน in-app browser เช่น Instagram/Facebook
+  // ที่มักแสดงหน้าขาวถ้าเจอ iframe ซ้อน iframe
+  window.location.replace(url);
+  setTimeout(function () {
+    document.getElementById('fallback').style.display = 'inline';
+  }, 2500);
 </script>
 </body>
 </html>
