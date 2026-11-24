@@ -336,170 +336,41 @@ button.day:active { transform: scale(.96); }
   .pub-ticker .pt-seg { white-space: normal; padding-right: 0; }
 }
 
-/* 🎉 เอฟเฟกต์เทศกาลหน้าบ้าน: พลุ / หิมะ — เปิดได้จากหลังร้าน (ตั้งค่า > ปรับแต่งหน้าบ้าน) */
-@media (prefers-reduced-motion: no-preference) {
-html[data-pubeffect="fireworks"] body::before,
-html[data-pubeffect="fireworks"] body::after,
-html[data-pubeffect="fireworks"] #root::before,
-html[data-pubeffect="fireworks"] #root::after {
-  content: ''; position: fixed; width: 4px; height: 4px; border-radius: 50%;
-  pointer-events: none; z-index: 60; will-change: transform, opacity;
-}
-html[data-pubeffect="fireworks"] body::before { left: 18%; top: 82%; animation: fwBurst 5.2s ease-out infinite; }
-html[data-pubeffect="fireworks"] body::after   { left: 50%; top: 86%; animation: fwBurst 4.6s ease-out infinite; animation-delay: 1.3s; filter: hue-rotate(300deg); }
-html[data-pubeffect="fireworks"] #root::before { left: 78%; top: 80%; animation: fwBurst 5.8s ease-out infinite; animation-delay: 2.5s; filter: hue-rotate(190deg); }
-html[data-pubeffect="fireworks"] #root::after  { left: 34%; top: 84%; animation: fwBurst 5s ease-out infinite; animation-delay: 3.6s; filter: hue-rotate(110deg); }
-@keyframes fwBurst {
-  0%   { transform: translateY(0); opacity: 0; background: rgba(255,213,74,.9); box-shadow:
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0);
-  }
-  14%  { opacity: 1; background: rgba(255,213,74,.9); }
-  22%  { transform: translateY(-42vh); opacity: 1; background: rgba(255,213,74,.9); box-shadow:
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0);
-  }
-  23%  { background: transparent; }
-  36%  { transform: translateY(-42vh); opacity: 1; background: transparent; box-shadow:
-      70px 0px 2px 1px rgba(255,213,74,0.9),
-      61px 35px 2px 1px rgba(255,213,74,0.9),
-      35px 61px 2px 1px rgba(255,213,74,0.9),
-      0px 70px 2px 1px rgba(255,213,74,0.9),
-      -35px 61px 2px 1px rgba(255,213,74,0.9),
-      -61px 35px 2px 1px rgba(255,213,74,0.9),
-      -70px 0px 2px 1px rgba(255,213,74,0.9),
-      -61px -35px 2px 1px rgba(255,213,74,0.9),
-      -35px -61px 2px 1px rgba(255,213,74,0.9),
-      0px -70px 2px 1px rgba(255,213,74,0.9),
-      35px -61px 2px 1px rgba(255,213,74,0.9),
-      61px -35px 2px 1px rgba(255,213,74,0.9);
-  }
-  58%  { transform: translateY(-42vh); opacity: .9; background: transparent; box-shadow:
-      95px 0px 2px 1px rgba(255,213,74,0.75),
-      82px 47px 2px 1px rgba(255,213,74,0.75),
-      48px 82px 2px 1px rgba(255,213,74,0.75),
-      0px 95px 2px 1px rgba(255,213,74,0.75),
-      -47px 82px 2px 1px rgba(255,213,74,0.75),
-      -82px 47px 2px 1px rgba(255,213,74,0.75),
-      -95px 0px 2px 1px rgba(255,213,74,0.75),
-      -82px -48px 2px 1px rgba(255,213,74,0.75),
-      -48px -82px 2px 1px rgba(255,213,74,0.75),
-      0px -95px 2px 1px rgba(255,213,74,0.75),
-      48px -82px 2px 1px rgba(255,213,74,0.75),
-      82px -48px 2px 1px rgba(255,213,74,0.75);
-  }
-  80%  { opacity: 0; background: transparent; box-shadow:
-      95px 0px 2px 1px rgba(255,213,74,0),
-      82px 47px 2px 1px rgba(255,213,74,0),
-      48px 82px 2px 1px rgba(255,213,74,0),
-      0px 95px 2px 1px rgba(255,213,74,0),
-      -47px 82px 2px 1px rgba(255,213,74,0),
-      -82px 47px 2px 1px rgba(255,213,74,0),
-      -95px 0px 2px 1px rgba(255,213,74,0),
-      -82px -48px 2px 1px rgba(255,213,74,0),
-      -48px -82px 2px 1px rgba(255,213,74,0),
-      0px -95px 2px 1px rgba(255,213,74,0),
-      48px -82px 2px 1px rgba(255,213,74,0),
-      82px -48px 2px 1px rgba(255,213,74,0);
-  }
-  100% { opacity: 0; background: transparent; box-shadow:
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0),
-      0px 0px 0px 0px rgba(255,213,74,0);
-  }
-}
+/* 🎉 เอฟเฟกต์เทศกาลหน้าบ้าน (พลุ / หิมะ) — วาดบน Canvas เลเยอร์เดียว ไม่รับคลิก · เปิดได้จากหลังร้าน (ตั้งค่า > ปรับแต่งหน้าบ้าน) */
+.pub-fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 12; }
+@media print { .pub-fx { display: none; } }
 
-html[data-pubeffect="snow"] body::before,
-html[data-pubeffect="snow"] body::after,
-html[data-pubeffect="snow"] #root::before {
-  content: ''; position: fixed; top: 0; left: 0; width: 2px; height: 2px; border-radius: 50%;
-  pointer-events: none; z-index: 60; will-change: transform;
-}
-html[data-pubeffect="snow"] body::before {
-  box-shadow:
-      63.7vw -133.0vh 0 rgba(255,255,255,0.41),
-      22.9vw 66.2vh 0 rgba(255,255,255,0.49),
-      88.4vw -115.7vh 0 rgba(255,255,255,0.43),
-      3.9vw -78.8vh 0 rgba(255,255,255,0.45),
-      3.6vw -84.3vh 0 rgba(255,255,255,0.48),
-      54.4vw -78.3vh 0 rgba(255,255,255,0.47),
-      80.3vw -138.2vh 0 rgba(255,255,255,0.51),
-      69.4vw -44.7vh 0 rgba(255,255,255,0.38),
-      94.8vw -45.8vh 0 rgba(255,255,255,0.37),
-      10.5vw 97.3vh 0 rgba(255,255,255,0.47),
-      80.1vw 64.3vh 0 rgba(255,255,255,0.46),
-      96.4vw -34.0vh 0 rgba(255,255,255,0.46),
-      82.3vw 33.2vh 0 rgba(255,255,255,0.52),
-      57.6vw 57.3vh 0 rgba(255,255,255,0.36);
-  animation: snowFall 14s linear infinite;
-}
-html[data-pubeffect="snow"] body::after {
-  box-shadow:
-      23.3vw -59.0vh 0 rgba(255,255,255,0.52),
-      23.8vw -111.7vh 0 rgba(255,255,255,0.57),
-      63.3vw -37.8vh 0 rgba(255,255,255,0.59),
-      21.5vw -65.2vh 0 rgba(255,255,255,0.73),
-      64.5vw 30.6vh 0 rgba(255,255,255,0.54),
-      72.5vw -94.2vh 0 rgba(255,255,255,0.59),
-      98.0vw 39.2vh 0 rgba(255,255,255,0.64),
-      68.1vw 96.0vh 0 rgba(255,255,255,0.69),
-      23.4vw -131.0vh 0 rgba(255,255,255,0.58),
-      27.2vw -80.9vh 0 rgba(255,255,255,0.74),
-      86.9vw -51.9vh 0 rgba(255,255,255,0.66),
-      39.8vw 116.1vh 0 rgba(255,255,255,0.61);
-  animation: snowFall 10s linear infinite;
-  animation-delay: -3s;
-}
-html[data-pubeffect="snow"] #root::before {
-  box-shadow:
-      27.0vw -70.9vh 0 rgba(255,255,255,0.84),
-      26.7vw 23.7vh 0 rgba(255,255,255,0.92),
-      40.1vw -78.6vh 0 rgba(255,255,255,0.95),
-      50.9vw -114.5vh 0 rgba(255,255,255,0.71),
-      11.7vw 35.7vh 0 rgba(255,255,255,0.9),
-      42.4vw -122.2vh 0 rgba(255,255,255,0.8),
-      98.6vw 8.2vh 0 rgba(255,255,255,0.94),
-      85.4vw -136.8vh 0 rgba(255,255,255,0.88),
-      67.8vw 10.4vh 0 rgba(255,255,255,0.77),
-      63.8vw -108.8vh 0 rgba(255,255,255,0.81);
-  animation: snowFall 7s linear infinite;
-  animation-delay: -1.5s;
-}
-@keyframes snowFall {
-  0%   { transform: translateY(-50vh) translateX(0); }
-  50%  { transform: translateY(50vh) translateX(1.5vw); }
-  100% { transform: translateY(150vh) translateX(0); }
-}
-}
+/* ---------- ค้นหาสถานที่ + แผนที่ ในฟอร์มขอจองคิว ---------- */
+.btn.sm { min-height: 36px; padding: 0 12px; font-size: 13px; border-radius: var(--r-md); }
+.btn.soft { background: var(--accent-softer); border-color: var(--accent-line); color: var(--accent); font-weight: 600; box-shadow: none; }
+.btn.soft:hover { background: var(--accent-soft); }
+.placewrap { position: relative; }
+.placeres { position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 30; max-height: 280px; overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--border-strong); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-md); }
+.placeres .pr-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 6px; padding: 8px 12px 6px; font-size: 12px; font-weight: 600; color: var(--text-2); background: var(--surface-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.placeres .pr-head svg { width: 14px; height: 14px; color: var(--text-3); }
+.placeres .pr-item { display: flex; gap: 10px; align-items: flex-start; width: 100%; min-height: 48px; text-align: left; padding: 10px 12px; border: 0; border-top: 1px solid var(--border); background: none; color: var(--text); font: inherit; cursor: pointer; transition: background-color 120ms var(--ease); }
+.placeres .pr-item:first-child, .placeres .pr-head + .pr-item { border-top: 0; }
+.placeres .pr-item:hover, .placeres .pr-item:focus-visible { background: var(--accent-softer); outline: none; }
+.placeres .pr-item.on { background: var(--accent-soft); }
+.placeres .pr-item svg { width: 16px; height: 16px; flex: 0 0 auto; margin-top: 2px; color: var(--accent); }
+.placeres .pr-t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.placeres .pr-t b { font-weight: 600; font-size: 14px; color: var(--text); }
+.placeres .pr-t span { font-size: 12px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.placeres .pr-here b { color: var(--accent); }
+.placeres .pr-here + .pr-head, .placeres .pr-here + .pr-note { border-top: 1px solid var(--border); }
+.placeres .pr-note { display: flex; align-items: center; gap: 8px; padding: 10px 12px; font-size: 13px; color: var(--text-2); }
+.placeres .pr-err { color: var(--rose); }
+.cs-spin { display: inline-block; flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%; border: 2px solid color-mix(in srgb, currentColor 30%, transparent); border-top-color: currentColor; animation: spin .7s linear infinite; }
+.placeres .pr-here .cs-spin { margin-top: 3px; color: var(--accent); }
+.placebar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: calc(var(--sp-2) * -1); }
+.mapbar { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.mapbar .hint { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mapbar .hint svg { width: 12px; height: 12px; vertical-align: -1px; color: var(--accent); }
+.mapembed { margin-top: 8px; border: 1px solid var(--border); border-radius: var(--r-xl); overflow: hidden; background: var(--surface-2); }
+.mapembed iframe { display: block; width: 100%; height: 200px; border: 0; }
+html[data-theme="dark"] .mapembed iframe { filter: invert(.9) hue-rotate(180deg) saturate(.85) brightness(.95); }
+.mapembed .me-open { display: flex; align-items: center; justify-content: center; gap: 6px; height: 40px; font-size: 13px; font-weight: 600; text-decoration: none; color: var(--accent); background: var(--surface); border-top: 1px solid var(--border); transition: background-color 120ms var(--ease); }
+.mapembed .me-open:hover { background: var(--accent-softer); }
 </style>
 <style id="pubCustomStyle"></style>
 </head>
@@ -566,8 +437,13 @@ function initFloatingClock_() {
 }
 
 /* เรียกฝั่ง Apps Script: ใน Apps Script ใช้ google.script.run · บน GitHub Pages (build-pages.py ใส่ APP_URL ให้) ใช้ fetch API · เปิดไฟล์เปล่าๆ ใช้ข้อมูลตัวอย่าง */
-function runApi_(fn, data) {
+function runApi_(fn, args) {
+  const data = args[0];
+  const geo = qs => fetch(APP_URL + '?' + qs, { cache: 'no-store' }).then(r => r.json())
+    .then(res => { if (!res || res.ok !== true) throw new Error((res && res.error) || 'ค้นหาสถานที่ไม่สำเร็จ'); return res.data; });
   if (fn === 'getPublicData') return fetch(APP_URL + '?api=public', { cache: 'no-store' }).then(r => r.json());
+  if (fn === 'searchPlacesPublic') return geo('api=places&q=' + encodeURIComponent(data || ''));
+  if (fn === 'reverseGeocodePublic') return geo('api=reverse&lat=' + encodeURIComponent(args[0]) + '&lng=' + encodeURIComponent(args[1]));
   if (fn === 'submitRequest') {
     const params = new URLSearchParams();
     Object.keys(data || {}).forEach(k => { if (data[k] != null && data[k] !== '') params.set(k, data[k]); });
@@ -578,16 +454,34 @@ function runApi_(fn, data) {
   return Promise.reject(new Error('unknown fn: ' + fn));
 }
 function run(fn, ...args) {
-  if (!IS_GAS && APP_URL) return runApi_(fn, args[0]);
+  if (!IS_GAS && APP_URL) return runApi_(fn, args);
   return new Promise((res, rej) => {
     if (IS_GAS) return google.script.run.withSuccessHandler(res).withFailureHandler(e => rej(String(e && e.message || e).replace(/^(Error|Exception):\s*/, '')))[fn](...args);
-    const t = new Date(), iso = n => { const d = new Date(t); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
-    setTimeout(() => {
-      if (fn === 'submitRequest') return res({ ok: true });
-      res({ today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', phone: '080-000-0000', line: 'example', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '' } });
-    }, 200);
+    setTimeout(() => { try { res(PubMock[fn](...args)); } catch (e) { rej(String(e && e.message || e)); } }, fn === 'getPublicData' ? 200 : 450);
   });
 }
+/* ข้อมูลตัวอย่าง: ใช้เฉพาะตอนเปิดไฟล์นอก Apps Script (ทดสอบเอฟเฟกต์/ธีมได้ด้วย ?fx=snow|fireworks&theme=xmas) */
+const PubMock = {
+  getPublicData: () => {
+    const t = new Date(), iso = n => { const d = new Date(t); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+    const qp = new URLSearchParams(location.search);
+    return { today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', phone: '080-000-0000', line: 'example', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '', pubEffect: qp.get('fx') || '', theme: qp.get('theme') || 'sky' } };
+  },
+  submitRequest: () => ({ ok: true }),
+  searchPlacesPublic: q => {
+    q = String(q || '').trim();
+    if (!q) throw new Error('พิมพ์ชื่อสถานที่ก่อนค้นหา');
+    const mk = (name, address, lat, lng) => ({ name, address, lat, lng, mapUrl: 'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lng });
+    if (/^https?:\/\//i.test(q)) { const m = q.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/); return [m ? mk('ตำแหน่งจากลิงก์แผนที่', 'พิกัด ' + m[1] + ', ' + m[2], Number(m[1]), Number(m[2])) : mk('สยามพารากอน', 'แขวงปทุมวัน เขตปทุมวัน กรุงเทพมหานคร', 13.7462, 100.5347)]; }
+    if (/ไม่เจอ|zzz/i.test(q)) return [];
+    return [mk(q, 'แขวงบางนา เขตบางนา กรุงเทพมหานคร', 13.6683, 100.6046), mk(q + ' สาขา 2', 'ตำบลบางพลีใหญ่ อำเภอบางพลี สมุทรปราการ', 13.6113, 100.7277), mk(q + ' (เขาใหญ่)', 'ตำบลหมูสี อำเภอปากช่อง นครราชสีมา', 14.549, 101.372)];
+  },
+  reverseGeocodePublic: (lat, lng) => {
+    const la = Math.round(Number(lat) * 1e5) / 1e5, ln = Math.round(Number(lng) * 1e5) / 1e5;
+    if (!isFinite(la) || !isFinite(ln)) throw new Error('พิกัดไม่ถูกต้อง');
+    return { name: 'แขวงจตุจักร เขตจตุจักร กรุงเทพมหานคร', address: 'แขวงจตุจักร เขตจตุจักร กรุงเทพมหานคร', lat: la, lng: ln, mapUrl: 'https://www.google.com/maps/search/?api=1&query=' + la + ',' + ln };
+  }
+};
 
 const S = { days: {}, today: '', y: 0, m: 0, minKey: 0, maxKey: 0, pick: '', canReq: false, loaded: false, refreshing: false };
 const stOf = iso => S.days[iso] || 'free';
@@ -632,7 +526,10 @@ function requestForm(p) {
     '<label class="field" for="r_name">ชื่อผู้ติดต่อ *<input id="r_name" autocomplete="name" required></label>' +
     '<label class="field" for="r_phone">เบอร์โทร<input id="r_phone" type="tel" inputmode="tel" autocomplete="tel"></label>' +
     '<label class="field full" for="r_line">LINE ID <span class="hint">(ใส่เบอร์หรือ LINE อย่างน้อย 1 ช่อง)</span><input id="r_line"></label>' +
-    '<label class="field full" for="r_loc">สถานที่ถ่าย<input id="r_loc" placeholder="ชื่อสถานที่ หรือวางลิงก์ Google Maps"></label>' +
+    '<div class="full placewrap" id="r_placeWrap"><label class="field" for="r_loc">สถานที่ถ่าย<input id="r_loc" autocomplete="off" placeholder="พิมพ์ชื่อสถานที่ หรือวางลิงก์ Google Maps" role="combobox" aria-autocomplete="list" aria-controls="r_placeRes" aria-expanded="false"></label>' +
+    '<div class="placeres" id="r_placeRes" role="listbox" aria-label="แนะนำสถานที่" hidden></div></div>' +
+    '<div class="full placebar"><button type="button" class="btn sm soft" id="r_placeBtn">🔎 ค้นหาสถานที่</button><span class="hint">พิมพ์ 3 ตัวอักษรขึ้นไป ระบบจะค้นหาให้</span></div>' +
+    '<div class="full" id="r_mapBox"></div>' +
     '<label class="field full" for="r_detail">รายละเอียดงาน<textarea id="r_detail" placeholder="เช่น ประเภทงาน ตำแหน่งที่ต้องการ จำนวนวัน งบประมาณ"></textarea></label>' +
     '<div class="hp" aria-hidden="true"><label>เว็บไซต์<input id="r_web" tabindex="-1" autocomplete="off"></label></div>' +
     '<div class="full" id="r_msg"></div>' +
@@ -646,6 +543,7 @@ function render(d) {
   const p = d.profile || {};
   document.documentElement.dataset.accent = (['midnight','sunset','xmas','songkran','loykrathong','national'].indexOf(p.theme) >= 0 ? p.theme : 'sky');
   document.documentElement.dataset.pubeffect = (['fireworks','snow'].indexOf(p.pubEffect) >= 0 ? p.pubEffect : '');
+  PubFx.set(document.documentElement.dataset.pubeffect);
   if (p.pubCustomBrand && /^#[0-9a-fA-F]{3,6}$/.test(String(p.pubCustomBrand).trim())) {
     const cb = String(p.pubCustomBrand).trim();
     document.documentElement.style.setProperty('--accent-l', cb);
@@ -749,6 +647,7 @@ function checkDates() {
 function wireForm() {
   $('r_date').min = S.today; $('r_end').min = S.today;
   ['r_date', 'r_end'].forEach(id => { $(id).addEventListener('input', checkDates); $(id).addEventListener('change', checkDates); });
+  rPlaceBind_();
   $('reqForm').addEventListener('submit', async e => {
     e.preventDefault();
     const v = id => $(id).value.trim();
@@ -757,15 +656,391 @@ function wireForm() {
     if (v('r_end') && v('r_end') < v('r_date')) return bad('“ถึงวันที่” ต้องไม่ก่อนวันเริ่ม', 'r_end');
     if (!v('r_name')) return bad('กรุณาใส่ชื่อผู้ติดต่อ', 'r_name');
     if (!v('r_phone') && !v('r_line')) return bad('กรุณาใส่เบอร์โทรหรือ LINE อย่างน้อย 1 ช่อง', 'r_phone');
-    const loc = v('r_loc'), isUrl = /^https:\/\//i.test(loc);
+    const loc = v('r_loc'), isUrl = /^https:\/\//i.test(loc), pin = (S.rPlace && S.rPlace.mapUrl) || (isUrl ? loc : '');
     $('r_send').disabled = true; $('r_send').textContent = 'กำลังส่ง…'; $('r_msg').innerHTML = '';
     const reqDate = v('r_date'), reqEnd = v('r_end'), reqQ = (document.querySelector('input[name="r_queue"]:checked') || {}).value || 'lock';
     try {
-      await run('submitRequest', { date: reqDate, endDate: reqEnd, time: v('r_time'), house: v('r_house'), name: v('r_name'), phone: v('r_phone'), line: v('r_line'), location: isUrl ? '' : loc, mapUrl: isUrl ? loc : '', detail: v('r_detail'), website: v('r_web'), queue: reqQ });
+      await run('submitRequest', { date: reqDate, endDate: reqEnd, time: v('r_time'), house: v('r_house'), name: v('r_name'), phone: v('r_phone'), line: v('r_line'), location: isUrl ? '' : loc, mapUrl: pin, detail: v('r_detail'), website: v('r_web'), queue: reqQ });
       $('reqCard').innerHTML = '<div class="done"><div class="ic">✓</div><h2 style="font-size:1.2rem">ส่งคำขอแล้ว</h2><p class="hint">ขอคิววันที่ ' + esc(thFull(reqDate)) + (reqEnd ? ' – ' + esc(thFull(reqEnd)) : '') + '<br>แบบ: ' + (reqQ === 'loose' ? 'คิวหลวม' : '🔒 ล็อกคิว') + '<br>จะติดต่อกลับเพื่อยืนยันคิวโดยเร็ว</p><button type="button" class="btn" data-refresh="1" style="margin-top:8px">รีเฟรชหน้านี้</button></div>';
     } catch (err) { $('r_send').disabled = false; $('r_send').textContent = 'ส่งคำขอจองคิว'; bad(esc(err)); }
   });
 }
+
+/* ===== ค้นหาสถานที่ + แผนที่ในฟอร์มขอจองคิว (ไม่ใช้ Maps API Key: ค้นผ่าน Apps Script · แผนที่ฝังแบบ output=embed) ===== */
+const PUB_PLACE_CACHE = new Map();   // คำค้น → ผลลัพธ์ (อยู่ตลอดการเปิดหน้า ไม่ยิงซ้ำ)
+const P_ICON = {
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  here: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>'
+};
+const isLink_ = s => /^https?:\/\//i.test(String(s || ''));
+const MAP_HIDE_KEY = 'wk_pub_map_hide';
+
+/* ตำแหน่งปัจจุบันของลูกค้า: GPS ก่อน ถ้าไม่ได้ใช้ตำแหน่งโดยประมาณจากอินเทอร์เน็ต */
+function pubGps_() {
+  return new Promise((res, rej) => {
+    if (!navigator.geolocation) return rej('no-gps');
+    navigator.geolocation.getCurrentPosition(p => res({ lat: p.coords.latitude, lng: p.coords.longitude }),
+      e => rej(e && e.message || 'denied'), { enableHighAccuracy: true, timeout: 9000, maximumAge: 300000 });
+  });
+}
+async function pubPosition_() {
+  try { return await pubGps_(); } catch (e) { /* ลองตำแหน่งโดยประมาณ */ }
+  for (const u of ['https://ipapi.co/json/', 'https://ipwho.is/']) {
+    try {
+      const j = await (await fetch(u)).json();
+      const lat = Number(j.latitude), lng = Number(j.longitude);
+      if (isFinite(lat) && isFinite(lng) && (lat || lng)) return { lat, lng, approx: true };
+    } catch (e) { /* ลองที่ถัดไป */ }
+  }
+  throw new Error('หาตำแหน่งปัจจุบันไม่ได้');
+}
+
+function rPlaceBind_() {
+  const loc = $('r_loc'), res = $('r_placeRes'), btn = $('r_placeBtn'), box = $('r_mapBox');
+  if (!loc || !res) return;
+  S.rPlace = { name: '', mapUrl: '' }; S.rItems = []; S.rIdx = -1; S.rLocating = false; S.rLoading = ''; S.rErr = null;
+  try { S.rMapHide = localStorage.getItem(MAP_HIDE_KEY) === '1'; } catch (e) { S.rMapHide = false; }
+  res.addEventListener('mousedown', e => e.preventDefault());   // กดรายการแล้วโฟกัสยังอยู่ที่ช่องพิมพ์
+  res.addEventListener('click', e => { const b = e.target.closest('.pr-item'); if (b && res.contains(b)) rPlacePick_(Number(b.dataset.i)); });
+  loc.addEventListener('focus', () => rPlaceRender_(loc.value.trim()));
+  loc.addEventListener('click', () => { if (res.hidden) rPlaceRender_(loc.value.trim()); });
+  loc.addEventListener('keydown', e => {
+    if (e.isComposing) return;
+    const open = !res.hidden, n = S.rItems.length;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) { rPlaceRender_(loc.value.trim()); return; }
+      if (n) rPlaceHi_(e.key === 'ArrowDown' ? (S.rIdx + 1) % n : (S.rIdx <= 0 ? n - 1 : S.rIdx - 1));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();   // ห้ามส่งฟอร์มจากช่องนี้
+      if (open && S.rIdx >= 0) rPlacePick_(S.rIdx); else rPlaceSearch_();
+    } else if (e.key === 'Escape' && open) {
+      e.preventDefault(); e.stopPropagation(); rPlaceClose_();   // ปิดเฉพาะ Dropdown
+    } else if (e.key === 'Tab') rPlaceClose_();
+  });
+  let st = 0;
+  loc.addEventListener('input', () => {
+    const q = loc.value.trim();
+    clearTimeout(st);
+    if (!q && S.rPlace.mapUrl) { S.rPlace = { name: '', mapUrl: '' }; rMapRender_(); }
+    rPlaceRender_(q);
+    if (isLink_(q)) st = setTimeout(() => rPlaceLink_(q), 400);
+    else if (q.length >= 3 && !PUB_PLACE_CACHE.has(q)) st = setTimeout(() => rPlaceRemote_(q), 600);
+  });
+  if (btn) btn.addEventListener('click', rPlaceSearch_);
+  if (box) box.addEventListener('click', e => {
+    if (!e.target.closest('[data-maptog]')) return;
+    S.rMapHide = !S.rMapHide;
+    try { S.rMapHide ? localStorage.setItem(MAP_HIDE_KEY, '1') : localStorage.removeItem(MAP_HIDE_KEY); } catch (err) {}
+    rMapRender_();
+  });
+  if (!S.rDocBound) {
+    S.rDocBound = true;
+    document.addEventListener('pointerdown', e => {
+      const w = $('r_placeWrap'), r = $('r_placeRes');
+      if (w && r && !r.hidden && !w.contains(e.target)) rPlaceClose_();
+    });
+  }
+}
+
+function rPlaceClose_() {
+  const r = $('r_placeRes'); if (r) { r.hidden = true; r.innerHTML = ''; }
+  const loc = $('r_loc'); if (loc) { loc.setAttribute('aria-expanded', 'false'); loc.removeAttribute('aria-activedescendant'); }
+  S.rItems = []; S.rIdx = -1;
+}
+
+function rPlaceRender_(q, force) {
+  const res = $('r_placeRes'), loc = $('r_loc'); if (!res || !loc) return;
+  const link = isLink_(q), want = !link && (force || q.length >= 3);
+  const list = want ? PUB_PLACE_CACHE.get(q) : null;
+  const here = { kind: 'here', name: 'ใช้ตำแหน่งปัจจุบันของฉัน', address: S.rLocating ? 'กำลังระบุตำแหน่ง…' : 'ใช้ GPS ของเครื่องนี้ แล้วแสดงชื่อเขตพร้อมหมุดแผนที่' };
+  const found = Array.isArray(list) ? list.slice(0, 5).map(p => ({ kind: 'new', name: p.name, address: p.address || '', mapUrl: p.mapUrl || '' })) : [];
+  S.rItems = [here].concat(found); S.rIdx = -1;
+  const icon = p => p.kind === 'here' ? (S.rLocating ? '<i class="cs-spin" aria-hidden="true"></i>' : P_ICON.here) : P_ICON.pin;
+  const opt = i => { const p = S.rItems[i]; return '<button type="button" tabindex="-1" class="pr-item' + (p.kind === 'here' ? ' pr-here' : '') + '" role="option" id="r-o' + i + '" aria-selected="false" data-i="' + i + '">' +
+    icon(p) + '<span class="pr-t"><b>' + esc(p.name) + '</b><span>' + esc(p.address) + '</span></span></button>'; };
+  const note = (t, cls) => '<div class="pr-note' + (cls ? ' ' + cls : '') + '">' + t + '</div>';
+  let h = opt(0);
+  if (link) {
+    h += S.rLoading === q ? note('<i class="cs-spin" aria-hidden="true"></i>กำลังอ่านตำแหน่งจากลิงก์…')
+      : S.rErr && S.rErr.q === q ? note(esc(S.rErr.msg), 'pr-err') : note('วางลิงก์แล้ว ระบบจะอ่านตำแหน่งให้อัตโนมัติ');
+  } else if (want) {
+    h += '<div class="pr-head" role="presentation">' + P_ICON.search + 'ผลการค้นหา</div>';
+    if (S.rLoading === q && !list) h += note('<i class="cs-spin" aria-hidden="true"></i>กำลังค้นหา “' + esc(q) + '”…');
+    else if (S.rErr && S.rErr.q === q) h += note(esc(S.rErr.msg) + ' — กดปุ่มค้นหาเพื่อลองใหม่', 'pr-err');
+    else if (Array.isArray(list)) h += found.length ? found.map((p, k) => opt(k + 1)).join('') : note('ไม่พบสถานที่นี้ ลองเพิ่มชื่อเขต/อำเภอ/จังหวัด หรือวางลิงก์ Google Maps');
+    else h += note('หยุดพิมพ์สักครู่ ระบบจะค้นหาให้อัตโนมัติ');
+  } else if (q) {
+    h += note('พิมพ์อย่างน้อย 3 ตัวอักษรเพื่อค้นหาสถานที่');
+  }
+  res.innerHTML = h; res.hidden = false; res.scrollTop = 0;
+  loc.setAttribute('aria-expanded', 'true'); loc.removeAttribute('aria-activedescendant');
+}
+
+function rPlaceHi_(i) {
+  const res = $('r_placeRes'), loc = $('r_loc'); if (!res) return;
+  S.rIdx = i;
+  res.querySelectorAll('.pr-item').forEach(el => { const on = el.id === 'r-o' + i; el.classList.toggle('on', on); el.setAttribute('aria-selected', on); if (on) el.scrollIntoView({ block: 'nearest' }); });
+  loc.setAttribute('aria-activedescendant', 'r-o' + i);
+}
+
+async function rPlaceRemote_(q, force) {
+  if (!PUB_PLACE_CACHE.has(q)) {
+    S.rLoading = q; S.rErr = null;
+    if ($('r_loc') && $('r_loc').value.trim() === q) rPlaceRender_(q, force);
+    try { const list = await run('searchPlacesPublic', q); PUB_PLACE_CACHE.set(q, Array.isArray(list) ? list : []); }
+    catch (err) { S.rErr = { q, msg: String(err && err.message || err) }; }   // ไม่แคชข้อผิดพลาด จะได้ลองใหม่ได้
+    if (S.rLoading === q) S.rLoading = '';
+  }
+  const loc = $('r_loc'), res = $('r_placeRes');
+  if (!loc || loc.value.trim() !== q || (!force && res.hidden)) return;
+  rPlaceRender_(q, force);
+}
+
+/* ลิงก์ Google Maps ที่วางเอง → ให้ Server อ่านพิกัด (รวมลิงก์ย่อ maps.app.goo.gl) แล้วเติมชื่อ + หมุด */
+async function rPlaceLink_(url) {
+  const loc = $('r_loc'); if (!loc) return;
+  S.rLoading = url; S.rErr = null; rPlaceRender_(url);
+  let p = null;
+  try { p = ((await run('searchPlacesPublic', url)) || [])[0] || null; }
+  catch (err) { S.rErr = { q: url, msg: String(err && err.message || err) }; }
+  if (S.rLoading === url) S.rLoading = '';
+  if (loc.value.trim() !== url) return;
+  if (p) { rPlaceApply_(p.name || 'ตำแหน่งจากลิงก์แผนที่', p.mapUrl || url, 'อ่านตำแหน่งจากลิงก์แล้ว — ตรวจหมุดในแผนที่'); return; }
+  S.rPlace = { name: '', mapUrl: /^https:\/\//i.test(url) ? url : '' };   // อ่านไม่ได้ก็ยังส่งลิงก์เดิมไปให้
+  rPlaceRender_(url); rMapRender_();
+}
+
+/* ปุ่ม "ค้นหาสถานที่" / Enter: ค้นหาทันทีไม่ต้องรอ */
+async function rPlaceSearch_() {
+  const loc = $('r_loc'), btn = $('r_placeBtn'); if (!loc) return;
+  const q = loc.value.trim();
+  if (!q) { loc.focus(); toast('พิมพ์ชื่อสถานที่ก่อนค้นหา'); return; }
+  if (isLink_(q)) return rPlaceLink_(q);
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="cs-spin" aria-hidden="true"></i>กำลังค้นหา…'; }
+  try { await rPlaceRemote_(q, true); }
+  finally { if (btn) { btn.disabled = false; btn.textContent = '🔎 ค้นหาสถานที่'; } }
+}
+
+function rPlaceApply_(name, mapUrl, msg) {
+  const loc = $('r_loc'); if (!loc) return;
+  loc.value = name;
+  S.rPlace = { name, mapUrl: mapUrl || '' };
+  rPlaceClose_();
+  if (S.rPlace.mapUrl && S.rMapHide) { S.rMapHide = false; try { localStorage.removeItem(MAP_HIDE_KEY); } catch (e) {} }
+  rMapRender_();
+  if (msg) toast(msg);
+}
+
+function rPlacePick_(i) {
+  const p = S.rItems[i]; if (!p) return;
+  if (p.kind === 'here') return rPlaceHere_();
+  rPlaceApply_(p.name, p.mapUrl, 'เลือก “' + p.name + '” แล้ว — ตรวจหมุดในแผนที่');
+}
+
+async function rPlaceHere_() {
+  if (S.rLocating) return;
+  S.rLocating = true;
+  const loc = $('r_loc'); rPlaceRender_(loc ? loc.value.trim() : '');
+  try {
+    const pos = await pubPosition_();
+    const lat = Math.round(pos.lat * 1e5) / 1e5, lng = Math.round(pos.lng * 1e5) / 1e5;
+    let place = null;
+    try { place = await run('reverseGeocodePublic', lat, lng); } catch (e) { /* ใช้พิกัดอย่างเดียว */ }
+    S.rLocating = false;
+    rPlaceApply_((place && place.name) || 'ตำแหน่งปัจจุบัน (' + lat + ', ' + lng + ')',
+      'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lng,
+      pos.approx ? 'ใช้ตำแหน่งโดยประมาณ (เครื่องไม่อนุญาต GPS) — ตรวจหมุดและแก้ชื่อได้' : 'ใส่ตำแหน่งปัจจุบันแล้ว — แก้ชื่อสถานที่ต่อได้');
+  } catch (e) {
+    toast('หาตำแหน่งปัจจุบันไม่ได้ — อนุญาตการเข้าถึงตำแหน่ง หรือพิมพ์ชื่อสถานที่แทน');
+  } finally {
+    if (S.rLocating) { S.rLocating = false; const r = $('r_placeRes'); if (r && !r.hidden && loc) rPlaceRender_(loc.value.trim()); }
+  }
+}
+
+/* พิกัดจากลิงก์ (query=lat,lng หรือ @lat,lng) ใช้ปักหมุดตรงจุด · ไม่มีก็ใช้ชื่อสถานที่ */
+function rMapQ_(name, url) {
+  const m = /[?&](?:q|query)=(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/.exec(url || '') || /@(-?\d+\.\d+),(-?\d+\.\d+)/.exec(url || '');
+  if (m) return m[1] + ',' + m[2];
+  return name && !isLink_(name) ? name : '';
+}
+
+function rMapRender_() {
+  const box = $('r_mapBox'); if (!box) return;
+  const pl = S.rPlace || {}, q = pl.mapUrl ? rMapQ_(pl.name, pl.mapUrl) : '';
+  if (!q) { box.innerHTML = ''; box.dataset.k = ''; return; }
+  const k = q + '|' + (S.rMapHide ? 0 : 1);
+  if (box.dataset.k === k) return;   // ตำแหน่งเดิม ไม่โหลด iframe ซ้ำ
+  box.dataset.k = k;
+  const label = pl.name || 'ตำแหน่งที่เลือก';
+  box.innerHTML = '<div class="mapbar"><span class="hint">' + P_ICON.pin + ' ' + esc(label.length > 48 ? label.slice(0, 48) + '…' : label) + '</span>' +
+    '<button type="button" class="btn sm" data-maptog="1" aria-expanded="' + !S.rMapHide + '">' + (S.rMapHide ? 'แสดงแผนที่' : 'ซ่อนแผนที่') + '</button></div>' +
+    (S.rMapHide ? '' : '<div class="mapembed"><iframe src="https://maps.google.com/maps?q=' + encodeURIComponent(q) + '&hl=th&z=15&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="แผนที่: ' + esc(label) + '"></iframe>' +
+      '<a class="me-open" href="' + esc(pl.mapUrl) + '" target="_blank" rel="noopener">' + P_ICON.pin.replace('<svg ', '<svg width="14" height="14" ') + ' เปิดใน Google Maps</a></div>');
+}
+
+/* ===== 🎉 เอฟเฟกต์เทศกาล (พลุ / หิมะ) — Canvas เลเยอร์เดียว ไม่รับคลิก
+   · มือถือลดอนุภาคเหลือ ~55% · ปิดเมื่อ prefers-reduced-motion · หยุดวาดเมื่อแท็บถูกซ่อน · สีตามโหมดสว่าง/มืด ===== */
+const PubFx = (() => {
+  let cv = null, ctx = null, kind = '', raf = 0, last = 0, W = 0, H = 0, dpr = 1, mobile = false, dark = false;
+  let flakes = [], sprites = {}, rockets = [], sparks = [], nextShot = 0;
+  const rm = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const TAU = Math.PI * 2;
+
+  function ensureCanvas() {
+    if (cv) return;
+    cv = document.createElement('canvas'); cv.className = 'pub-fx'; cv.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(cv); ctx = cv.getContext('2d');
+    window.addEventListener('resize', () => { if (kind) { size(); if (kind === 'snow') seedSnow(); } }, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else if (kind) start(); });
+    new MutationObserver(() => { if (kind) { readTheme(); } }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-accent'] });
+    const onRm = () => set(kind);
+    rm.addEventListener ? rm.addEventListener('change', onRm) : rm.addListener && rm.addListener(onRm);
+  }
+  function size() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight; mobile = W < 640;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function accent() {
+    const v = getComputedStyle(document.documentElement).getPropertyValue(dark ? '--accent-d' : '--accent-l').trim();
+    return /^#[0-9a-f]{6}$/i.test(v) ? v : (dark ? '#9cc3ee' : '#6f9fd3');
+  }
+  function readTheme() {
+    dark = document.documentElement.dataset.theme === 'dark';
+    sprites = {
+      far: sprite(dark ? 'rgba(232,242,255,1)' : 'rgba(150,186,226,1)', 3, 0),
+      mid: sprite(dark ? 'rgba(236,245,255,1)' : 'rgba(160,194,232,1)', 7, 0.55),
+      near: sprite(dark ? 'rgba(240,247,255,1)' : 'rgba(170,200,236,1)', 14, 0.75)
+    };
+  }
+  /* วาดเกล็ดหิมะครั้งเดียวลง Canvas เล็ก แล้วใช้ซ้ำทุกเฟรม (เร็วกว่าไล่สีทุกเม็ด) · soft = ความฟุ้งของขอบ */
+  function sprite(color, r, soft) {
+    const s = document.createElement('canvas'), R = Math.ceil(r * 2 + 4), c = s.getContext('2d');
+    s.width = s.height = R * 2;
+    const g = c.createRadialGradient(R, R, 0, R, R, r * (1 + soft));
+    g.addColorStop(0, color); g.addColorStop(soft ? 0.35 : 0.7, color); g.addColorStop(1, color.replace(/,1\)$/, ',0)'));
+    c.fillStyle = g; c.beginPath(); c.arc(R, R, r * (1 + soft), 0, TAU); c.fill();
+    if (!dark) { c.globalCompositeOperation = 'destination-over'; c.fillStyle = 'rgba(70,100,140,.10)'; c.beginPath(); c.arc(R + 0.6, R + 0.8, r * 0.9, 0, TAU); c.fill(); }
+    return { img: s, half: R };
+  }
+
+  /* ---------- หิมะ: 3 ระยะความลึก ---------- */
+  const LAYERS = {
+    far:  { share: 0.58, size: [0.35, 0.55], vy: [10, 18],  amp: [4, 9],   op: [0.20, 0.35] },
+    mid:  { share: 0.34, size: [0.45, 0.7],  vy: [20, 32],  amp: [8, 16],  op: [0.45, 0.65] },
+    near: { share: 0.08, size: [0.32, 0.48], vy: [34, 48],  amp: [14, 24], op: [0.22, 0.34] }
+  };
+  function flake(layer, anyY) {
+    const L = LAYERS[layer];
+    return { layer, x: rnd(0, W), y: anyY ? rnd(-H * 0.1, H) : rnd(-60, -10), s: rnd(L.size[0], L.size[1]), vy: rnd(L.vy[0], L.vy[1]),
+      amp: rnd(L.amp[0], L.amp[1]), f: rnd(0.15, 0.4), ph: rnd(0, TAU), op: rnd(L.op[0], L.op[1]) * (dark ? 1 : 0.8) };
+  }
+  function seedSnow() {
+    const total = Math.round(Math.min(110, (W * H) / 14000) * (mobile ? 0.55 : 1));
+    flakes = [];
+    Object.keys(LAYERS).forEach(k => { const n = k === 'near' ? Math.min(mobile ? 3 : 6, Math.round(total * LAYERS[k].share)) : Math.round(total * LAYERS[k].share); for (let i = 0; i < n; i++) flakes.push(flake(k, true)); });
+  }
+  function drawSnow(dt, t) {
+    for (const p of flakes) {
+      p.y += p.vy * dt;
+      const sx = Math.sin(t * p.f + p.ph) * p.amp;
+      if (p.y > H + 30) Object.assign(p, flake(p.layer, false));
+      const sp = sprites[p.layer], d = sp.half * 2 * p.s;
+      ctx.globalAlpha = p.op;
+      ctx.drawImage(sp.img, p.x + sx - d / 2, p.y - d / 2, d, d);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  /* ---------- พลุ: ยิงทีละ 1–2 ลูก ทุก 2.5–4.5 วิ แตกช่วงบนจอ/ขอบซ้าย-ขวา หลบโซนอ่านตรงกลาง ---------- */
+  function palette() {
+    return dark ? ['#f3dcaa', '#fff3e0', '#c4dcf4', '#f6c9b4', accent()] : ['#d4ae6a', '#e8a184', '#86aedb', '#c99a7a', accent()];
+  }
+  function burstPoint() {
+    const col = Math.min(600, W);                       // คอลัมน์เนื้อหา (.wrap max-width 600px)
+    const side = (W - col) / 2;
+    if (side > 120 && Math.random() < 0.75) {           // จอกว้าง: แตกที่ขอบซ้าย/ขวานอกคอลัมน์
+      const left = Math.random() < 0.5;
+      return { x: left ? rnd(side * 0.2, side * 0.85) : W - rnd(side * 0.2, side * 0.85), y: rnd(H * 0.1, H * 0.42) };
+    }
+    return { x: rnd(W * 0.12, W * 0.88), y: rnd(H * 0.06, H * 0.2) };   // จอแคบ: แตกช่วงบนสุดของจอ
+  }
+  function launch() {
+    const n = Math.random() < 0.35 ? 2 : 1, cols = palette();
+    for (let i = 0; i < n; i++) {
+      const b = burstPoint(), sx = b.x + rnd(-40, 40), sy = H + 10, dur = rnd(1.1, 1.5);
+      rockets.push({ x: sx, y: sy, sx, sy, tx: b.x, ty: b.y, t: -i * rnd(0.25, 0.5), dur, col: cols[Math.floor(Math.random() * cols.length)], trail: [] });
+    }
+    nextShot = rnd(2.5, 4.5);
+  }
+  function explode(r) {
+    const count = Math.round(rnd(42, 60) * (mobile ? 0.55 : 1)), cols = palette(), alt = cols[Math.floor(Math.random() * cols.length)];
+    const speed = rnd(70, 105) * (mobile ? 0.75 : 1);
+    for (let i = 0; i < count; i++) {
+      const a = (i / count) * TAU + rnd(-0.08, 0.08), v = speed * rnd(0.55, 1);
+      sparks.push({ x: r.x, y: r.y, px: r.x, py: r.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 0, max: rnd(1.4, 2.2), col: Math.random() < 0.7 ? r.col : alt, tw: rnd(0, TAU), hist: [] });
+    }
+  }
+  function drawFireworks(dt) {
+    const peak = dark ? 0.7 : 0.5;
+    ctx.globalCompositeOperation = dark ? 'lighter' : 'source-over';
+    nextShot -= dt; if (nextShot <= 0) launch();
+    ctx.lineCap = 'round';
+    for (let i = rockets.length - 1; i >= 0; i--) {
+      const r = rockets[i]; r.t += dt; if (r.t < 0) continue;
+      const k = Math.min(1, r.t / r.dur), e = 1 - Math.pow(1 - k, 3);   // ease-out: ช้าลงก่อนแตก
+      r.x = r.sx + (r.tx - r.sx) * e; r.y = r.sy + (r.ty - r.sy) * e;
+      r.trail.push([r.x, r.y]); if (r.trail.length > 10) r.trail.shift();
+      for (let j = 1; j < r.trail.length; j++) {
+        ctx.globalAlpha = peak * 0.5 * (j / r.trail.length) * (1 - k * 0.5);
+        ctx.strokeStyle = r.col; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(r.trail[j - 1][0], r.trail[j - 1][1]); ctx.lineTo(r.trail[j][0], r.trail[j][1]); ctx.stroke();
+      }
+      if (k >= 1) { explode(r); rockets.splice(i, 1); }
+    }
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i]; s.life += dt;
+      if (s.life >= s.max) { sparks.splice(i, 1); continue; }
+      const drag = Math.pow(0.32, dt);                   // แรงต้านอากาศ
+      s.vx *= drag; s.vy = s.vy * drag + 42 * dt;         // แรงโน้มถ่วงโค้งลง
+      s.x += s.vx * dt; s.y += s.vy * dt;
+      s.hist.push([s.x, s.y]); if (s.hist.length > 6) s.hist.shift();
+      const lifeK = s.life / s.max, fade = 1 - lifeK * lifeK;
+      const twinkle = lifeK > 0.55 ? 0.55 + 0.45 * Math.abs(Math.sin(s.tw + s.life * 18)) : 1;
+      const a = peak * fade * twinkle;
+      ctx.strokeStyle = s.col; ctx.lineWidth = 1.4;
+      for (let j = 1; j < s.hist.length; j++) {           // หางประกายนุ่มๆ
+        ctx.globalAlpha = a * (j / s.hist.length) * 0.6;
+        ctx.beginPath(); ctx.moveTo(s.hist[j - 1][0], s.hist[j - 1][1]); ctx.lineTo(s.hist[j][0], s.hist[j][1]); ctx.stroke();
+      }
+      ctx.globalAlpha = a; ctx.fillStyle = s.col;
+      ctx.beginPath(); ctx.arc(s.x, s.y, 1.3, 0, TAU); ctx.fill();
+    }
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    const dt = Math.min(0.05, (now - (last || now)) / 1000); last = now;
+    ctx.clearRect(0, 0, W, H);
+    if (kind === 'snow') drawSnow(dt, now / 1000); else drawFireworks(dt);
+  }
+  function start() { if (!raf && kind && !document.hidden) { last = 0; raf = requestAnimationFrame(frame); } }
+  function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; }
+  function set(k) {
+    k = k === 'snow' || k === 'fireworks' ? k : '';
+    if (!k || rm.matches) { kind = k; stop(); if (cv) { ctx.clearRect(0, 0, W, H); cv.hidden = true; } return; }
+    ensureCanvas(); cv.hidden = false;
+    const changed = k !== kind; kind = k;
+    if (changed) { size(); readTheme(); rockets = []; sparks = []; nextShot = 0.6; if (k === 'snow') seedSnow(); }
+    start();
+  }
+  return { set };
+})();
 
 async function loadPublic(fromBtn) {
   if (S.refreshing) return;
