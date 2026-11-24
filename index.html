@@ -374,8 +374,6 @@ button.day:active { transform: scale(.96); }
 .day.pick { box-shadow: 0 0 0 2px var(--accent), var(--ring); }
 .day.blank { visibility: hidden; }
 .legend { display: flex; gap: 8px 16px; justify-content: center; margin-top: var(--sp-4); font-size: 13px; color: var(--text-2); flex-wrap: wrap; }
-.holbar { display: flex; justify-content: center; margin-top: var(--sp-3); }
-.holtog[hidden] { display: none; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 .sum { text-align: center; margin-top: var(--sp-2); font-size: 14px; }
 .hint { font-size: 13px; color: var(--text-2); }
@@ -790,7 +788,7 @@ const PubMock = {
   getPublicData: () => {
     const t = new Date(), iso = n => { const d = new Date(t); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
     const qp = new URLSearchParams(location.search);
-    return { today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', phone: '080-000-0000', line: qp.get('chat') === 'none' ? '' : 'example', lineUrl: '', igUser: qp.get('chat') === 'none' || qp.get('chat') === 'line' ? '' : 'example.crew', chatGreeting: '', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '', showHolidays: qp.get('hol') === 'no' ? 'no' : 'yes', pubEffect: qp.get('fx') || '', theme: qp.get('theme') || 'sky' } };
+    return { today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', phone: '080-000-0000', line: qp.get('chat') === 'none' ? '' : 'example', lineUrl: '', igUser: qp.get('chat') === 'none' || qp.get('chat') === 'line' ? '' : 'example.crew', chatGreeting: '', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '', pubEffect: qp.get('fx') || '', theme: qp.get('theme') || 'sky' } };
   },
   submitRequest: () => ({ ok: true }),
   submitMessage: m => { if (!String(m.message || '').trim()) throw new Error('พิมพ์ข้อความก่อนส่ง'); return { ok: true }; },
@@ -811,11 +809,6 @@ const PubMock = {
 
 const S = { days: {}, today: '', y: 0, m: 0, minKey: 0, maxKey: 0, pick: '', canReq: false, loaded: false, refreshing: false };
 const stOf = iso => S.days[iso] || 'free';
-/* วันสำคัญ: หลังร้านเปิดไว้ (showHolidays) แล้วลูกค้ากดซ่อน/แสดงเองได้ต่อเครื่อง */
-const HOL_KEY = 'wk_pub_hol';
-const holAllowed = () => !!(S.profile && S.profile.showHolidays !== 'no') && typeof window.thHolidays === 'function';
-const holOn = () => { if (!holAllowed()) return false; try { return localStorage.getItem(HOL_KEY) !== 'off'; } catch (e) { return true; } };
-const holOf = iso => holOn() ? window.thHolidays(iso) : [];
 
 function renderCal() {
   const { y, m } = S;
@@ -824,32 +817,20 @@ function renderCal() {
   let h = TH_D.map(d => '<div class="dow">' + d + '</div>').join('');
   for (let i = 0; i < first; i++) h += '<div class="day blank"></div>';
   let free = 0;
-  const hols = [];
   for (let d = 1; d <= dim; d++) {
     const iso = y + '-' + pad(m + 1) + '-' + pad(d);
     const past = iso < S.today, st = stOf(iso);
     if (!past && st === 'free') free++;
     const cls = 'day ' + (past ? 'past' : st) + (iso === S.today ? ' today' : '') + (iso === S.pick ? ' pick' : '');
-    const hol = holOf(iso), holT = hol.length ? window.thHolidayTitle(hol) : '';
-    if (hol.length) hols.push([d, hol]);
-    const label = d + ' ' + TH_M[m] + (past ? '' : ' ' + LBL[st]) + (holT ? ' · ' + holT : '');
+    const label = d + ' ' + TH_M[m] + (past ? '' : ' ' + LBL[st]);
     const canPick = !past && S.canReq && (st === 'free' || st === 'loose');
-    const tip = holT ? ' title="' + esc(holT) + '"' : '';
-    h += (canPick ? '<button type="button" class="' + cls + '" data-pick="' + iso + '"' + tip + ' aria-label="' + esc(label) + ' แตะเพื่อขอจองคิว">' : '<div class="' + cls + '"' + tip + (holT ? ' data-hol="' + esc(holT) + '"' : '') + ' aria-label="' + esc(label) + '">') +
-      '<span class="num">' + d + '</span>' + (past ? '' : '<small>' + LBL[st] + '</small>') +
-      (hol.length ? '<i class="holdot" aria-hidden="true"></i><em class="holt" aria-hidden="true">' + esc(hol[0].short) + '</em>' : '') + (canPick ? '</button>' : '</div>');
+    h += (canPick ? '<button type="button" class="' + cls + '" data-pick="' + iso + '" aria-label="' + label + ' แตะเพื่อขอจองคิว">' : '<div class="' + cls + '" aria-label="' + label + '">') +
+      '<span class="num">' + d + '</span>' + (past ? '' : '<small>' + LBL[st] + '</small>') + (canPick ? '</button>' : '</div>');
   }
   const key = y * 12 + m;
   $('mTitle').textContent = TH_M[m] + ' ' + (y + 543);
   $('cal').innerHTML = h;
   $('sum').innerHTML = 'เดือนนี้ว่างอีก <b class="num">' + free + '</b> วัน' + (S.canReq ? '<div class="hint">แตะวันที่ว่างหรือคิวหลวมเพื่อขอจองคิว</div>' : '');
-  const hb = $('holBox'), ht = $('holTog');
-  if (ht) { ht.hidden = !holAllowed(); ht.setAttribute('aria-pressed', holOn() ? 'true' : 'false'); }
-  if (hb) {
-    const seen = {}, items = hols.filter(([d, l]) => { const k = l[0].short; if (seen[k] && seen[k] === d - 1) { seen[k] = d; return false; } seen[k] = d; return true; });
-    hb.hidden = !items.length;
-    hb.innerHTML = items.length ? '<div class="hint" style="margin-bottom:6px">วันสำคัญเดือนนี้</div><div class="hollist">' + items.map(([d, l]) => '<span title="' + esc(window.thHolidayTitle(l)) + '"><b>' + d + '</b>' + esc(l.map(x => x.short).join(' · ')) + '</span>').join('') + '</div>' : '';
-  }
   $('prev').disabled = key <= S.minKey;
   $('next').disabled = key >= S.maxKey;
 }
@@ -951,9 +932,7 @@ function render(d) {
       '<div class="monthbar" style="margin-top:12px"><button class="iconbtn" id="prev" aria-label="เดือนก่อน">' + ICON.left + '</button><h2 id="mTitle"></h2><button class="iconbtn" id="next" aria-label="เดือนถัดไป">' + ICON.right + '</button></div>' +
       '<div class="cal" id="cal"></div><div class="sum" id="sum"></div>' +
       '<div class="legend"><span><i style="background:var(--mint-soft);border:1px solid var(--mint)"></i>' + esc(LBL.free) + '</span><span><i style="background:var(--amber-soft);border:1px solid var(--amber)"></i>' + esc(LBL.loose) + '</span>' +
-      '<span><i style="background:var(--rose-soft);border:1px solid var(--rose)"></i>' + esc(LBL.lock) + '</span><span><i style="background:var(--rest-soft);border:1px solid var(--rest)"></i>' + esc(LBL.off) + '</span></div>' +
-      '<div class="holbar"><button type="button" class="holtog" id="holTog" data-holtog="1" aria-pressed="true" hidden><span class="sw" aria-hidden="true"></span>🗓️ วันสำคัญ</button></div>' +
-      '<div id="holBox" style="margin-top:12px" hidden></div></section>';
+      '<span><i style="background:var(--rose-soft);border:1px solid var(--rose)"></i>' + esc(LBL.lock) + '</span><span><i style="background:var(--rest-soft);border:1px solid var(--rest)"></i>' + esc(LBL.off) + '</span></div></section>';
   }
   if (S.canReq) h += '<button type="button" class="btn primary block" id="reqOpen" data-jump="1" style="min-height:54px;font-size:1.05rem">' + esc(reqBtnTxt) + '</button>' + requestForm(p);
   h += '<div class="foot"><a href="' + esc(ADMIN_URL) + '" target="_top" data-nav-top="1">สำหรับเจ้าของ</a></div>';
@@ -1440,12 +1419,6 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('click', e => {
-  if (e.target.closest('[data-holtog]')) {
-    const on = !holOn();
-    try { on ? localStorage.removeItem(HOL_KEY) : localStorage.setItem(HOL_KEY, 'off'); } catch (err) {}
-    if ($('cal')) renderCal(); toast(on ? 'แสดงวันสำคัญแล้ว' : 'ซ่อนวันสำคัญแล้ว'); return;
-  }
-  const hd = e.target.closest('div.day[data-hol]'); if (hd) { toast(hd.dataset.hol); return; }
   const t = e.target.closest('[data-pick],[data-jump],[data-close],[data-refresh]'); if (!t) return;
   e.preventDefault();
   if (t.dataset.refresh) { loadPublic(t); return; }
