@@ -431,6 +431,56 @@ button.day:active { transform: scale(.96); }
 html[data-theme="dark"] .mapembed iframe { filter: invert(.9) hue-rotate(180deg) saturate(.85) brightness(.95); }
 .mapembed .me-open { display: flex; align-items: center; justify-content: center; gap: 6px; height: 40px; font-size: 13px; font-weight: 600; text-decoration: none; color: var(--accent); background: var(--surface); border-top: 1px solid var(--border); transition: background-color 120ms var(--ease); }
 .mapembed .me-open:hover { background: var(--accent-softer); }
+
+/* ---------- ปุ่มแชร์ลิงก์ (มุมขวาบนการ์ดโปรไฟล์ ข้างปุ่มรีเฟรช) ---------- */
+.pub-share { position: absolute; top: 14px; right: 58px; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px 0 10px; border-radius: var(--r-md); border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: background-color 120ms var(--ease), color 120ms var(--ease); }
+.pub-share:hover { background: var(--surface-2); color: var(--text); }
+.pub-share:focus-visible { outline: none; box-shadow: var(--ring); }
+.pub-share:active { transform: scale(.97); }
+.pub-share svg { width: 16px; height: 16px; }
+
+/* ---------- ปุ่มแชทลอย + กล่องแชท (มุมขวาล่าง · นาฬิกาลอยขยับขึ้นไปอยู่เหนือปุ่ม) ---------- */
+body.has-chat .wrap { padding-bottom: calc(104px + env(safe-area-inset-bottom)); }
+body.has-chat .float-clock { bottom: calc(84px + env(safe-area-inset-bottom)); }
+body.chat-open .float-clock { opacity: 0; visibility: hidden; pointer-events: none; }
+@media (max-width: 560px) { body.has-chat .toast { bottom: calc(84px + env(safe-area-inset-bottom)); } }
+.chat-fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 16; width: 56px; height: 56px; border-radius: 50%; border: 0; display: grid; place-items: center; cursor: pointer; background: var(--accent); color: var(--accent-ink); box-shadow: 0 8px 24px -6px color-mix(in oklab, var(--accent) 55%, transparent), var(--shadow-md); transition: transform 160ms var(--ease), background-color 120ms var(--ease); }
+.chat-fab:hover { background: var(--accent-hover); }
+.chat-fab:active { transform: scale(.95); }
+.chat-fab:focus-visible { outline: 3px solid color-mix(in oklab, var(--accent) 45%, transparent); outline-offset: 3px; }
+.chat-fab svg { width: 26px; height: 26px; transition: transform 200ms var(--ease), opacity 160ms var(--ease); grid-area: 1 / 1; }
+.chat-fab .ic-x { opacity: 0; transform: rotate(-90deg) scale(.6); }
+.chat-fab[aria-expanded="true"] .ic-chat { opacity: 0; transform: rotate(90deg) scale(.6); }
+.chat-fab[aria-expanded="true"] .ic-x { opacity: 1; transform: none; }
+.chat-pop { position: fixed; right: 16px; bottom: calc(84px + env(safe-area-inset-bottom)); z-index: 17; width: min(340px, calc(100vw - 32px)); background: var(--surface-pop, var(--surface)); border: 1px solid var(--border-strong); border-radius: 20px; box-shadow: 0 24px 48px -16px rgba(0,0,0,.28), var(--shadow-md); overflow: hidden; transform-origin: bottom right; transition: opacity 180ms var(--ease), transform 220ms var(--ease), visibility 0s linear 220ms; opacity: 0; transform: translateY(8px) scale(.96); visibility: hidden; }
+.chat-pop.open { opacity: 1; transform: none; visibility: visible; transition-delay: 0s; }
+@media (prefers-reduced-motion: reduce) { .chat-pop, .chat-fab svg { transition: none; } }
+.chat-pop .cp-head { display: flex; align-items: center; gap: 12px; padding: 14px 10px 14px 16px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.chat-pop .cp-av { width: 40px; height: 40px; border-radius: 50%; flex: 0 0 auto; background: var(--accent-soft) center/cover; color: var(--accent); display: grid; place-items: center; font-weight: 600; font-size: 17px; position: relative; }
+.chat-pop .cp-av::after { content: ''; position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 2px var(--surface-2); }
+.chat-pop .cp-who { flex: 1; min-width: 0; }
+.chat-pop .cp-who b { display: block; font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-pop .cp-who span { font-size: 12px; color: var(--text-2); }
+.chat-pop .cp-x { width: 36px; height: 36px; border: 0; border-radius: var(--r-md); background: none; color: var(--text-2); cursor: pointer; display: grid; place-items: center; }
+.chat-pop .cp-x:hover { background: var(--surface-3); color: var(--text); }
+.chat-pop .cp-x:focus-visible { outline: none; box-shadow: var(--ring); }
+.chat-pop .cp-x svg { width: 18px; height: 18px; }
+.chat-pop .cp-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.chat-pop .cp-bubble { align-self: flex-start; max-width: 92%; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 4px 16px 16px 16px; font-size: 14px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; margin-bottom: 4px; }
+.chat-pop .cp-row { display: flex; align-items: stretch; gap: 6px; }
+.chat-pop .cp-go { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 14px 8px 8px; border-radius: 14px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); text-decoration: none; font-weight: 600; font-size: 15px; transition: background-color 120ms var(--ease), border-color 120ms var(--ease); }
+.chat-pop .cp-go:hover { background: var(--surface-2); text-decoration: none; }
+.chat-pop .cp-go:focus-visible { outline: none; box-shadow: var(--ring); }
+.chat-pop .cp-go small { display: block; font-size: 12px; font-weight: 400; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-pop .cp-go > span:last-child { min-width: 0; }
+.chat-pop .cp-ic { width: 36px; height: 36px; border-radius: 10px; flex: 0 0 auto; display: grid; place-items: center; color: #fff; }
+.chat-pop .cp-ic svg { width: 22px; height: 22px; }
+.chat-pop .cp-ic.line { background: #06C755; }
+.chat-pop .cp-ic.ig { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+.chat-pop .cp-copy { flex: 0 0 auto; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2); color: var(--text-2); font: inherit; font-size: 12px; font-weight: 500; padding: 0 12px; cursor: pointer; line-height: 1.25; }
+.chat-pop .cp-copy:hover { color: var(--text); background: var(--surface-3); }
+.chat-pop .cp-copy:focus-visible { outline: none; box-shadow: var(--ring); }
+@media print { .chat-fab, .chat-pop { display: none !important; } }
 </style>
 <style id="pubCustomStyle"></style>
 </head>
@@ -440,6 +490,7 @@ html[data-theme="dark"] .mapembed iframe { filter: invert(.9) hue-rotate(180deg)
   <div class="skel" style="height:360px"></div>
 </div>
 <div id="toastRoot"></div>
+<div id="chatRoot"></div>
 <button type="button" class="float-clock" id="floatClock" title="แตะเพื่อย่อ/ขยายนาฬิกา" aria-label="นาฬิกาปัจจุบัน">
   <span class="fc-dot" aria-hidden="true"></span>
   <span class="fc-time num" id="fcTime">--:--:--</span>
@@ -466,6 +517,10 @@ const ICON = {
   mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
   left: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
   right: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7.5 7.5 4.5-4.5 4.5 4.5"/><path d="M5 12.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6.5"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  line: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c-5.2 0-9.4 3.4-9.4 7.6 0 3.8 3.3 6.9 7.8 7.5.3.1.7.2.8.5.1.2.1.6 0 .8l-.1.8c0 .2-.2 1 .9.5 1.1-.5 6-3.5 8.2-6 1.5-1.6 2.2-3.3 2.2-5.1 0-4.2-4.2-7.6-9.4-7.6zM8.3 13.3H6.4c-.3 0-.5-.2-.5-.5V9.1c0-.3.2-.5.5-.5s.5.2.5.5v3.2h1.4c.3 0 .5.2.5.5s-.2.5-.5.5zm1.9-.5c0 .3-.2.5-.5.5s-.5-.2-.5-.5V9.1c0-.3.2-.5.5-.5s.5.2.5.5v3.7zm4.5 0c0 .2-.1.4-.3.5h-.2c-.2 0-.3-.1-.4-.2l-1.9-2.6v2.3c0 .3-.2.5-.5.5s-.5-.2-.5-.5V9.1c0-.2.1-.4.3-.5h.2c.2 0 .3.1.4.2l1.9 2.6V9.1c0-.3.2-.5.5-.5s.5.2.5.5v3.7zm3-2.3c.3 0 .5.2.5.5s-.2.5-.5.5h-1.4v.8h1.4c.3 0 .5.2.5.5s-.2.5-.5.5h-1.9c-.3 0-.5-.2-.5-.5V9.1c0-.3.2-.5.5-.5h1.9c.3 0 .5.2.5.5s-.2.5-.5.5h-1.4v.8h1.4z"/></svg>',
+  ig: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>',
   refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>'
 };
 
@@ -477,6 +532,99 @@ function toast(msg) {
   const el = document.createElement('div'); el.className = 'toast'; el.textContent = msg; el.setAttribute('role', 'status');
   $('toastRoot').replaceChildren(el); setTimeout(() => el.remove(), 2600);
 }
+
+/* คัดลอกข้อความ: Clipboard API ก่อน · ถ้าโดนบล็อก (เช่นอยู่ใน iframe ของ Apps Script) ใช้ execCommand · ไม่ได้อีกให้ลูกค้าคัดลอกเอง */
+async function copyText_(text) {
+  try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return true; } } catch (e) { /* ลองวิธีถัดไป */ }
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';
+  document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, text.length);
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  ta.remove();
+  return ok;
+}
+
+/* ลิงก์ที่แชร์: เปิดตรง (ไม่อยู่ใน iframe) ใช้ URL หน้านี้ · อยู่ใน iframe ของ Apps Script หรือเปิดเป็นไฟล์ ใช้ลิงก์หน้าบ้านบน GitHub Pages */
+function shareUrl_() {
+  try { if (window.top === window.self && /^https?:$/.test(location.protocol)) return location.origin + location.pathname; } catch (e) { /* อยู่ใน iframe ต่างโดเมน */ }
+  return PAGES_URL;
+}
+async function sharePage_() {
+  const name = S.profile && S.profile.displayName || '';
+  const url = shareUrl_();
+  const data = { title: (name ? name + ' · ' : '') + 'เช็กคิวงาน', text: name ? 'เช็กคิวว่างของ ' + name + ' แล้วขอจองคิวได้ที่ลิงก์นี้' : 'เช็กคิวว่างแล้วขอจองคิวได้ที่ลิงก์นี้', url };
+  const touch = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+  if (touch && navigator.share) {
+    try { await navigator.share(data); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; /* ปิดหน้าต่างแชร์เอง */ }
+  }
+  if (await copyText_(url)) toast('คัดลอกลิงก์เว็บแล้ว');
+  else window.prompt('คัดลอกลิงก์นี้ไปแชร์ได้เลย', url);
+}
+
+/* ===== ปุ่มแชทลอย LINE / IG ===== */
+function chatLinks_(p) {
+  const raw = String(p.line || '').trim(), lineUrl = String(p.lineUrl || '').trim();
+  let line = null;
+  if (/^https:\/\/(line\.me|lin\.ee|page\.line\.me)\//i.test(lineUrl)) line = { url: lineUrl, id: raw };
+  else if (raw) line = { url: raw.charAt(0) === '@' ? 'https://line.me/R/ti/p/' + encodeURIComponent(raw) : 'https://line.me/ti/p/~' + encodeURIComponent(raw), id: raw };
+  const ig0 = String(p.igUser || '').trim();
+  const m = /instagram\.com\/([A-Za-z0-9._]{1,30})/i.exec(ig0);
+  const ig = m ? m[1] : ig0.replace(/^@/, '');
+  return { line, ig: /^[A-Za-z0-9._]{1,30}$/.test(ig) ? ig : '' };
+}
+function renderChat_(p) {
+  const root = $('chatRoot'); if (!root) return;
+  const { line, ig } = chatLinks_(p);
+  document.body.classList.toggle('has-chat', !!(line || ig));
+  if (!line && !ig) { root.innerHTML = ''; closeChat_(false); return; }
+  const name = p.displayName || '';
+  const greet = String(p.chatGreeting || '').trim() || 'เช็กคิวหรือส่งบรีฟงาน ทักแชทได้เลยครับ';
+  const av = '<span class="cp-av" aria-hidden="true" style="' + (p.photo ? 'background-image:url(&quot;' + esc(p.photo) + '&quot;)' : '') + '">' + (p.photo ? '' : esc(name.charAt(0) || '?')) + '</span>';
+  const open = root.querySelector('.chat-pop.open') ? ' open' : '';
+  root.innerHTML =
+    '<div class="chat-pop' + open + '" id="chatPop" role="dialog" aria-modal="false" aria-labelledby="chatTitle">' +
+      '<div class="cp-head">' + av + '<div class="cp-who"><b id="chatTitle">' + esc(name || 'ติดต่อ') + '</b><span>ทักได้ทาง' + (line && ig ? ' LINE และ IG' : line ? ' LINE' : ' IG') + '</span></div>' +
+      '<button type="button" class="cp-x" data-chat="close" aria-label="ปิดกล่องแชท">' + ICON.x + '</button></div>' +
+      '<div class="cp-body"><p class="cp-bubble">' + esc(greet) + '</p>' +
+      (line ? '<div class="cp-row"><a class="cp-go" href="' + esc(line.url) + '" target="_blank" rel="noopener"><span class="cp-ic line">' + ICON.line + '</span><span>ทักแชท LINE' + (line.id ? '<small>' + esc(line.id) + '</small>' : '') + '</span></a>' +
+        (line.id ? '<button type="button" class="cp-copy" data-chat="copyline" aria-label="คัดลอก LINE ID ' + esc(line.id) + '">คัดลอก<br>ID</button>' : '') + '</div>' : '') +
+      (ig ? '<div class="cp-row"><a class="cp-go" href="https://ig.me/m/' + encodeURIComponent(ig) + '" target="_blank" rel="noopener"><span class="cp-ic ig">' + ICON.ig + '</span><span>ทักแชท Instagram<small>@' + esc(ig) + '</small></span></a></div>' : '') +
+      '</div></div>' +
+    '<button type="button" class="chat-fab" id="chatFab" data-chat="toggle" aria-controls="chatPop" aria-expanded="' + (open ? 'true' : 'false') + '" aria-label="ทักแชท LINE / IG">' +
+      '<svg class="ic-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.6-.8L3 20.5l1.4-4.6A8 8 0 0 1 3 11.5 8.6 8.6 0 0 1 12 3a8.6 8.6 0 0 1 9 8.5z"/><path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01" stroke-width="2.6"/></svg>' +
+      ICON.x.replace('<svg ', '<svg class="ic-x" ') + '</button>';
+  root.dataset.line = line && line.id || '';
+}
+function openChat_() {
+  const pop = $('chatPop'), fab = $('chatFab'); if (!pop) return;
+  pop.classList.add('open'); fab.setAttribute('aria-expanded', 'true'); fab.setAttribute('aria-label', 'ปิดกล่องแชท');
+  document.body.classList.add('chat-open');
+  setTimeout(() => { const f = pop.querySelector('.cp-go'); if (f) f.focus({ preventScroll: true }); }, 60);
+}
+function closeChat_(refocus) {
+  const pop = $('chatPop'), fab = $('chatFab');
+  document.body.classList.remove('chat-open');
+  if (!pop || !pop.classList.contains('open')) return;
+  pop.classList.remove('open'); fab.setAttribute('aria-expanded', 'false'); fab.setAttribute('aria-label', 'ทักแชท LINE / IG');
+  if (refocus) fab.focus({ preventScroll: true });
+}
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-chat],[data-share]'); if (!t) return;
+  if (t.dataset.share) { sharePage_(); return; }
+  const act = t.dataset.chat;
+  if (act === 'toggle') { $('chatPop') && $('chatPop').classList.contains('open') ? closeChat_(false) : openChat_(); }
+  else if (act === 'close') closeChat_(true);
+  else if (act === 'copyline') { const id = $('chatRoot').dataset.line; if (id) toast(await copyText_(id) ? 'คัดลอก LINE ID แล้ว' : 'คัดลอกไม่ได้ — LINE ID คือ ' + id); }
+});
+document.addEventListener('pointerdown', e => {
+  const pop = $('chatPop'); if (!pop || !pop.classList.contains('open')) return;
+  if (!pop.contains(e.target) && !e.target.closest('#chatFab')) closeChat_(false);
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const pop = $('chatPop'); if (pop && pop.classList.contains('open')) { e.preventDefault(); closeChat_(true); }
+});
 
 function initFloatingClock_() {
   const el = $('floatClock'), tEl = $('fcTime'), dEl = $('fcDate');
@@ -527,7 +675,7 @@ const PubMock = {
   getPublicData: () => {
     const t = new Date(), iso = n => { const d = new Date(t); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
     const qp = new URLSearchParams(location.search);
-    return { today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', phone: '080-000-0000', line: 'example', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '', pubEffect: qp.get('fx') || '', theme: qp.get('theme') || 'sky' } };
+    return { today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', phone: '080-000-0000', line: qp.get('chat') === 'none' ? '' : 'example', lineUrl: '', igUser: qp.get('chat') === 'none' || qp.get('chat') === 'line' ? '' : 'example.crew', chatGreeting: '', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '', pubEffect: qp.get('fx') || '', theme: qp.get('theme') || 'sky' } };
   },
   submitRequest: () => ({ ok: true }),
   searchPlacesPublic: q => {
@@ -568,31 +716,31 @@ function renderCal() {
   const key = y * 12 + m;
   $('mTitle').textContent = TH_M[m] + ' ' + (y + 543);
   $('cal').innerHTML = h;
-  $('sum').innerHTML = 'เดือนนี้ว่างอีก <b class="num">' + free + '</b> วัน' + (S.canReq ? '<div class="hint">แตะวันที่ว่างหรือคิวหลวม เพื่อขอจองคิว</div>' : '');
+  $('sum').innerHTML = 'เดือนนี้ว่างอีก <b class="num">' + free + '</b> วัน' + (S.canReq ? '<div class="hint">แตะวันที่ว่างหรือคิวหลวมเพื่อขอจองคิว</div>' : '');
   $('prev').disabled = key <= S.minKey;
   $('next').disabled = key >= S.maxKey;
 }
 
 function requestForm(p) {
   return '<section class="card" id="reqCard" hidden><div style="display:flex;align-items:center;gap:8px"><h2 style="font-size:1.15rem;flex:1">ขอจองคิว</h2><button type="button" class="iconbtn" data-close="1" aria-label="ปิดฟอร์ม">✕</button></div>' +
-    '<div class="hint" style="margin-bottom:14px">ส่งรายละเอียดมาก่อน ' + esc(p.displayName || '') + ' จะติดต่อกลับเพื่อยืนยันคิว</div>' +
+    '<div class="hint" style="margin-bottom:14px">ส่งบรีฟคร่าว ๆ มาก่อน แล้ว' + (p.displayName ? ' ' + esc(p.displayName) : 'ทางเรา') + ' จะทักกลับเพื่อคอนเฟิร์มคิว</div>' +
     '<form id="reqForm" class="grid2" novalidate>' +
-    '<label class="field" for="r_date">วันที่ต้องการ *<input id="r_date" type="date" required></label>' +
+    '<label class="field" for="r_date">วันออกกอง *<input id="r_date" type="date" required></label>' +
     '<label class="field" for="r_end">ถึงวันที่ <span class="hint">(ถ้าหลายวัน)</span><input id="r_end" type="date"></label>' +
     '<div class="full" id="r_state"></div>' +
     '<div class="full field" role="radiogroup" aria-label="แบบการจองคิว"><span>แบบการจองคิว *</span><div class="qpick">' +
-    '<label><input type="radio" name="r_queue" value="lock" checked><b>🔒 ล็อกคิว</b><span class="hint">ยืนยันงานแน่นอน ขอให้กันวันไว้ให้</span></label>' +
-    '<label class="loose"><input type="radio" name="r_queue" value="loose"><b>คิวหลวม</b><span class="hint">จองไว้ก่อน ยังไม่ยืนยัน ถ้ามีงานอื่นอาจถูกแทน</span></label></div></div>' +
-    '<label class="field" for="r_time">Call time<input id="r_time" type="time"></label>' +
-    '<label class="field" for="r_house">House / Production<input id="r_house" autocomplete="organization"></label>' +
-    '<label class="field" for="r_name">ชื่อผู้ติดต่อ *<input id="r_name" autocomplete="name" required></label>' +
-    '<label class="field" for="r_phone">เบอร์โทร<input id="r_phone" type="tel" inputmode="tel" autocomplete="tel"></label>' +
+    '<label><input type="radio" name="r_queue" value="lock" checked><b>🔒 ล็อกคิว</b><span class="hint">งานคอนเฟิร์มแล้ว ขอล็อกวันไว้เลย</span></label>' +
+    '<label class="loose"><input type="radio" name="r_queue" value="loose"><b>คิวหลวม</b><span class="hint">แตะคิวไว้ก่อน ยังไม่คอนเฟิร์ม ถ้ามีงานล็อกเข้ามาอาจหลุดคิว</span></label></div></div>' +
+    '<label class="field" for="r_time">Call Time<input id="r_time" type="time"></label>' +
+    '<label class="field" for="r_house">Production House<input id="r_house" autocomplete="organization" placeholder="ชื่อบริษัทโปรดักชัน"></label>' +
+    '<label class="field" for="r_name">ชื่อ PM / ผู้ประสานงาน *<input id="r_name" autocomplete="name" required></label>' +
+    '<label class="field" for="r_phone">เบอร์ PM<input id="r_phone" type="tel" inputmode="tel" autocomplete="tel"></label>' +
     '<label class="field full" for="r_line">LINE ID <span class="hint">(ใส่เบอร์หรือ LINE อย่างน้อย 1 ช่อง)</span><input id="r_line"></label>' +
-    '<div class="full placewrap" id="r_placeWrap"><label class="field" for="r_loc">สถานที่ถ่าย<input id="r_loc" autocomplete="off" placeholder="พิมพ์ชื่อสถานที่ หรือวางลิงก์ Google Maps" role="combobox" aria-autocomplete="list" aria-controls="r_placeRes" aria-expanded="false"></label>' +
+    '<div class="full placewrap" id="r_placeWrap"><label class="field" for="r_loc">โลเคชันถ่ายทำ<input id="r_loc" autocomplete="off" placeholder="ชื่อสถานที่ หรือลิงก์ Google Maps" role="combobox" aria-autocomplete="list" aria-controls="r_placeRes" aria-expanded="false"></label>' +
     '<div class="placeres" id="r_placeRes" role="listbox" aria-label="แนะนำสถานที่" hidden></div></div>' +
     '<div class="full placebar"><button type="button" class="btn sm soft" id="r_placeBtn">🔎 ค้นหาสถานที่</button><span class="hint">พิมพ์ 3 ตัวอักษรขึ้นไป ระบบจะค้นหาให้</span></div>' +
     '<div class="full" id="r_mapBox"></div>' +
-    '<label class="field full" for="r_detail">รายละเอียดงาน<textarea id="r_detail" placeholder="เช่น ประเภทงาน ตำแหน่งที่ต้องการ จำนวนวัน งบประมาณ"></textarea></label>' +
+    '<label class="field full" for="r_detail">บรีฟงาน<textarea id="r_detail" placeholder="ชื่อโปรเจกต์ (MV / โฆษณา / ซีรีส์), ตำแหน่งที่ต้องการ, สเปกกล้องหรืออุปกรณ์, งบประมาณ"></textarea></label>' +
     '<div class="hp" aria-hidden="true"><label>เว็บไซต์<input id="r_web" tabindex="-1" autocomplete="off"></label></div>' +
     '<div class="full" id="r_msg"></div>' +
     '<button class="btn primary block full" type="submit" id="r_send">ส่งคำขอจองคิว</button></form></section>';
@@ -600,9 +748,11 @@ function requestForm(p) {
 
 function render(d) {
   const root = $('root');
-  if (!d) { root.innerHTML = '<div class="card" style="text-align:center"><p>โหลดข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง</p><button type="button" class="btn primary" data-refresh="1">🔄 ลองโหลดใหม่</button></div>'; return; }
-  if (d.hidden) { root.innerHTML = '<div class="card" style="position:relative;text-align:center"><button type="button" class="iconbtn refresh pub-refresh" id="pubRefresh" data-refresh="1" aria-label="รีเฟรช" title="รีเฟรชข้อมูล">' + ICON.refresh + '</button><h1 style="font-size:1.2rem">หน้านี้ปิดอยู่ชั่วคราว</h1></div>'; return; }
+  if (!d) { root.innerHTML = '<div class="card" style="text-align:center"><p>โหลดคิวไม่สำเร็จ เช็กอินเทอร์เน็ตแล้วลองอีกครั้ง</p><button type="button" class="btn primary" data-refresh="1">🔄 ลองโหลดใหม่</button></div>'; return; }
+  if (d.hidden) { root.innerHTML = '<div class="card" style="position:relative;text-align:center"><button type="button" class="iconbtn refresh pub-refresh" id="pubRefresh" data-refresh="1" aria-label="รีเฟรช" title="รีเฟรชข้อมูล">' + ICON.refresh + '</button><h1 style="font-size:1.2rem">ปิดหน้าเช็กคิวชั่วคราว</h1></div>'; return; }
   const p = d.profile || {};
+  S.profile = p;
+  renderChat_(p);
   document.documentElement.dataset.accent = (['midnight','sunset','xmas','songkran','loykrathong','national'].indexOf(p.theme) >= 0 ? p.theme : 'sky');
   document.documentElement.dataset.pubeffect = (['fireworks','snow'].indexOf(p.pubEffect) >= 0 ? p.pubEffect : '');
   PubFx.set(document.documentElement.dataset.pubeffect);
@@ -621,7 +771,7 @@ function render(d) {
   LBL.lock = String(p.pubLblLock || '').trim() || 'ไม่ว่าง';
   LBL.off = String(p.pubLblOff || '').trim() || 'วันพัก';
   const reqBtnTxt = String(p.pubReqBtnText || '').trim() || '📅 ขอจองคิว';
-  document.title = (p.displayName || 'โปรไฟล์') + ' · เช็คคิว';
+  document.title = (p.displayName || 'โปรไฟล์') + ' · เช็กคิวว่าง';
   const phone = (p.phone || '').replace(/[^0-9+]/g, '');
   const lineId = (p.line || '').replace(/^@/, '');
   S.canReq = p.acceptRequests !== 'no';
@@ -655,15 +805,16 @@ function render(d) {
     : '<div class="pub-notice">' + esc(noticeRaw) + '</div>');
   let h = noticeHtml +
     '<section class="card profile">' + MODE_BTN +
+    '<button type="button" class="pub-share" data-share="1" aria-label="แชร์ลิงก์หน้านี้" title="แชร์ลิงก์หน้านี้">' + ICON.share + 'แชร์</button>' +
     '<button type="button" class="iconbtn refresh pub-refresh" id="pubRefresh" data-refresh="1" aria-label="รีเฟรช" title="รีเฟรชข้อมูล">' + ICON.refresh + '</button>' +
     '<div class="photo" style="' + (p.photo ? 'background-image:url(&quot;' + p.photo + '&quot;)' : '') + '">' + (p.photo ? '' : esc((p.displayName || '?').charAt(0))) + '</div>' +
     '<h1>' + esc(p.displayName) + '</h1>' + (p.headline ? '<div class="headline">' + esc(p.headline) + '</div>' : '') +
     (p.bio ? '<p class="bio">' + esc(p.bio) + '</p>' : '') +
     (contacts ? '<div class="contacts">' + contacts + '</div>' : '') +
     (copyLine ? '<div class="copy">' + copyLine + '</div>' : '') + '</section>';
-  if (services.length) h += '<section class="card"><h2 style="font-size:1.1rem">บริการที่รับ</h2><div class="services">' + services.map(s => '<span>' + esc(s) + '</span>').join('') + '</div></section>';
+  if (services.length) h += '<section class="card"><h2 style="font-size:1.1rem">ตำแหน่งที่รับงาน</h2><div class="services">' + services.map(s => '<span>' + esc(s) + '</span>').join('') + '</div></section>';
   if (p.showCalendar !== 'no') {
-    h += '<section class="card"><h2 style="font-size:1.1rem">เช็คคิวงาน</h2><div class="hint">อัปเดตตามตารางงานจริง</div>' +
+    h += '<section class="card"><h2 style="font-size:1.1rem">เช็กคิวว่าง</h2><div class="hint">อัปเดตตามตารางงานจริง</div>' +
       '<div class="monthbar" style="margin-top:12px"><button class="iconbtn" id="prev" aria-label="เดือนก่อน">' + ICON.left + '</button><h2 id="mTitle"></h2><button class="iconbtn" id="next" aria-label="เดือนถัดไป">' + ICON.right + '</button></div>' +
       '<div class="cal" id="cal"></div><div class="sum" id="sum"></div>' +
       '<div class="legend"><span><i style="background:var(--mint-soft);border:1px solid var(--mint)"></i>' + esc(LBL.free) + '</span><span><i style="background:var(--amber-soft);border:1px solid var(--amber)"></i>' + esc(LBL.loose) + '</span>' +
@@ -691,7 +842,7 @@ function render(d) {
 function checkDates() {
   const s = $('r_date').value, e = $('r_end').value || s;
   if (!s) { $('r_state').innerHTML = ''; return; }
-  if (s < S.today) { $('r_state').innerHTML = '<div class="msg bad">กรุณาเลือกวันที่ตั้งแต่วันนี้เป็นต้นไป</div>'; return; }
+  if (s < S.today) { $('r_state').innerHTML = '<div class="msg bad">เลือกได้ตั้งแต่วันนี้เป็นต้นไป</div>'; return; }
   if (e < s) { $('r_state').innerHTML = '<div class="msg bad">“ถึงวันที่” ต้องไม่ก่อนวันเริ่ม</div>'; return; }
   const bad = [], looses = [];
   for (let d = s, n = 0; d <= e && n < 62; n++) {
@@ -700,8 +851,8 @@ function checkDates() {
     else if (st === 'loose') looses.push(thFull(d));
     const p = d.split('-').map(Number); d = new Date(Date.UTC(p[0], p[1] - 1, p[2] + 1)).toISOString().slice(0, 10);
   }
-  $('r_state').innerHTML = bad.length ? '<div class="msg warn">' + esc(bad.slice(0, 3).join(', ')) + (bad.length > 3 ? ' …' : '') + ' — ส่งคำขอได้ แต่อาจไม่ว่าง</div>'
-    : looses.length ? '<div class="msg warn">' + (looses.length === 1 && s === e ? 'วันนี้มีคิวหลวมอยู่' : 'ช่วงที่เลือกมีคิวหลวม (' + esc(looses.slice(0, 3).join(', ')) + (looses.length > 3 ? ' …' : '') + ')') + ' ส่งคำขอเป็นคิวสำรองได้</div>'
+  $('r_state').innerHTML = bad.length ? '<div class="msg warn">' + esc(bad.slice(0, 3).join(', ')) + (bad.length > 3 ? ' …' : '') + ' — ส่งคำขอได้ แต่คิวอาจไม่ว่าง</div>'
+    : looses.length ? '<div class="msg warn">' + (looses.length === 1 && s === e ? 'วันนี้มีคิวหลวมอยู่' : 'ช่วงที่เลือกมีคิวหลวม (' + esc(looses.slice(0, 3).join(', ')) + (looses.length > 3 ? ' …' : '') + ')') + ' ส่งเป็นคิวสำรองไว้ได้</div>'
     : '<div class="msg ok">วันที่เลือกว่าง ✓</div>';
   S.pick = s; if ($('cal')) renderCal();
 }
@@ -714,16 +865,16 @@ function wireForm() {
     e.preventDefault();
     const v = id => $(id).value.trim();
     const bad = (m, id) => { $('r_msg').innerHTML = '<div class="msg bad">' + m + '</div>'; if (id) $(id).focus(); };
-    if (!v('r_date')) return bad('กรุณาเลือกวันที่ต้องการ', 'r_date');
+    if (!v('r_date')) return bad('เลือกวันออกกองก่อน', 'r_date');
     if (v('r_end') && v('r_end') < v('r_date')) return bad('“ถึงวันที่” ต้องไม่ก่อนวันเริ่ม', 'r_end');
-    if (!v('r_name')) return bad('กรุณาใส่ชื่อผู้ติดต่อ', 'r_name');
-    if (!v('r_phone') && !v('r_line')) return bad('กรุณาใส่เบอร์โทรหรือ LINE อย่างน้อย 1 ช่อง', 'r_phone');
+    if (!v('r_name')) return bad('ใส่ชื่อ PM หรือผู้ประสานงานก่อนส่ง', 'r_name');
+    if (!v('r_phone') && !v('r_line')) return bad('ใส่เบอร์โทรหรือ LINE อย่างน้อย 1 ช่อง จะได้ทักกลับได้', 'r_phone');
     const loc = v('r_loc'), isUrl = /^https:\/\//i.test(loc), pin = (S.rPlace && S.rPlace.mapUrl) || (isUrl ? loc : '');
     $('r_send').disabled = true; $('r_send').textContent = 'กำลังส่ง…'; $('r_msg').innerHTML = '';
     const reqDate = v('r_date'), reqEnd = v('r_end'), reqQ = (document.querySelector('input[name="r_queue"]:checked') || {}).value || 'lock';
     try {
       await run('submitRequest', { date: reqDate, endDate: reqEnd, time: v('r_time'), house: v('r_house'), name: v('r_name'), phone: v('r_phone'), line: v('r_line'), location: isUrl ? '' : loc, mapUrl: pin, detail: v('r_detail'), website: v('r_web'), queue: reqQ });
-      $('reqCard').innerHTML = '<div class="done"><div class="ic">✓</div><h2 style="font-size:1.2rem">ส่งคำขอแล้ว</h2><p class="hint">ขอคิววันที่ ' + esc(thFull(reqDate)) + (reqEnd ? ' – ' + esc(thFull(reqEnd)) : '') + '<br>แบบ: ' + (reqQ === 'loose' ? 'คิวหลวม' : '🔒 ล็อกคิว') + '<br>จะติดต่อกลับเพื่อยืนยันคิวโดยเร็ว</p><button type="button" class="btn" data-refresh="1" style="margin-top:8px">รีเฟรชหน้านี้</button></div>';
+      $('reqCard').innerHTML = '<div class="done"><div class="ic">✓</div><h2 style="font-size:1.2rem">ได้รับคำขอจองคิวแล้ว</h2><p class="hint">ขอคิววันที่ ' + esc(thFull(reqDate)) + (reqEnd ? ' – ' + esc(thFull(reqEnd)) : '') + '<br>แบบ: ' + (reqQ === 'loose' ? 'คิวหลวม' : '🔒 ล็อกคิว') + '<br>เดี๋ยวทักกลับเพื่อคอนเฟิร์มคิวโดยเร็ว</p><button type="button" class="btn" data-refresh="1" style="margin-top:8px">รีเฟรชหน้านี้</button></div>';
     } catch (err) { $('r_send').disabled = false; $('r_send').textContent = 'ส่งคำขอจองคิว'; bad(esc(err)); }
   });
 }
@@ -1111,10 +1262,10 @@ async function loadPublic(fromBtn) {
   try {
     const d = await run('getPublicData');
     render(d);
-    if (fromBtn) toast('อัปเดตข้อมูลแล้ว');
+    if (fromBtn) toast('อัปเดตคิวล่าสุดแล้ว');
   } catch (err) {
     if (fromBtn) toast('อัปเดตไม่สำเร็จ ลองใหม่อีกครั้ง');
-    else $('root').innerHTML = '<div class="card" style="text-align:center"><p>โหลดข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง</p><button type="button" class="btn primary" data-refresh="1">🔄 ลองโหลดใหม่</button></div>';
+    else $('root').innerHTML = '<div class="card" style="text-align:center"><p>โหลดคิวไม่สำเร็จ เช็กอินเทอร์เน็ตแล้วลองอีกครั้ง</p><button type="button" class="btn primary" data-refresh="1">🔄 ลองโหลดใหม่</button></div>';
   } finally {
     S.refreshing = false;
     if (fromBtn && fromBtn.isConnected) { fromBtn.classList.remove('spin'); fromBtn.disabled = false; }
