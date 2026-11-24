@@ -270,7 +270,56 @@ html[data-appearance="auto"] .modebtn .ic-auto { display: block; }
 body.noscroll .float-clock, body.has-savebar .float-clock, body.drawer-open .float-clock, .float-clock.scrolling { opacity: 0; visibility: hidden; transform: translateY(8px); pointer-events: none; }
 @media (max-width: 420px) { .float-clock .fc-date { display: none; } }
 @media print { .float-clock { display: none !important; } }
+
+/* ================= วันสำคัญ / วันหยุดไทย (ใช้ร่วมกันทั้งหน้าบ้าน-หลังร้าน) =================
+   สีม่วงชมพู (orchid) แยกจากสีสถานะคิว: ว่าง=เขียว · หลวม=เหลือง · ไม่ว่าง=แดง · พัก=คราม · มือถือ=จุด / จอกว้าง=ชื่อย่อ */
+:root { --hol: #9A2F8A; --hol-soft: color-mix(in oklab, #9A2F8A 12%, transparent); }
+html[data-theme="dark"] { --hol: #E7A6DC; --hol-soft: color-mix(in oklab, #E7A6DC 16%, transparent); }
+.day { position: relative; }
+.day .holdot { position: absolute; top: 5px; right: 5px; width: 6px; height: 6px; border-radius: 50%; background: var(--hol); box-shadow: 0 0 0 1.5px var(--surface); pointer-events: none; }
+.day .holt { display: none; font-family: var(--font-sans); font-style: normal; font-size: 9.5px; font-weight: 500; line-height: 1.25; color: var(--hol); max-width: 100%; padding: 0 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (min-width: 720px) { .day .holt { display: block; } .day .holdot { display: none; } }
+.holtog { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: background-color 120ms var(--ease), border-color 120ms var(--ease), color 120ms var(--ease); }
+.holtog:hover { background: var(--surface-2); color: var(--text); }
+.holtog:focus-visible { outline: none; box-shadow: var(--ring); }
+.holtog[aria-pressed="true"] { border-color: color-mix(in oklab, var(--hol) 45%, transparent); background: var(--hol-soft); color: var(--hol); }
+.holtog .sw { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .35; }
+.holtog[aria-pressed="true"] .sw { opacity: 1; }
+.hollist { display: flex; flex-wrap: wrap; gap: 6px; }
+.hollist span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--hol-soft); color: var(--hol); font-size: 12.5px; font-weight: 500; }
+.hollist span b { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: 600; }
 </style>
+<script>
+/* วันสำคัญ/วันหยุดไทย — ข้อมูลในเครื่อง ไม่ยิง API (ใช้ทั้งหน้าบ้าน หลังร้าน และ GitHub Pages)
+   · FIX = วันที่ตายตัวทุกปี [ชื่อเต็ม, ชื่อย่อในช่องปฏิทิน]
+   · LUNAR = จันทรคติ: 2569 ตรงปฏิทินทางการ · 2570–2571 คำนวณตามปฏิทินจันทรคติไทย (ราชการยังไม่ประกาศ) ตรวจทานอีกครั้งเมื่อมีประกาศ แก้ได้ที่นี่ที่เดียว */
+(function () {
+  const FIX = {
+    '01-01': ['วันขึ้นปีใหม่', 'ปีใหม่'], '02-14': ['วันวาเลนไทน์', 'วาเลนไทน์'], '04-06': ['วันจักรี', 'วันจักรี'],
+    '04-13': ['วันสงกรานต์', 'สงกรานต์'], '04-14': ['วันสงกรานต์', 'สงกรานต์'], '04-15': ['วันสงกรานต์', 'สงกรานต์'],
+    '05-01': ['วันแรงงานแห่งชาติ', 'วันแรงงาน'], '05-04': ['วันฉัตรมงคล', 'ฉัตรมงคล'],
+    '06-03': ['วันเฉลิมพระชนมพรรษาสมเด็จพระราชินี', 'เฉลิมฯ ราชินี'], '07-28': ['วันเฉลิมพระชนมพรรษา ร.10', 'เฉลิมฯ ร.10'],
+    '08-12': ['วันแม่แห่งชาติ', 'วันแม่'], '10-13': ['วันนวมินทรมหาราช', 'นวมินทร์ฯ'], '10-23': ['วันปิยมหาราช', 'ปิยมหาราช'],
+    '12-05': ['วันพ่อแห่งชาติ', 'วันพ่อ'], '12-10': ['วันรัฐธรรมนูญ', 'รัฐธรรมนูญ'], '12-25': ['วันคริสต์มาส', 'คริสต์มาส'], '12-31': ['วันสิ้นปี', 'สิ้นปี']
+  };
+  const LUNAR = {
+    2026: { '02-17': 'ตรุษจีน', '03-03': 'มาฆบูชา', '05-31': 'วิสาขบูชา', '07-29': 'อาสาฬหบูชา', '07-30': 'เข้าพรรษา', '11-24': 'ลอยกระทง' },
+    2027: { '02-06': 'ตรุษจีน', '02-21': 'มาฆบูชา', '05-20': 'วิสาขบูชา', '07-18': 'อาสาฬหบูชา', '07-19': 'เข้าพรรษา', '11-13': 'ลอยกระทง' },
+    2028: { '01-26': 'ตรุษจีน', '03-10': 'มาฆบูชา', '06-07': 'วิสาขบูชา', '08-05': 'อาสาฬหบูชา', '08-06': 'เข้าพรรษา', '12-01': 'ลอยกระทง' }
+  };
+  const EST = { 2027: 1, 2028: 1 };
+  const full = n => n === 'ตรุษจีน' || n === 'ลอยกระทง' ? 'วัน' + n : 'วัน' + n;
+  /* คืนรายการวันสำคัญของวันที่ ISO (yyyy-mm-dd): [{ name, short, est }] */
+  window.thHolidays = function (iso) {
+    const y = Number(String(iso).slice(0, 4)), md = String(iso).slice(5, 10), out = [];
+    const l = LUNAR[y] && LUNAR[y][md];
+    if (l) out.push({ name: full(l), short: l, est: !!EST[y] });
+    if (FIX[md]) out.push({ name: FIX[md][0], short: FIX[md][1], est: false });
+    return out;
+  };
+  window.thHolidayTitle = function (list) { return list.map(h => h.name + (h.est ? ' (วันที่โดยประมาณ)' : '')).join(' · '); };
+})();
+</script>
 <style>
 /* Layout: การ์ดโปรไฟล์ → บริการ → ปฏิทินคิว → ฟอร์มขอจองคิว (คอลัมน์เดียว อ่านง่ายบนมือถือ) */
 body { min-height: 100vh; background: var(--canvas); }
@@ -325,6 +374,8 @@ button.day:active { transform: scale(.96); }
 .day.pick { box-shadow: 0 0 0 2px var(--accent), var(--ring); }
 .day.blank { visibility: hidden; }
 .legend { display: flex; gap: 8px 16px; justify-content: center; margin-top: var(--sp-4); font-size: 13px; color: var(--text-2); flex-wrap: wrap; }
+.holbar { display: flex; justify-content: center; margin-top: var(--sp-3); }
+.holtog[hidden] { display: none; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 .sum { text-align: center; margin-top: var(--sp-2); font-size: 14px; }
 .hint { font-size: 13px; color: var(--text-2); }
@@ -738,7 +789,7 @@ const PubMock = {
   getPublicData: () => {
     const t = new Date(), iso = n => { const d = new Date(t); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
     const qp = new URLSearchParams(location.search);
-    return { today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', phone: '080-000-0000', line: qp.get('chat') === 'none' ? '' : 'example', lineUrl: '', igUser: qp.get('chat') === 'none' || qp.get('chat') === 'line' ? '' : 'example.crew', chatGreeting: '', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '', pubEffect: qp.get('fx') || '', theme: qp.get('theme') || 'sky' } };
+    return { today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', phone: '080-000-0000', line: qp.get('chat') === 'none' ? '' : 'example', lineUrl: '', igUser: qp.get('chat') === 'none' || qp.get('chat') === 'line' ? '' : 'example.crew', chatGreeting: '', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '', showHolidays: qp.get('hol') === 'no' ? 'no' : 'yes', pubEffect: qp.get('fx') || '', theme: qp.get('theme') || 'sky' } };
   },
   submitRequest: () => ({ ok: true }),
   submitMessage: m => { if (!String(m.message || '').trim()) throw new Error('พิมพ์ข้อความก่อนส่ง'); return { ok: true }; },
@@ -759,6 +810,11 @@ const PubMock = {
 
 const S = { days: {}, today: '', y: 0, m: 0, minKey: 0, maxKey: 0, pick: '', canReq: false, loaded: false, refreshing: false };
 const stOf = iso => S.days[iso] || 'free';
+/* วันสำคัญ: หลังร้านเปิดไว้ (showHolidays) แล้วลูกค้ากดซ่อน/แสดงเองได้ต่อเครื่อง */
+const HOL_KEY = 'wk_pub_hol';
+const holAllowed = () => !!(S.profile && S.profile.showHolidays !== 'no') && typeof window.thHolidays === 'function';
+const holOn = () => { if (!holAllowed()) return false; try { return localStorage.getItem(HOL_KEY) !== 'off'; } catch (e) { return true; } };
+const holOf = iso => holOn() ? window.thHolidays(iso) : [];
 
 function renderCal() {
   const { y, m } = S;
@@ -767,20 +823,32 @@ function renderCal() {
   let h = TH_D.map(d => '<div class="dow">' + d + '</div>').join('');
   for (let i = 0; i < first; i++) h += '<div class="day blank"></div>';
   let free = 0;
+  const hols = [];
   for (let d = 1; d <= dim; d++) {
     const iso = y + '-' + pad(m + 1) + '-' + pad(d);
     const past = iso < S.today, st = stOf(iso);
     if (!past && st === 'free') free++;
     const cls = 'day ' + (past ? 'past' : st) + (iso === S.today ? ' today' : '') + (iso === S.pick ? ' pick' : '');
-    const label = d + ' ' + TH_M[m] + (past ? '' : ' ' + LBL[st]);
+    const hol = holOf(iso), holT = hol.length ? window.thHolidayTitle(hol) : '';
+    if (hol.length) hols.push([d, hol]);
+    const label = d + ' ' + TH_M[m] + (past ? '' : ' ' + LBL[st]) + (holT ? ' · ' + holT : '');
     const canPick = !past && S.canReq && (st === 'free' || st === 'loose');
-    h += (canPick ? '<button type="button" class="' + cls + '" data-pick="' + iso + '" aria-label="' + label + ' แตะเพื่อขอจองคิว">' : '<div class="' + cls + '" aria-label="' + label + '">') +
-      '<span class="num">' + d + '</span>' + (past ? '' : '<small>' + LBL[st] + '</small>') + (canPick ? '</button>' : '</div>');
+    const tip = holT ? ' title="' + esc(holT) + '"' : '';
+    h += (canPick ? '<button type="button" class="' + cls + '" data-pick="' + iso + '"' + tip + ' aria-label="' + esc(label) + ' แตะเพื่อขอจองคิว">' : '<div class="' + cls + '"' + tip + (holT ? ' data-hol="' + esc(holT) + '"' : '') + ' aria-label="' + esc(label) + '">') +
+      '<span class="num">' + d + '</span>' + (past ? '' : '<small>' + LBL[st] + '</small>') +
+      (hol.length ? '<i class="holdot" aria-hidden="true"></i><em class="holt" aria-hidden="true">' + esc(hol[0].short) + '</em>' : '') + (canPick ? '</button>' : '</div>');
   }
   const key = y * 12 + m;
   $('mTitle').textContent = TH_M[m] + ' ' + (y + 543);
   $('cal').innerHTML = h;
   $('sum').innerHTML = 'เดือนนี้ว่างอีก <b class="num">' + free + '</b> วัน' + (S.canReq ? '<div class="hint">แตะวันที่ว่างหรือคิวหลวมเพื่อขอจองคิว</div>' : '');
+  const hb = $('holBox'), ht = $('holTog');
+  if (ht) { ht.hidden = !holAllowed(); ht.setAttribute('aria-pressed', holOn() ? 'true' : 'false'); }
+  if (hb) {
+    const seen = {}, items = hols.filter(([d, l]) => { const k = l[0].short; if (seen[k] && seen[k] === d - 1) { seen[k] = d; return false; } seen[k] = d; return true; });
+    hb.hidden = !items.length;
+    hb.innerHTML = items.length ? '<div class="hint" style="margin-bottom:6px">วันสำคัญเดือนนี้</div><div class="hollist">' + items.map(([d, l]) => '<span title="' + esc(window.thHolidayTitle(l)) + '"><b>' + d + '</b>' + esc(l.map(x => x.short).join(' · ')) + '</span>').join('') + '</div>' : '';
+  }
   $('prev').disabled = key <= S.minKey;
   $('next').disabled = key >= S.maxKey;
 }
@@ -882,7 +950,9 @@ function render(d) {
       '<div class="monthbar" style="margin-top:12px"><button class="iconbtn" id="prev" aria-label="เดือนก่อน">' + ICON.left + '</button><h2 id="mTitle"></h2><button class="iconbtn" id="next" aria-label="เดือนถัดไป">' + ICON.right + '</button></div>' +
       '<div class="cal" id="cal"></div><div class="sum" id="sum"></div>' +
       '<div class="legend"><span><i style="background:var(--mint-soft);border:1px solid var(--mint)"></i>' + esc(LBL.free) + '</span><span><i style="background:var(--amber-soft);border:1px solid var(--amber)"></i>' + esc(LBL.loose) + '</span>' +
-      '<span><i style="background:var(--rose-soft);border:1px solid var(--rose)"></i>' + esc(LBL.lock) + '</span><span><i style="background:var(--rest-soft);border:1px solid var(--rest)"></i>' + esc(LBL.off) + '</span></div></section>';
+      '<span><i style="background:var(--rose-soft);border:1px solid var(--rose)"></i>' + esc(LBL.lock) + '</span><span><i style="background:var(--rest-soft);border:1px solid var(--rest)"></i>' + esc(LBL.off) + '</span></div>' +
+      '<div class="holbar"><button type="button" class="holtog" id="holTog" data-holtog="1" aria-pressed="true" hidden><span class="sw" aria-hidden="true"></span>🗓️ วันสำคัญ</button></div>' +
+      '<div id="holBox" style="margin-top:12px" hidden></div></section>';
   }
   if (S.canReq) h += '<button type="button" class="btn primary block" id="reqOpen" data-jump="1" style="min-height:54px;font-size:1.05rem">' + esc(reqBtnTxt) + '</button>' + requestForm(p);
   h += '<div class="foot"><a href="' + esc(ADMIN_URL) + '" target="_top" data-nav-top="1">สำหรับเจ้าของ</a></div>';
@@ -1369,6 +1439,12 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('click', e => {
+  if (e.target.closest('[data-holtog]')) {
+    const on = !holOn();
+    try { on ? localStorage.removeItem(HOL_KEY) : localStorage.setItem(HOL_KEY, 'off'); } catch (err) {}
+    if ($('cal')) renderCal(); toast(on ? 'แสดงวันสำคัญแล้ว' : 'ซ่อนวันสำคัญแล้ว'); return;
+  }
+  const hd = e.target.closest('div.day[data-hol]'); if (hd) { toast(hd.dataset.hol); return; }
   const t = e.target.closest('[data-pick],[data-jump],[data-close],[data-refresh]'); if (!t) return;
   e.preventDefault();
   if (t.dataset.refresh) { loadPublic(t); return; }
