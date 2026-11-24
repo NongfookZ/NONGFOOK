@@ -295,7 +295,9 @@ button.day:active { transform: scale(.96); }
 .done { text-align: center; }
 .done .ic { width: 56px; height: 56px; border-radius: 50%; background: var(--mint-soft); color: var(--mint); display: grid; place-items: center; margin: 0 auto 10px; font-size: 26px; }
 .foot { text-align: center; color: var(--text-3); font-size: 12px; margin-top: var(--sp-2); }
-.foot a { color: var(--text-3); }
+.foot a { color: var(--text-3); display: inline-block; padding: 10px 14px; border-radius: var(--r-md); }
+.foot a:hover { color: var(--text-2); }
+.foot a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .skel { height: 260px; border-radius: 16px; border: 1px solid var(--border); background: linear-gradient(90deg, var(--surface-2), var(--surface-3), var(--surface-2)); background-size: 200% 100%; }
 @media (prefers-reduced-motion: no-preference) { .skel { animation: sh 1.4s infinite linear; } @keyframes sh { to { background-position: -200% 0; } } }
 .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--text); color: var(--surface); padding: 10px 16px; border-radius: var(--r-lg); z-index: 40; font-size: 14px; font-weight: 500; box-shadow: var(--shadow-md); max-width: calc(100vw - 32px); }
@@ -390,6 +392,8 @@ html[data-theme="dark"] .mapembed iframe { filter: invert(.9) hue-rotate(180deg)
 const RAW_URL = 'https://script.google.com/macros/s/AKfycbxonc213LYzv_3_oHg_ETfmgmp1XNyNWEd4D2rpNQ4TWM5MKHweEX1WN0iRwmHYcqxa/exec';
 const APP_URL = RAW_URL.indexOf('http') === 0 ? RAW_URL : '';
 const IS_GAS = typeof google !== 'undefined' && google.script && google.script.run;
+const PAGES_URL = 'https://nongfookz.github.io/NONGFOOOK/'; /* หน้าบ้าน/หลังร้านบน GitHub Pages */
+const ADMIN_URL = PAGES_URL + 'admin.html';
 const TH_M = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const TH_MS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const TH_D = ['อา','จ','อ','พ','พฤ','ศ','ส'];
@@ -608,7 +612,7 @@ function render(d) {
       '<span><i style="background:var(--rose-soft);border:1px solid var(--rose)"></i>' + esc(LBL.lock) + '</span><span><i style="background:var(--rest-soft);border:1px solid var(--rest)"></i>' + esc(LBL.off) + '</span></div></section>';
   }
   if (S.canReq) h += '<button type="button" class="btn primary block" id="reqOpen" data-jump="1" style="min-height:54px;font-size:1.05rem">' + esc(reqBtnTxt) + '</button>' + requestForm(p);
-  h += '<div class="foot">' + (APP_URL ? '<a href="' + esc(APP_URL) + '?page=admin">สำหรับเจ้าของ</a>' : '') + '</div>';
+  h += '<div class="foot"><a href="' + esc(ADMIN_URL) + '" target="_top" data-nav-top="1">สำหรับเจ้าของ</a></div>';
   root.innerHTML = h;
 
   const fallbackToday = (() => { const n = new Date(); return n.getFullYear() + '-' + pad(n.getMonth() + 1) + '-' + pad(n.getDate()); })();
@@ -1079,6 +1083,16 @@ document.addEventListener('click', e => {
   const cur = getAppearance_(), next = cur === 'light' ? 'dark' : cur === 'dark' ? 'auto' : 'light';
   try { next === 'auto' ? localStorage.removeItem('wk_appearance') : localStorage.setItem('wk_appearance', next); } catch (err) {}
   applyAppearance_(next, true); toast('โหมด' + APPEAR_TXT[next]);
+});
+
+/* ลิงก์สลับหน้าบ้าน–หลังร้านบน GitHub Pages: เปิดที่หน้าต่างบนสุด (ไม่ซ้อน iframe) · ถ้าเบราว์เซอร์/sandbox ไม่ยอมให้เปลี่ยนหน้าบนสุด ให้เปิดแท็บใหม่แทน */
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[data-nav-top]');
+  if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  e.preventDefault();
+  const url = a.href;
+  try { window.top.location.href = url; }
+  catch (err) { if (!window.open(url, '_blank', 'noopener')) location.href = url; }
 });
 
 document.addEventListener('click', e => {
