@@ -102,9 +102,9 @@ html[data-theme="dark"] {
 /* ================= Accent / Festival (ผ่าน WCAG AA ทั้ง 2 โหมด) ================= */
 html[data-accent="midnight"]    { --accent-l: #4F46E5; --accent-d: #8E95FA; }
 html[data-accent="sunset"]      { --accent-l: #C2410C; --accent-d: #F28C52; }
-html[data-accent="xmas"]        { --accent-l: #15803D; --accent-d: #4ADE80; --accent2-l: #B91C1C; --accent2-d: #F87171; }
+html[data-accent="xmas"]        { --accent-l: #13733A; --accent-d: #4ADE80; --accent2-l: #B91C1C; --accent2-d: #F87171; }
 html[data-accent="songkran"]    { --accent-l: #0E7490; --accent-d: #2CC5DB; }
-html[data-accent="loykrathong"] { --accent-l: #A16207; --accent-d: #E3B341; }
+html[data-accent="loykrathong"] { --accent-l: #8F5A0B; --accent-d: #E3B341; }
 html[data-accent="national"]    { --accent-l: #2D3192; --accent-d: #8F96EC; --accent2-l: #C8102E; --accent2-d: #F2687A; }
 
 :root {
@@ -150,6 +150,64 @@ html, html[data-theme] {
   --r: var(--r-xl);
 }
 
+/* ================= Tinted neutrals (v2) =================
+ * พื้น/การ์ด/ขอบ/ตัวอักษร "อมสีธีม" อัตโนมัติ: ผสมสี accent ของธีมลงในเทาเป็นกลางเล็กน้อย
+ * → ทุกธีม (sky, midnight, sunset, xmas, songkran, loykrathong, national) ได้บรรยากาศของตัวเองทั้งกลางวัน/กลางคืน
+ * ตัวเลข % ถูกจูนให้ตัวอักษรผ่าน WCAG AA ทุกธีม × ทั้ง 2 โหมด (ตรวจด้วยสคริปต์ contrast แล้ว)
+ * selector มี [data-accent] เพื่อให้ชนะ :root และคำนวณใหม่ทุกครั้งที่เปลี่ยนธีม */
+html[data-accent] {
+  --hue: var(--accent-l);
+  --canvas: color-mix(in oklab, var(--hue) 6%, #F5F6F8);
+  --surface: color-mix(in oklab, var(--hue) 1.5%, #FFFFFF);
+  --surface-2: color-mix(in oklab, var(--hue) 3.5%, #FAFBFC);
+  --surface-3: color-mix(in oklab, var(--hue) 7%, #F0F2F5);
+  --surface-pop: #FFFFFF;
+  --border: color-mix(in oklab, var(--hue) 10%, #E3E6EB);
+  --border-strong: color-mix(in oklab, var(--hue) 14%, #CDD2DA);
+  --input-bg: color-mix(in oklab, var(--hue) 1.5%, #FFFFFF);
+  --input-border: color-mix(in oklab, var(--hue) 14%, #CDD2DA);
+  --text: color-mix(in oklab, var(--hue) 10%, #0F1520);
+  --text-2: color-mix(in oklab, var(--hue) 14%, #535C6C);
+  --text-3: color-mix(in oklab, var(--hue) 12%, #8A93A3);
+  --shadow-sm: 0 1px 2px color-mix(in oklab, var(--hue) 20%, rgba(16, 24, 40, .06));
+  --shadow-md: 0 10px 28px -6px color-mix(in oklab, var(--hue) 25%, rgba(16, 24, 40, .14)), 0 2px 6px rgba(16, 24, 40, .05);
+  --glass: color-mix(in oklab, var(--canvas) 76%, transparent);
+  --mint-soft: color-mix(in oklab, var(--mint) 11%, var(--surface));
+  --amber-soft: color-mix(in oklab, var(--amber) 11%, var(--surface));
+  --rose-soft: color-mix(in oklab, var(--rose) 9%, var(--surface));
+  --rest-soft: color-mix(in oklab, var(--rest) 9%, var(--surface));
+}
+html[data-theme="dark"][data-accent] {
+  --hue: var(--accent-d);
+  /* เลเยอร์ความลึก: canvas (ลึกสุด) → surface (การ์ด) → surface-2/3 → surface-pop (dropdown/เมนู ลอยเหนือสุด) */
+  --canvas: color-mix(in oklab, var(--hue) 7%, #0C0E13);
+  --surface: color-mix(in oklab, var(--hue) 7%, #14171E);
+  --surface-2: color-mix(in oklab, var(--hue) 8%, #191D25);
+  --surface-3: color-mix(in oklab, var(--hue) 10%, #20252F);
+  --surface-pop: color-mix(in oklab, var(--hue) 9%, #1D2129);
+  --border: color-mix(in oklab, var(--hue) 12%, #252A35);
+  --border-strong: color-mix(in oklab, var(--hue) 16%, #2E3442);
+  --input-bg: color-mix(in oklab, var(--hue) 6%, #101319);
+  --input-border: color-mix(in oklab, var(--hue) 16%, #2E3442);
+  --text: color-mix(in oklab, var(--hue) 5%, #F1F3F6);
+  --text-2: color-mix(in oklab, var(--hue) 10%, #A4ABB8);
+  --text-3: color-mix(in oklab, var(--hue) 10%, #737B8A);
+  --shadow-sm: none;
+  --shadow-md: 0 18px 44px -10px rgba(0, 0, 0, .62), 0 0 0 1px color-mix(in oklab, var(--hue) 8%, rgba(255, 255, 255, .03));
+  --glass: color-mix(in oklab, var(--surface) 72%, transparent);
+  /* กลางคืน: ลดความจัดของสีเน้นลงเล็กน้อย ไม่ให้แสบตา (ยังผ่าน AA กับตัวอักษรบนปุ่ม) */
+  --accent: color-mix(in oklab, var(--accent-d) 88%, #C9CDD6);
+  --accent-2: color-mix(in oklab, var(--accent2-d) 88%, #C9CDD6);
+  --mint-soft: color-mix(in oklab, var(--mint) 14%, var(--surface));
+  --amber-soft: color-mix(in oklab, var(--amber) 13%, var(--surface));
+  --rose-soft: color-mix(in oklab, var(--rose) 14%, var(--surface));
+  --rest-soft: color-mix(in oklab, var(--rest) 15%, var(--surface));
+}
+/* วันที่ผ่านมาแล้วในปฏิทิน: จางลงแต่ยังอ่านออก */
+html[data-accent] { --day-past-ink: color-mix(in oklab, var(--text-2) 70%, var(--text-3)); }
+/* กลางวัน: พื้นป้ายสีเน้นอ่อนลงอีกนิด ให้ตัวอักษรสีเน้นบนป้ายผ่าน AA ทุกธีม */
+html[data-accent]:not([data-theme="dark"]) { --accent-soft: color-mix(in oklab, var(--accent) 8%, var(--surface)); --accent-softer: color-mix(in oklab, var(--accent) 4%, var(--surface)); }
+
 /* ================= Base ================= */
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; }
@@ -176,7 +234,7 @@ input, textarea { caret-color: var(--accent); }
 
 /* สลับโหมดนุ่มๆ — เปิดเฉพาะตอนกดสลับ (class ใส่ชั่วคราว) เพื่อไม่ให้ทุก hover ช้า */
 html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *::after {
-  transition: background-color var(--dur) ease, border-color var(--dur) ease, color var(--dur) ease, fill var(--dur) ease, box-shadow var(--dur) ease !important;
+  transition: background-color 320ms var(--ease), border-color 320ms var(--ease), color 320ms var(--ease), fill 320ms var(--ease), stroke 320ms var(--ease), box-shadow 320ms var(--ease) !important;
 }
 @media (prefers-reduced-motion: reduce) {
   html.theme-anim, html.theme-anim * { transition: none !important; }
@@ -262,7 +320,7 @@ button.day:active { transform: scale(.96); }
 .day.loose { background: var(--amber-soft); color: var(--amber); }
 .day.lock { background: var(--rose-soft); color: var(--rose); }
 .day.off { background: var(--rest-soft); color: var(--rest); }
-.day.past { color: var(--text-3); background: transparent; }
+.day.past { color: var(--day-past-ink); background: transparent; }
 .day.today { box-shadow: inset 0 0 0 2px var(--accent); }
 .day.pick { box-shadow: 0 0 0 2px var(--accent), var(--ring); }
 .day.blank { visibility: hidden; }
@@ -295,7 +353,7 @@ button.day:active { transform: scale(.96); }
 .done { text-align: center; }
 .done .ic { width: 56px; height: 56px; border-radius: 50%; background: var(--mint-soft); color: var(--mint); display: grid; place-items: center; margin: 0 auto 10px; font-size: 26px; }
 .foot { text-align: center; color: var(--text-3); font-size: 12px; margin-top: var(--sp-2); }
-.foot a { color: var(--text-3); display: inline-block; padding: 10px 14px; border-radius: var(--r-md); }
+.foot a { color: var(--text-2); display: inline-block; padding: 10px 14px; border-radius: var(--r-md); }
 .foot a:hover { color: var(--text-2); }
 .foot a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .skel { height: 260px; border-radius: 16px; border: 1px solid var(--border); background: linear-gradient(90deg, var(--surface-2), var(--surface-3), var(--surface-2)); background-size: 200% 100%; }
@@ -347,7 +405,7 @@ button.day:active { transform: scale(.96); }
 .btn.soft { background: var(--accent-softer); border-color: var(--accent-line); color: var(--accent); font-weight: 600; box-shadow: none; }
 .btn.soft:hover { background: var(--accent-soft); }
 .placewrap { position: relative; }
-.placeres { position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 30; max-height: 280px; overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--border-strong); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-md); }
+.placeres { position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 30; max-height: 280px; overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--border-strong); border-radius: var(--r-lg); background: var(--surface-pop, var(--surface)); box-shadow: var(--shadow-md); }
 .placeres .pr-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 6px; padding: 8px 12px 6px; font-size: 12px; font-weight: 600; color: var(--text-2); background: var(--surface-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 .placeres .pr-head svg { width: 14px; height: 14px; color: var(--text-3); }
 .placeres .pr-item { display: flex; gap: 10px; align-items: flex-start; width: 100%; min-height: 48px; text-align: left; padding: 10px 12px; border: 0; border-top: 1px solid var(--border); background: none; color: var(--text); font: inherit; cursor: pointer; transition: background-color 120ms var(--ease); }
@@ -1069,7 +1127,7 @@ const darkMq_ = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') :
 function getAppearance_() { try { const v = localStorage.getItem('wk_appearance'); return APPEAR_TXT[v] ? v : 'auto'; } catch (e) { return 'auto'; } }
 function applyAppearance_(pref, animate) {
   const h = document.documentElement;
-  if (animate) { h.classList.add('theme-anim'); setTimeout(() => h.classList.remove('theme-anim'), 260); }
+  if (animate) { h.classList.add('theme-anim'); setTimeout(() => h.classList.remove('theme-anim'), 360); }
   h.dataset.appearance = pref;
   h.dataset.theme = pref === 'dark' || (pref === 'auto' && darkMq_ && darkMq_.matches) ? 'dark' : 'light';
   document.querySelectorAll('.modebtn').forEach(b => { const t = 'โหมด' + APPEAR_TXT[pref] + ' — กดเพื่อสลับ'; b.title = t; b.setAttribute('aria-label', t); });
