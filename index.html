@@ -19,6 +19,8 @@
 <meta name="twitter:title" content="NONGFOOK(DIT) · เช็คคิวว่าง">
 <meta name="twitter:description" content="บริการ DIT, COLOR GRADING ฟรีแลนซ์งานกองถ่าย — เช็คคิวว่างและจองคิวงานได้ที่นี่">
 <meta name="twitter:image" content="https://nongfookz.github.io/NONGFOOOK/og-image.jpg">
+<!-- Styles.html — design tokens + พื้นฐานที่ใช้ร่วมกันทั้งหลังร้าน (Index) และหน้าบ้าน (Public)
+     ดึงเข้าแต่ละหน้าด้วย scriptlet include('Styles') ใน head · ลำดับ: Appearance (data-theme) แยกจาก Accent (data-accent) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
@@ -514,8 +516,9 @@ html[data-pubeffect="snow"] #root::before {
   <svg class="fc-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
 </button>
 <script>
-const EXEC_URL = 'https://script.google.com/macros/s/AKfycbxonc213LYzv_3_oHg_ETfmgmp1XNyNWEd4D2rpNQ4TWM5MKHweEX1WN0iRwmHYcqxa/exec';
-const APP_URL = EXEC_URL;
+const RAW_URL = 'https://script.google.com/macros/s/AKfycbxonc213LYzv_3_oHg_ETfmgmp1XNyNWEd4D2rpNQ4TWM5MKHweEX1WN0iRwmHYcqxa/exec';
+const APP_URL = RAW_URL.indexOf('http') === 0 ? RAW_URL : '';
+const IS_GAS = typeof google !== 'undefined' && google.script && google.script.run;
 const TH_M = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const TH_MS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const TH_D = ['อา','จ','อ','พ','พฤ','ศ','ส'];
@@ -562,18 +565,28 @@ function initFloatingClock_() {
   setInterval(tick, 1000);
 }
 
-function run(fn, data) {
-  if (fn === 'getPublicData') {
-    return fetch(EXEC_URL + '?api=public', { cache: 'no-store' }).then(r => r.json());
-  }
+/* เรียกฝั่ง Apps Script: ใน Apps Script ใช้ google.script.run · บน GitHub Pages (build-pages.py ใส่ APP_URL ให้) ใช้ fetch API · เปิดไฟล์เปล่าๆ ใช้ข้อมูลตัวอย่าง */
+function runApi_(fn, data) {
+  if (fn === 'getPublicData') return fetch(APP_URL + '?api=public', { cache: 'no-store' }).then(r => r.json());
   if (fn === 'submitRequest') {
     const params = new URLSearchParams();
     Object.keys(data || {}).forEach(k => { if (data[k] != null && data[k] !== '') params.set(k, data[k]); });
-    return fetch(EXEC_URL + '?api=submit&' + params.toString(), { cache: 'no-store' })
+    return fetch(APP_URL + '?api=submit&' + params.toString(), { cache: 'no-store' })
       .then(r => r.json())
       .then(res => { if (!res || res.ok !== true) throw new Error((res && res.error) || 'ส่งคำขอไม่สำเร็จ'); return res; });
   }
   return Promise.reject(new Error('unknown fn: ' + fn));
+}
+function run(fn, ...args) {
+  if (!IS_GAS && APP_URL) return runApi_(fn, args[0]);
+  return new Promise((res, rej) => {
+    if (IS_GAS) return google.script.run.withSuccessHandler(res).withFailureHandler(e => rej(String(e && e.message || e).replace(/^(Error|Exception):\s*/, '')))[fn](...args);
+    const t = new Date(), iso = n => { const d = new Date(t); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+    setTimeout(() => {
+      if (fn === 'submitRequest') return res({ ok: true });
+      res({ today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', phone: '080-000-0000', line: 'example', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '' } });
+    }, 200);
+  });
 }
 
 const S = { days: {}, today: '', y: 0, m: 0, minKey: 0, maxKey: 0, pick: '', canReq: false, loaded: false, refreshing: false };
@@ -781,7 +794,7 @@ function applyAppearance_(pref, animate) {
   h.dataset.appearance = pref;
   h.dataset.theme = pref === 'dark' || (pref === 'auto' && darkMq_ && darkMq_.matches) ? 'dark' : 'light';
   document.querySelectorAll('.modebtn').forEach(b => { const t = 'โหมด' + APPEAR_TXT[pref] + ' — กดเพื่อสลับ'; b.title = t; b.setAttribute('aria-label', t); });
-  const tc = $('themeColorMeta'); /* แถบเบราว์เซอร์มือถือ/PWA ใช้สีพื้นตามโหมดสว่าง/มืด */
+  const tc = $('themeColorMeta'); /* แถบเบราว์เซอร์มือถือ/PWA ใช้สีพื้นตามโหมดสว่าง/มืด (มีเฉพาะบน GitHub Pages) */
   if (tc) tc.setAttribute('content', h.dataset.theme === 'dark' ? '#0B0D11' : '#F6F7F9');
 }
 if (darkMq_) { const onSys = () => { if (getAppearance_() === 'auto') applyAppearance_('auto', true); }; darkMq_.addEventListener ? darkMq_.addEventListener('change', onSys) : darkMq_.addListener(onSys); }
