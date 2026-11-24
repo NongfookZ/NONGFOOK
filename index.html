@@ -645,8 +645,9 @@ function chatLinks_(p) {
 }
 function renderChat_(p) {
   const root = $('chatRoot'); if (!root) return;
-  const { line, ig } = chatLinks_(p);
-  const msgOn = p.chatMsg !== 'no';
+  const widgetOn = p.showChatWidget !== 'no';   /* สวิตช์หลักจากหลังร้าน: ปิด = ไม่มีปุ่มแชทลอยเลย */
+  const links = widgetOn ? chatLinks_(p) : { line: null, ig: '' }, line = links.line, ig = links.ig;
+  const msgOn = widgetOn && p.chatMsg !== 'no';
   document.body.classList.toggle('has-chat', !!(line || ig || msgOn));
   if (!line && !ig && !msgOn) { root.innerHTML = ''; closeChat_(false); return; }
   const name = p.displayName || '';
