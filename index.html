@@ -773,7 +773,7 @@ function render(d) {
   const reqBtnTxt = String(p.pubReqBtnText || '').trim() || '📅 ขอจองคิว';
   document.title = (p.displayName || 'โปรไฟล์') + ' · เช็กคิวว่าง';
   const phone = (p.phone || '').replace(/[^0-9+]/g, '');
-  const lineId = (p.line || '').replace(/^@/, '');
+  const lineLink = chatLinks_(p).line; /* ใส่ลิงก์ LINE ไว้ ใช้ลิงก์นั้นก่อน · ไม่มีก็สร้างจาก LINE ID */
   S.canReq = p.acceptRequests !== 'no';
   const extraLinks = String(p.pubLinks || '').split('\n').map(l => l.trim()).filter(Boolean).map(l => {
     const parts = l.split('|').map(x => x.trim());
@@ -784,7 +784,7 @@ function render(d) {
   }).filter(Boolean).join('');
   const contacts = [
     phone ? '<a class="btn primary" href="tel:' + esc(phone) + '">' + ICON.phone + 'โทร</a>' : '',
-    lineId ? '<a class="btn" href="https://line.me/ti/p/~' + encodeURIComponent(lineId) + '" target="_blank" rel="noopener">' + ICON.chat + 'LINE</a>' : '',
+    lineLink ? '<a class="btn" href="' + esc(lineLink.url) + '" target="_blank" rel="noopener">' + ICON.chat + 'LINE</a>' : '',
     p.email ? '<a class="btn" href="mailto:' + esc(p.email) + '">' + ICON.mail + 'อีเมล</a>' : '',
     extraLinks,
     S.canReq ? '<button type="button" class="btn" data-jump="1">' + esc(reqBtnTxt) + '</button>' : ''
