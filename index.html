@@ -533,7 +533,7 @@ const ICON = {
   refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>'
 };
 
-const MODE_BTN = '<button type="button" class="iconbtn refresh modebtn pub-mode" data-appearance="1" aria-label="สลับโหมดสว่าง/มืด" title="สลับโหมดสว่าง/มืด">' +
+const MODE_BTN = '<button type="button" class="iconbtn refresh modebtn pub-mode" data-act="appearance" aria-label="สลับโหมดสว่าง/มืด" title="สลับโหมดสว่าง/มืด">' +
   '<svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/></svg>' +
   '<svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>' +
   '<svg class="ic-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17a8.5 8.5 0 0 0 0-17z" fill="currentColor" stroke="none"/></svg></button>';
@@ -786,7 +786,7 @@ function applyAppearance_(pref, animate) {
 }
 if (darkMq_) { const onSys = () => { if (getAppearance_() === 'auto') applyAppearance_('auto', true); }; darkMq_.addEventListener ? darkMq_.addEventListener('change', onSys) : darkMq_.addListener(onSys); }
 document.addEventListener('click', e => {
-  const mb = e.target.closest('[data-appearance]');
+  const mb = e.target.closest('button[data-act="appearance"]');
   if (!mb) return;
   const cur = getAppearance_(), next = cur === 'light' ? 'dark' : cur === 'dark' ? 'auto' : 'light';
   try { next === 'auto' ? localStorage.removeItem('wk_appearance') : localStorage.setItem('wk_appearance', next); } catch (err) {}
