@@ -397,13 +397,20 @@ button.day:active { transform: scale(.96); }
 .gearlist { list-style: none; margin: var(--sp-3) 0 0; padding: 0; display: grid; gap: 8px; }
 .gearlist li { position: relative; padding-left: 18px; font-size: 15px; line-height: 1.5; color: var(--text); }
 .gearlist li::before { content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); }
-.credcard .cr-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.credcard .cr-head h2 { font-size: 1.1rem; margin: 0; }
+.credcard .cr-head { display: flex; align-items: center; gap: 10px; width: 100%; padding: 0; margin: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.credcard .cr-head h2 { font-size: 1.1rem; margin: 0; flex: 1; min-width: 0; }
 .credcard .cr-count { font-size: 12px; color: var(--text-2); white-space: nowrap; }
-.credcard .cr-sel { position: relative; flex: none; }
-.credcard .cr-sel select { appearance: none; -webkit-appearance: none; font: inherit; font-size: 13px; font-weight: 600; line-height: 1; height: 32px; padding: 0 30px 0 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; }
-.credcard .cr-sel select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.credcard .cr-sel::after { content: ""; position: absolute; right: 12px; top: 50%; width: 6px; height: 6px; margin-top: -5px; border-right: 1.5px solid var(--text-2); border-bottom: 1.5px solid var(--text-2); transform: rotate(45deg); pointer-events: none; }
+.credcard .cr-chev { flex: none; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 999px; border: 1px solid var(--border); color: var(--text-2); transition: transform .2s ease; }
+.credcard .cr-chev svg { width: 14px; height: 14px; }
+.credcard .cr-head[aria-expanded="true"] .cr-chev { transform: rotate(180deg); }
+.credcard .cr-head:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 8px; }
+.credcard .cr-head:hover .cr-chev { color: var(--text); border-color: var(--text-2); }
+.credcard .cr-filter { display: flex; gap: 6px; margin-top: var(--sp-3); overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.credcard .cr-filter::-webkit-scrollbar { display: none; }
+.credcard .cr-filter button { flex: none; font: inherit; font-size: 13px; line-height: 1; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.credcard .cr-filter button:hover { color: var(--text); }
+.credcard .cr-filter button[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--surface); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .credcard .cr-chev { transition: none; } }
 .cr-list { list-style: none; margin: var(--sp-3) 0 0; padding: 0; }
 .cr-list li { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--border); }
 .cr-list li:first-child { border-top: 0; }
@@ -987,7 +994,8 @@ function render(d) {
     (services.length ? '<h2 style="font-size:1.1rem">ตำแหน่งที่รับงาน</h2><div class="services">' + services.map(s => '<span>' + esc(s) + '</span>').join('') + '</div>' : '') +
     (gear.length ? '<h2 style="font-size:1.1rem' + (services.length ? ';margin-top:var(--sp-4)' : '') + '">อุปกรณ์หลัก</h2><ul class="gearlist">' + gear.map(s => '<li>' + esc(s) + '</li>').join('') + '</ul>' : '') + '</section>' : '';
   S.credits = p.showCredits === 'no' ? [] : parseCredits_(p.creditsList);
-  const credH = S.credits.length ? '<section class="card credcard o-cred" id="credCard"><div class="cr-head"><h2>🎬 Selected Credits</h2><span class="cr-fslot" id="credFilter"></span></div><div class="hint">ผลงานที่ผ่านมา</div><div id="credBody"></div></section>' : '';
+  if (S.credOpen === undefined) S.credOpen = false;
+  const credH = S.credits.length ? '<section class="card credcard o-cred" id="credCard"><button type="button" class="cr-head" id="credToggle" aria-expanded="' + S.credOpen + '" aria-controls="credBody"><h2>🎬 Selected Credits</h2><span class="cr-count">' + S.credits.length + ' ผลงาน</span><span class="cr-chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></button><div class="hint">ผลงานที่ผ่านมา</div><div id="credBody"' + (S.credOpen ? '' : ' hidden') + '></div></section>' : '';
   const split = p.showCalendar !== 'no' && (S.canReq || gearH || credH);
   h = h.replace('<section class="card profile">', '<div class="pcol pl"><section class="card profile o-prof">');
   if (!split) h += gearH + credH;
@@ -1019,7 +1027,10 @@ function render(d) {
     renderCal();
   }
   if (S.canReq) wireForm();
-  if (S.credits.length) renderCredits();
+  if (S.credits.length) {
+    renderCredits();
+    $('credToggle').onclick = () => { S.credOpen = !S.credOpen; $('credToggle').setAttribute('aria-expanded', S.credOpen); $('credBody').hidden = !S.credOpen; };
+  }
 }
 
 /* ---------- 🎬 Selected Credits ---------- */
@@ -1036,10 +1047,7 @@ function renderCredits() {
   const list = S.credF === 'all' ? S.credits : S.credits.filter(c => c.type === S.credF);
   const shown = S.credAll ? list : list.slice(0, 5);
   const cnt = t => t === 'all' ? S.credits.length : S.credits.filter(c => c.type === t).length;
-  const slot = $('credFilter');
-  if (slot) slot.innerHTML = types.length > 1 ? '<label class="cr-sel"><select id="credSel" aria-label="กรองประเภทผลงาน">' + ['all'].concat(types).map(t => '<option value="' + esc(t) + '"' + (S.credF === t ? ' selected' : '') + '>' + (t === 'all' ? 'ทั้งหมด' : esc(t)) + ' (' + cnt(t) + ')</option>').join('') + '</select></label>' : '<span class="cr-count">' + S.credits.length + ' ผลงาน</span>';
-  if ($('credSel')) $('credSel').onchange = e => { S.credF = e.target.value; S.credAll = false; renderCredits(); };
-  box.innerHTML =
+  box.innerHTML = (types.length > 1 ? '<div class="cr-filter" role="group" aria-label="กรองประเภทผลงาน">' + ['all'].concat(types).map(t => '<button type="button" data-crf="' + esc(t) + '" aria-pressed="' + (S.credF === t) + '">' + (t === 'all' ? 'ทั้งหมด' : esc(t)) + ' <span style="opacity:.6">' + cnt(t) + '</span></button>').join('') + '</div>' : '') +
     '<ul class="cr-list">' + shown.map(c => '<li><span class="cr-y">' + esc(c.year || '–') + '</span><div class="cr-main"><div class="cr-t">' + esc(c.title) + (c.artist ? '<span class="cr-art"> — ' + esc(c.artist) + '</span>' : '') + '</div>' +
       '<div class="cr-sub">' + esc(c.type) + (c.house ? '<span class="dot">·</span>' + esc(c.house) : '') + '</div>' +
       (c.roles.length ? '<div class="cr-roles">' + c.roles.map(r => '<span class="cr-role">' + esc(r) + '</span>').join('') + '</div>' : '') + '</div>' +
@@ -1047,6 +1055,7 @@ function renderCredits() {
     '</ul>' +
     (list.length > 5 ? '<button type="button" class="cr-more" data-crmore="1">' + (S.credAll ? 'ย่อรายการ' : 'ดูผลงานทั้งหมด (' + list.length + ')') + '</button>' : '');
   box.onclick = e => {
+    const f = e.target.closest('[data-crf]'); if (f) { S.credF = f.dataset.crf; S.credAll = false; return renderCredits(); }
     if (e.target.closest('[data-crmore]')) { S.credAll = !S.credAll; renderCredits(); }
   };
 }
