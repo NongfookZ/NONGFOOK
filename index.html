@@ -379,6 +379,11 @@ button.day:active { transform: scale(.96); }
 .hint { font-size: 13px; color: var(--text-2); }
 .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4) var(--sp-3); }
 .grid2 .full { grid-column: 1 / -1; }
+/* แถว 2 คอลัมน์: ดันกล่องกรอกลงล่างสุดของช่อง → ขอบกล่องซ้าย-ขวาตรงกันเสมอ แม้ป้ายฝั่งหนึ่งตัดเป็น 2 บรรทัด */
+.grid2 { align-items: stretch; }
+.grid2 > .field > :is(input, select, textarea):last-child { margin-top: auto; }
+.flbl .hint { font-size: 12px; font-weight: 400; }
+.fnote { margin: calc(var(--sp-2) * -1) 0 0; font-size: 12px; color: var(--text-2); }
 @media (max-width: 480px) { .grid2 { grid-template-columns: 1fr; } }
 /* ลำดับบนมือถือ (คอลัมน์ไม่มีผล) + 2 คอลัมน์บนจอคอม */
 .pcol { display: contents; }
@@ -866,7 +871,7 @@ function requestForm(p) {
     '<div class="hint" style="margin-bottom:14px">ส่งบรีฟคร่าว ๆ มาก่อน แล้ว' + (p.displayName ? ' ' + esc(p.displayName) : 'ทางเรา') + ' จะทักกลับเพื่อคอนเฟิร์มคิว</div>' +
     '<form id="reqForm" class="grid2" novalidate>' +
     '<label class="field" for="r_date">วันออกกอง *<input id="r_date" type="date" required></label>' +
-    '<label class="field" for="r_end">ถึงวันที่ <span class="hint">(ถ้าหลายวัน)</span><input id="r_end" type="date"></label>' +
+    '<label class="field" for="r_end"><span class="flbl">ถึงวันที่ <span class="hint">· ถ้าหลายวัน</span></span><input id="r_end" type="date"></label>' +
     '<div class="full" id="r_state"></div>' +
     '<div class="full field" role="radiogroup" aria-label="แบบการจองคิว"><span>แบบการจองคิว *</span><div class="qpick">' +
     '<label><input type="radio" name="r_queue" value="lock" checked><b>🔒 ล็อกคิว</b><span class="hint">งานคอนเฟิร์มแล้ว ขอล็อกวันไว้เลย</span></label>' +
@@ -874,9 +879,10 @@ function requestForm(p) {
     '<div class="full pmhello" id="r_pmHello" hidden></div>' +
     '<div class="full grid2 pmfields" id="r_pmFields">' +
     '<input type="hidden" id="r_house">' + /* ไม่ให้ลูกค้ากรอก House แล้ว: เก็บเงียบ ๆ จากลิงก์ ?house= หรือข้อมูลที่จำไว้ */
-    '<label class="field" for="r_name">ชื่อ PM / ผู้ประสานงาน *<input id="r_name" autocomplete="name" required></label>' +
-    '<label class="field" for="r_phone">เบอร์ PM<input id="r_phone" type="tel" inputmode="tel" autocomplete="tel"></label>' +
-    '<label class="field full" for="r_line">LINE ID <span class="hint">(ใส่เบอร์หรือ LINE อย่างน้อย 1 ช่อง)</span><input id="r_line"></label></div>' +
+    '<label class="field full" for="r_name">ชื่อ PM / ผู้ประสานงาน *<input id="r_name" autocomplete="name" required></label>' +
+    '<label class="field" for="r_phone">เบอร์ PM<input id="r_phone" type="tel" inputmode="tel" autocomplete="tel" aria-describedby="r_contactNote"></label>' +
+    '<label class="field" for="r_line">LINE ID<input id="r_line" aria-describedby="r_contactNote"></label>' +
+    '<p class="full fnote" id="r_contactNote">ใส่เบอร์หรือ LINE อย่างน้อย 1 ช่อง</p></div>' +
     '<div class="full placewrap" id="r_placeWrap"><label class="field" for="r_loc">โลเคชันถ่ายทำ<input id="r_loc" autocomplete="off" placeholder="ชื่อสถานที่ หรือลิงก์ Google Maps" role="combobox" aria-autocomplete="list" aria-controls="r_placeRes" aria-expanded="false"></label>' +
     '<div class="placeres" id="r_placeRes" role="listbox" aria-label="แนะนำสถานที่" hidden></div></div>' +
     '<div class="full placebar"><button type="button" class="btn sm soft" id="r_placeBtn">🔎 ค้นหาสถานที่</button><span class="hint">พิมพ์ 3 ตัวอักษรขึ้นไป ระบบจะค้นหาให้</span></div>' +
@@ -1284,7 +1290,7 @@ const PubFx = (() => {
     rm.addEventListener ? rm.addEventListener('change', onRm) : rm.addListener && rm.addListener(onRm);
   }
   function size() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5); /* จอ Retina/มือถือ: 1.5 พอสำหรับหิมะ/พลุ ลดงาน GPU เกือบครึ่ง */
     W = window.innerWidth; H = window.innerHeight; mobile = W < 640;
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1436,16 +1442,44 @@ const pageQpReady_ = new Promise(res => {
   } catch (e) { /* ไม่ใช่ Apps Script */ }
   res();
 });
+/* เปิดหน้าติดทันที (stale-while-revalidate): วาดจากข้อมูลชุดล่าสุดในเครื่องก่อน แล้วดึงของจริงมาอัปเดตเงียบ ๆ
+ * ถ้าลูกค้าเริ่มแตะ/พิมพ์แล้ว จะอัปเดตเฉพาะปฏิทิน ไม่สร้างฟอร์มใหม่ (ข้อมูลที่กรอกไม่หาย) */
+const PUB_CACHE_KEY = 'wk_pub_cache_v1';
+const PUB_CACHE_MAX_AGE = 7 * 864e5;
+function pubCacheRead_() {
+  try {
+    const c = JSON.parse(localStorage.getItem(PUB_CACHE_KEY) || 'null');
+    return c && c.s && Date.now() - Number(c.t) < PUB_CACHE_MAX_AGE ? c.s : '';
+  } catch (e) { return ''; }
+}
+function pubCacheWrite_(str) { try { localStorage.setItem(PUB_CACHE_KEY, JSON.stringify({ t: Date.now(), s: str })); } catch (e) { /* เต็ม/ปิดไว้ก็ไม่เป็นไร */ } }
+['pointerdown', 'keydown', 'focusin'].forEach(ev => document.addEventListener(ev, () => { S.touched = true; }, { capture: true, passive: true }));
+function applyFresh_(d) {
+  if (!S.touched || d.hidden || !S.days) { render(d); return; }
+  S.days = d.days || {};
+  if (/^\d{4}-\d{2}-\d{2}$/.test(String(d.today || ''))) S.today = d.today;
+  if ($('cal')) renderCal();
+  if ($('r_date') && $('r_date').value) checkDates();
+}
 async function loadPublic(fromBtn) {
   if (S.refreshing) return;
   S.refreshing = true;
   if (fromBtn) { fromBtn.classList.add('spin'); fromBtn.disabled = true; }
+  let shown = '';
+  if (!fromBtn && !S.loaded) {
+    const c = pubCacheRead_();
+    if (c) { try { render(JSON.parse(c)); shown = c; } catch (e) { shown = ''; } }
+  }
   try {
     const d = await run('getPublicData');
-    render(d);
+    const str = JSON.stringify(d);
+    if (d && !d.error) pubCacheWrite_(str);
+    if (!shown) render(d);
+    else if (str !== shown) applyFresh_(d);
     if (fromBtn) toast('อัปเดตคิวล่าสุดแล้ว');
   } catch (err) {
     if (fromBtn) toast('อัปเดตไม่สำเร็จ ลองใหม่อีกครั้ง');
+    else if (shown) { /* มีข้อมูลจากเครื่องแสดงอยู่แล้ว ไม่ต้องทับด้วยหน้าข้อผิดพลาด */ }
     else $('root').innerHTML = '<div class="card" style="text-align:center"><p>โหลดคิวไม่สำเร็จ เช็กอินเทอร์เน็ตแล้วลองอีกครั้ง</p><button type="button" class="btn primary" data-refresh="1">🔄 ลองโหลดใหม่</button></div>';
   } finally {
     S.refreshing = false;
