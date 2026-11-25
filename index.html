@@ -424,6 +424,24 @@ button.day:active { transform: scale(.96); }
 .cr-roles { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
 .cr-role { font-size: 11px; font-weight: 600; line-height: 1; letter-spacing: .02em; padding: 4px 7px; border-radius: 5px; background: var(--accent-soft); color: var(--accent); }
 .cr-go { display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 30px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--text); text-decoration: none; white-space: nowrap; transition: border-color .15s, color .15s; }
+.cr-yt { position: relative; width: 112px; aspect-ratio: 16 / 9; padding: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface-2); cursor: pointer; align-self: center; }
+.cr-yt img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s ease; }
+.cr-yt:hover img { transform: scale(1.05); }
+.cr-yt:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cr-play { position: absolute; inset: 0; margin: auto; width: 34px; height: 34px; border-radius: 999px; display: grid; place-items: center; background: rgba(0, 0, 0, .62); color: #fff; }
+.cr-play svg { width: 16px; height: 16px; margin-left: 2px; }
+@media (max-width: 380px) { .cr-yt { width: 92px; } }
+.yt-lb { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .82); }
+.yt-lb[hidden] { display: none; }
+.yt-box { position: relative; width: min(960px, 100%); }
+.yt-frame { aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 20px 60px -10px rgba(0, 0, 0, .6); }
+.yt-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+.yt-x { position: absolute; top: -46px; right: 0; width: 38px; height: 38px; border-radius: 999px; border: 0; background: rgba(255, 255, 255, .14); color: #fff; display: grid; place-items: center; cursor: pointer; }
+.yt-x:hover { background: rgba(255, 255, 255, .26); }
+.yt-x:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.yt-x svg { width: 18px; height: 18px; }
+html.yt-open { overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .cr-yt img { transition: none; } }
 .cr-go:hover { border-color: var(--accent); color: var(--accent); }
 .cr-go svg { width: 10px; height: 10px; }
 .cr-more { margin-top: var(--sp-2); font: inherit; font-size: 13px; font-weight: 600; width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; }
@@ -849,7 +867,7 @@ const PubMock = {
   getPublicData: () => {
     const t = new Date(), iso = n => { const d = new Date(t); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
     const qp = new URLSearchParams(location.search);
-    return { today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', gearList: qp.get('gear') === 'none' ? '' : 'กล้อง Sony FX6 + เลนส์ชุด\nไฟ Aputure 600d ×2\nไมค์ไร้สาย Sennheiser', showGear: 'yes', showCredits: 'yes', creditsList: qp.get('credits') === 'none' ? '' : '[{"year":"2026","title":"Midnight Run","artist":"NOVA","type":"MV","roles":["DIT","Colorist"],"house":"Moonlight Studio","url":"https://youtu.be/example"},{"year":"2025","title":"Fresh Brew TVC","type":"โฆษณา","roles":["DIT"],"house":"Bright House","url":""},{"year":"2025","title":"รักนะ ซีซั่น 2","type":"ซีรีส์","roles":["Data Wrangler"],"house":"Sunrise Pictures","url":""},{"year":"2024","title":"ทางกลับบ้าน","type":"หนังสั้น","roles":["Colorist"],"house":"Indie Lab","url":"https://vimeo.com/example"},{"year":"2024","title":"City Lights","artist":"The Lanterns","type":"MV","roles":["DIT"],"house":"Neon House","url":""},{"year":"2023","title":"Summer Drink","type":"โฆษณา","roles":["Data Wrangler","DIT"],"house":"Bright House","url":""}]', phone: '080-000-0000', line: qp.get('chat') === 'none' ? '' : 'example', lineUrl: '', igUser: qp.get('chat') === 'none' || qp.get('chat') === 'line' ? '' : 'example.crew', chatGreeting: '', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '', pubEffect: qp.get('fx') || '', theme: qp.get('theme') || 'sky' } };
+    return { today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', gearList: qp.get('gear') === 'none' ? '' : 'กล้อง Sony FX6 + เลนส์ชุด\nไฟ Aputure 600d ×2\nไมค์ไร้สาย Sennheiser', showGear: 'yes', showCredits: 'yes', creditsList: qp.get('credits') === 'none' ? '' : '[{"year":"2026","title":"Midnight Run","artist":"NOVA","type":"MV","roles":["DIT","Colorist"],"house":"Moonlight Studio","url":"https://youtu.be/dQw4w9WgXcQ"},{"year":"2025","title":"Fresh Brew TVC","type":"โฆษณา","roles":["DIT"],"house":"Bright House","url":""},{"year":"2025","title":"รักนะ ซีซั่น 2","type":"ซีรีส์","roles":["Data Wrangler"],"house":"Sunrise Pictures","url":""},{"year":"2024","title":"ทางกลับบ้าน","type":"หนังสั้น","roles":["Colorist"],"house":"Indie Lab","url":"https://vimeo.com/example"},{"year":"2024","title":"City Lights","artist":"The Lanterns","type":"MV","roles":["DIT"],"house":"Neon House","url":""},{"year":"2023","title":"Summer Drink","type":"โฆษณา","roles":["Data Wrangler","DIT"],"house":"Bright House","url":""}]', phone: '080-000-0000', line: qp.get('chat') === 'none' ? '' : 'example', lineUrl: '', igUser: qp.get('chat') === 'none' || qp.get('chat') === 'line' ? '' : 'example.crew', chatGreeting: '', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '', pubEffect: qp.get('fx') || '', theme: qp.get('theme') || 'sky' } };
   },
   submitRequest: () => ({ ok: true }),
   submitMessage: m => { if (!String(m.message || '').trim()) throw new Error('พิมพ์ข้อความก่อนส่ง'); return { ok: true }; },
@@ -1041,6 +1059,30 @@ function parseCredits_(raw) {
   return (Array.isArray(a) ? a : []).filter(c => c && c.title).map(c => ({ year: String(c.year || ''), title: String(c.title), artist: String(c.artist || ''), type: CRED_TYPES.includes(c.type) ? c.type : 'อื่นๆ', roles: (Array.isArray(c.roles) ? c.roles : String(c.roles || '').split(',')).map(r => String(r).trim()).filter(Boolean), house: String(c.house || ''), url: /^https?:\/\//i.test(String(c.url || '')) ? String(c.url) : '', pin: c.pin ? 1 : 0 }))
     .map((c, i) => Object.assign(c, { _i: i })).sort((a, b) => (b.pin - a.pin) || (a._i - b._i)); /* ปักหมุดขึ้นก่อน แล้วตามลำดับที่จัดไว้หลังร้าน */
 }
+/* YouTube: แยก Video ID (watch?v= / youtu.be / shorts / embed / live) — ไม่ต้องใช้ API Key */
+function ytId_(u) {
+  const m = /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/i.exec(String(u || ''));
+  return m ? m[1] : '';
+}
+function ytOpen_(id, from) {
+  let lb = $('ytLb');
+  if (!lb) {
+    document.body.insertAdjacentHTML('beforeend', '<div class="yt-lb" id="ytLb" role="dialog" aria-modal="true" aria-label="เล่นวิดีโอผลงาน" hidden><div class="yt-box"><button type="button" class="yt-x" id="ytX" aria-label="ปิดวิดีโอ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="yt-frame"><iframe id="ytIf" title="วิดีโอผลงาน" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div></div></div>');
+    lb = $('ytLb');
+    lb.addEventListener('click', e => { if (e.target === lb || e.target.closest('#ytX')) ytClose_(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('ytLb').hidden) ytClose_(); });
+  }
+  S.ytFrom = from || null;
+  $('ytIf').src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+  lb.hidden = false; document.documentElement.classList.add('yt-open');
+  $('ytX').focus();
+}
+function ytClose_() {
+  const lb = $('ytLb'); if (!lb) return;
+  $('ytIf').src = ''; lb.hidden = true; document.documentElement.classList.remove('yt-open');
+  if (S.ytFrom && S.ytFrom.focus) S.ytFrom.focus();
+}
+
 function renderCredits() {
   const box = $('credBody'); if (!box) return;
   if (!CRED_TYPES.includes(S.credF)) S.credF = 'all';
@@ -1052,11 +1094,13 @@ function renderCredits() {
     '<ul class="cr-list">' + shown.map(c => '<li><span class="cr-y">' + esc(c.year || '–') + '</span><div class="cr-main"><div class="cr-t">' + (c.pin ? '<span class="cr-pin" title="ผลงานเด่น" aria-label="ผลงานเด่น">★</span>' : '') + esc(c.title) + (c.artist ? '<span class="cr-art"> — ' + esc(c.artist) + '</span>' : '') + '</div>' +
       '<div class="cr-sub">' + esc(c.type) + (c.house ? '<span class="dot">·</span>' + esc(c.house) : '') + '</div>' +
       (c.roles.length ? '<div class="cr-roles">' + c.roles.map(r => '<span class="cr-role">' + esc(r) + '</span>').join('') + '</div>' : '') + '</div>' +
-      (c.url ? '<a class="cr-go" href="' + esc(c.url) + '" target="_blank" rel="noopener noreferrer" aria-label="ดูงาน ' + esc(c.title) + '"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg>ดูงาน</a>' : '<span></span>') + '</li>').join('') +
+      (ytId_(c.url) ? '<button type="button" class="cr-yt" data-yt="' + ytId_(c.url) + '" aria-label="เล่นวิดีโอ ' + esc(c.title) + '"><img src="https://img.youtube.com/vi/' + ytId_(c.url) + '/mqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="cr-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span></button>'
+        : c.url ? '<a class="cr-go" href="' + esc(c.url) + '" target="_blank" rel="noopener noreferrer" aria-label="ดูงาน ' + esc(c.title) + '"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg>ดูงาน</a>' : '<span></span>') + '</li>').join('') +
     '</ul>' +
     (list.length > 5 ? '<button type="button" class="cr-more" data-crmore="1">' + (S.credAll ? 'ย่อรายการ' : 'ดูผลงานทั้งหมด (' + list.length + ')') + '</button>' : '');
   box.onclick = e => {
     const f = e.target.closest('[data-crf]'); if (f) { S.credF = f.dataset.crf; S.credAll = false; return renderCredits(); }
+    const y = e.target.closest('[data-yt]'); if (y) return ytOpen_(y.dataset.yt, y);
     if (e.target.closest('[data-crmore]')) { S.credAll = !S.credAll; renderCredits(); }
   };
 }
