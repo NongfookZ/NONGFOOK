@@ -385,12 +385,6 @@ button.day:active { transform: scale(.96); }
 .pub-ticker, .pub-notice { order: 0; } .o-prof { order: 1; } .o-gear { order: 2; } .o-cal { order: 3; } .o-reqbtn { order: 4; } .o-req { order: 5; } .wrap > .foot { order: 6; }
 .day.inrange { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent); }
 .rangehint { display: flex; align-items: center; justify-content: space-between; gap: 8px 10px; flex-wrap: wrap; margin-top: 10px; padding: 8px 10px 8px 12px; border-radius: var(--r-md); background: color-mix(in srgb, var(--accent) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); font-size: 14px; color: var(--text); }
-.tchips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.35fr); gap: 6px; margin: 2px 0 8px; max-width: 460px; }
-.tchips button { min-height: 40px; padding: 0 4px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: var(--font-mono); font-size: 14px; cursor: pointer; }
-.tchips button:last-child { font-family: var(--font-sans); }
-.tchips button:hover { border-color: var(--border-strong, var(--text-3)); }
-.tchips button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink, #fff); }
-.tchips button:focus-visible { outline: none; box-shadow: var(--ring); }
 .pmhello { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 12px 14px; border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--border); font-size: 14px; }
 .pmhello b { font-weight: 600; }
 .pmtxt { min-width: 0; flex: 1 1 200px; }
@@ -877,13 +871,12 @@ function requestForm(p) {
     '<div class="full field" role="radiogroup" aria-label="แบบการจองคิว"><span>แบบการจองคิว *</span><div class="qpick">' +
     '<label><input type="radio" name="r_queue" value="lock" checked><b>🔒 ล็อกคิว</b><span class="hint">งานคอนเฟิร์มแล้ว ขอล็อกวันไว้เลย</span></label>' +
     '<label class="loose"><input type="radio" name="r_queue" value="loose"><b>คิวหลวม</b><span class="hint">แตะคิวไว้ก่อน ยังไม่คอนเฟิร์ม ถ้ามีงานล็อกเข้ามาอาจหลุดคิว</span></label></div></div>' +
-    '<div class="full field"><label for="r_time">Call Time</label><div class="tchips" role="group" aria-label="เลือก Call Time ด่วน">' + ['05:00', '06:00', '07:00', '08:00'].map(t => '<button type="button" data-ct="' + t + '" aria-pressed="false">' + t + '</button>').join('') + '<button type="button" data-ct="" aria-pressed="false">เวลาอื่น</button></div><input id="r_time" type="time" class="tinput"></div>' +
     '<div class="full pmhello" id="r_pmHello" hidden></div>' +
     '<div class="full grid2 pmfields" id="r_pmFields">' +
-    '<label class="field" for="r_house">Production House<input id="r_house" autocomplete="organization" placeholder="ชื่อบริษัทโปรดักชัน"></label>' +
+    '<input type="hidden" id="r_house">' + /* ไม่ให้ลูกค้ากรอก House แล้ว: เก็บเงียบ ๆ จากลิงก์ ?house= หรือข้อมูลที่จำไว้ */
     '<label class="field" for="r_name">ชื่อ PM / ผู้ประสานงาน *<input id="r_name" autocomplete="name" required></label>' +
     '<label class="field" for="r_phone">เบอร์ PM<input id="r_phone" type="tel" inputmode="tel" autocomplete="tel"></label>' +
-    '<label class="field" for="r_line">LINE ID <span class="hint">(ใส่เบอร์หรือ LINE อย่างน้อย 1 ช่อง)</span><input id="r_line"></label></div>' +
+    '<label class="field full" for="r_line">LINE ID <span class="hint">(ใส่เบอร์หรือ LINE อย่างน้อย 1 ช่อง)</span><input id="r_line"></label></div>' +
     '<div class="full placewrap" id="r_placeWrap"><label class="field" for="r_loc">โลเคชันถ่ายทำ<input id="r_loc" autocomplete="off" placeholder="ชื่อสถานที่ หรือลิงก์ Google Maps" role="combobox" aria-autocomplete="list" aria-controls="r_placeRes" aria-expanded="false"></label>' +
     '<div class="placeres" id="r_placeRes" role="listbox" aria-label="แนะนำสถานที่" hidden></div></div>' +
     '<div class="full placebar"><button type="button" class="btn sm soft" id="r_placeBtn">🔎 ค้นหาสถานที่</button><span class="hint">พิมพ์ 3 ตัวอักษรขึ้นไป ระบบจะค้นหาให้</span></div>' +
@@ -1031,16 +1024,11 @@ function pmShow_(pm, qh) {
     '<span class="pmbtns"><button type="button" class="btn sm" data-pm="edit">แก้</button><button type="button" class="btn sm" data-pm="forget">ไม่ใช่ฉัน</button></span>';
   hello.hidden = false; fields.hidden = true;
 }
-function ctSync_() {
-  const v = $('r_time').value, preset = ['05:00', '06:00', '07:00', '08:00'];
-  document.querySelectorAll('[data-ct]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ct ? b.dataset.ct === v : !!v && !preset.includes(v))));
-}
 
 function wireForm() {
   $('r_date').min = S.today; $('r_end').min = S.today;
   const qh = pageParam_('house').trim().slice(0, 120);
   pmShow_(pmLoad_(), qh);
-  $('r_time').addEventListener('input', ctSync_);
   ['r_date', 'r_end'].forEach(id => { $(id).addEventListener('input', checkDates); $(id).addEventListener('change', checkDates); });
   rPlaceBind_();
   $('reqForm').addEventListener('submit', async e => {
@@ -1056,7 +1044,7 @@ function wireForm() {
     const reqDate = v('r_date'), reqEnd = v('r_end'), reqQ = (document.querySelector('input[name="r_queue"]:checked') || {}).value || 'lock';
     try {
       pmSave_({ name: v('r_name'), house: v('r_house'), phone: v('r_phone'), line: v('r_line') });
-      await run('submitRequest', { date: reqDate, endDate: reqEnd, time: v('r_time'), house: v('r_house'), name: v('r_name'), phone: v('r_phone'), line: v('r_line'), location: isUrl ? '' : loc, mapUrl: pin, detail: v('r_detail'), website: v('r_web'), queue: reqQ });
+      await run('submitRequest', { date: reqDate, endDate: reqEnd, time: '', house: v('r_house'), name: v('r_name'), phone: v('r_phone'), line: v('r_line'), location: isUrl ? '' : loc, mapUrl: pin, detail: v('r_detail'), website: v('r_web'), queue: reqQ });
       $('reqCard').innerHTML = '<div class="done"><div class="ic">✓</div><h2 style="font-size:1.2rem">ได้รับคำขอจองคิวแล้ว</h2><p class="hint">ขอคิววันที่ ' + esc(thFull(reqDate)) + (reqEnd ? ' – ' + esc(thFull(reqEnd)) : '') + '<br>แบบ: ' + (reqQ === 'loose' ? 'คิวหลวม' : '🔒 ล็อกคิว') + '<br>เดี๋ยวทักกลับเพื่อคอนเฟิร์มคิวโดยเร็ว</p><button type="button" class="btn" data-refresh="1" style="margin-top:8px">รีเฟรชหน้านี้</button></div>';
     } catch (err) { $('r_send').disabled = false; $('r_send').textContent = 'ส่งคำขอจองคิว'; bad(esc(err)); }
   });
@@ -1498,9 +1486,8 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-pick],[data-jump],[data-close],[data-refresh],[data-ct],[data-pm],[data-rclear]'); if (!t) return;
+  const t = e.target.closest('[data-pick],[data-jump],[data-close],[data-refresh],[data-pm],[data-rclear]'); if (!t) return;
   e.preventDefault();
-  if (t.dataset.ct != null) { $('r_time').value = t.dataset.ct; ctSync_(); if (!t.dataset.ct) { $('r_time').focus(); if ($('r_time').showPicker) try { $('r_time').showPicker(); } catch (er) { /* บางเบราว์เซอร์ไม่รองรับ */ } } return; }
   if (t.dataset.pm === 'edit') { $('r_pmFields').hidden = false; $('r_pmHello').hidden = true; $('r_name').focus(); return; }
   if (t.dataset.pm === 'forget') { pmClear_(); ['r_house', 'r_name', 'r_phone', 'r_line'].forEach(id => { $(id).value = ''; }); pmShow_(null, ''); $('r_name').focus(); return; }
   if (t.dataset.rclear) { $('r_date').value = ''; $('r_end').value = ''; checkDates(); return; }
