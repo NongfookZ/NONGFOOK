@@ -397,20 +397,29 @@ button.day:active { transform: scale(.96); }
 .gearlist { list-style: none; margin: var(--sp-3) 0 0; padding: 0; display: grid; gap: 8px; }
 .gearlist li { position: relative; padding-left: 18px; font-size: 15px; line-height: 1.5; color: var(--text); }
 .gearlist li::before { content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); }
-.credcard .cr-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--sp-3); }
-.credcard .cr-filter button { font: inherit; font-size: 13px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; }
-.credcard .cr-filter button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--text); font-weight: 600; }
+.credcard .cr-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.credcard .cr-head h2 { font-size: 1.1rem; margin: 0; }
+.credcard .cr-count { font-size: 12px; color: var(--text-2); white-space: nowrap; }
+.credcard .cr-filter { display: flex; gap: 6px; margin: var(--sp-3) calc(-1 * var(--sp-1)) 0; padding: 0 var(--sp-1) 2px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.credcard .cr-filter::-webkit-scrollbar { display: none; }
+.credcard .cr-filter button { flex: none; font: inherit; font-size: 13px; line-height: 1; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.credcard .cr-filter button:hover { color: var(--text); }
+.credcard .cr-filter button[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--surface); font-weight: 600; }
 .cr-list { list-style: none; margin: var(--sp-3) 0 0; padding: 0; }
-.cr-list li { display: grid; grid-template-columns: 44px 1fr auto; gap: 4px 12px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--border); }
+.cr-list li { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--border); }
 .cr-list li:first-child { border-top: 0; }
-.cr-y { font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
-.cr-t { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; }
-.cr-t small { font-weight: 400; font-size: 12px; color: var(--text-2); margin-left: 6px; }
-.cr-meta { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; color: var(--text-2); }
-.cr-role { font-size: 11px; font-weight: 600; letter-spacing: .02em; padding: 2px 8px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); }
-.cr-go { font-size: 13px; color: var(--accent); text-decoration: none; white-space: nowrap; font-weight: 600; }
-.cr-go:hover { text-decoration: underline; }
-.cr-more { margin-top: var(--sp-3); font: inherit; font-size: 14px; width: 100%; padding: 8px; border-radius: 10px; border: 1px dashed var(--border); background: transparent; color: var(--text-2); cursor: pointer; }
+.cr-y { align-self: start; padding-top: 2px; font-size: 13px; font-weight: 600; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.cr-main { min-width: 0; display: grid; gap: 4px; }
+.cr-t { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.35; overflow-wrap: anywhere; }
+.cr-sub { font-size: 13px; color: var(--text-2); line-height: 1.4; }
+.cr-sub .dot { margin: 0 6px; opacity: .5; }
+.cr-roles { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+.cr-role { font-size: 11px; font-weight: 600; line-height: 1; letter-spacing: .02em; padding: 4px 7px; border-radius: 5px; background: var(--accent-soft); color: var(--accent); }
+.cr-go { display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 30px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--text); text-decoration: none; white-space: nowrap; transition: border-color .15s, color .15s; }
+.cr-go:hover { border-color: var(--accent); color: var(--accent); }
+.cr-go svg { width: 10px; height: 10px; }
+.cr-more { margin-top: var(--sp-2); font: inherit; font-size: 13px; font-weight: 600; width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; }
+.cr-more:hover { color: var(--text); }
 @media (min-width: 1024px) {
   .wrap.split { max-width: 1200px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(360px, 1fr); gap: var(--sp-4); align-items: start; }
   .wrap.split > .pub-ticker, .wrap.split > .pub-notice, .wrap.split > .foot { grid-column: 1 / -1; }
@@ -978,7 +987,7 @@ function render(d) {
     (services.length ? '<h2 style="font-size:1.1rem">ตำแหน่งที่รับงาน</h2><div class="services">' + services.map(s => '<span>' + esc(s) + '</span>').join('') + '</div>' : '') +
     (gear.length ? '<h2 style="font-size:1.1rem' + (services.length ? ';margin-top:var(--sp-4)' : '') + '">อุปกรณ์หลัก</h2><ul class="gearlist">' + gear.map(s => '<li>' + esc(s) + '</li>').join('') + '</ul>' : '') + '</section>' : '';
   S.credits = p.showCredits === 'no' ? [] : parseCredits_(p.creditsList);
-  const credH = S.credits.length ? '<section class="card credcard o-cred" id="credCard"><h2 style="font-size:1.1rem">🎬 Selected Credits</h2><div class="hint">ผลงานที่ผ่านมา</div><div id="credBody"></div></section>' : '';
+  const credH = S.credits.length ? '<section class="card credcard o-cred" id="credCard"><div class="cr-head"><h2>🎬 Selected Credits</h2><span class="cr-count">' + S.credits.length + ' ผลงาน</span></div><div class="hint">ผลงานที่ผ่านมา</div><div id="credBody"></div></section>' : '';
   const split = p.showCalendar !== 'no' && (S.canReq || gearH || credH);
   h = h.replace('<section class="card profile">', '<div class="pcol pl"><section class="card profile o-prof">');
   if (!split) h += gearH + credH;
@@ -1027,9 +1036,11 @@ function renderCredits() {
   const list = S.credF === 'all' ? S.credits : S.credits.filter(c => c.type === S.credF);
   const shown = S.credAll ? list : list.slice(0, 5);
   box.innerHTML = (types.length > 1 ? '<div class="cr-filter" role="group" aria-label="กรองประเภทผลงาน">' + ['all'].concat(types).map(t => '<button type="button" data-crf="' + esc(t) + '" aria-pressed="' + (S.credF === t) + '">' + (t === 'all' ? 'ทั้งหมด' : esc(t)) + '</button>').join('') + '</div>' : '') +
-    '<ul class="cr-list">' + shown.map(c => '<li><span class="cr-y">' + esc(c.year || '–') + '</span><span class="cr-t">' + esc(c.title) + '<small>' + esc(c.type) + '</small></span>' +
-      (c.url ? '<a class="cr-go" href="' + esc(c.url) + '" target="_blank" rel="noopener noreferrer">▶ ดูงาน</a>' : '<span></span>') +
-      '<span class="cr-meta">' + c.roles.map(r => '<span class="cr-role">' + esc(r) + '</span>').join('') + (c.house ? '<span>' + esc(c.house) + '</span>' : '') + '</span></li>').join('') + '</ul>' +
+    '<ul class="cr-list">' + shown.map(c => '<li><span class="cr-y">' + esc(c.year || '–') + '</span><div class="cr-main"><div class="cr-t">' + esc(c.title) + '</div>' +
+      '<div class="cr-sub">' + esc(c.type) + (c.house ? '<span class="dot">·</span>' + esc(c.house) : '') + '</div>' +
+      (c.roles.length ? '<div class="cr-roles">' + c.roles.map(r => '<span class="cr-role">' + esc(r) + '</span>').join('') + '</div>' : '') + '</div>' +
+      (c.url ? '<a class="cr-go" href="' + esc(c.url) + '" target="_blank" rel="noopener noreferrer" aria-label="ดูงาน ' + esc(c.title) + '"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg>ดูงาน</a>' : '<span></span>') + '</li>').join('') +
+    '</ul>' +
     (list.length > 5 ? '<button type="button" class="cr-more" data-crmore="1">' + (S.credAll ? 'ย่อรายการ' : 'ดูผลงานทั้งหมด (' + list.length + ')') + '</button>' : '');
   box.onclick = e => {
     const f = e.target.closest('[data-crf]'); if (f) { S.credF = f.dataset.crf; S.credAll = false; return renderCredits(); }
