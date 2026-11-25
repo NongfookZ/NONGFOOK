@@ -418,6 +418,7 @@ button.day:active { transform: scale(.96); }
 .cr-main { min-width: 0; display: grid; gap: 4px; }
 .cr-t { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.35; overflow-wrap: anywhere; }
 .cr-art { font-weight: 500; color: var(--text-2); }
+.cr-pin { color: var(--amber); margin-right: 5px; font-size: .9em; }
 .cr-sub { font-size: 13px; color: var(--text-2); line-height: 1.4; }
 .cr-sub .dot { margin: 0 6px; opacity: .5; }
 .cr-roles { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
@@ -1034,11 +1035,11 @@ function render(d) {
 }
 
 /* ---------- 🎬 Selected Credits ---------- */
-const CRED_TYPES = ['MV', 'โฆษณา', 'ซีรีส์', 'หนัง', 'หนังสั้น', 'Live-session'];
+const CRED_TYPES = ['MV', 'โฆษณา', 'ซีรีส์', 'หนัง', 'หนังสั้น', 'Live-session', 'อื่นๆ'];
 function parseCredits_(raw) {
   let a = []; try { a = JSON.parse(raw || '[]'); } catch (e) { a = []; }
-  return (Array.isArray(a) ? a : []).filter(c => c && c.title).map(c => ({ year: String(c.year || ''), title: String(c.title), artist: String(c.artist || ''), type: CRED_TYPES.includes(c.type) ? c.type : 'MV', roles: (Array.isArray(c.roles) ? c.roles : String(c.roles || '').split(',')).map(r => String(r).trim()).filter(Boolean), house: String(c.house || ''), url: /^https?:\/\//i.test(String(c.url || '')) ? String(c.url) : '' }))
-    .sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0));
+  return (Array.isArray(a) ? a : []).filter(c => c && c.title).map(c => ({ year: String(c.year || ''), title: String(c.title), artist: String(c.artist || ''), type: CRED_TYPES.includes(c.type) ? c.type : 'อื่นๆ', roles: (Array.isArray(c.roles) ? c.roles : String(c.roles || '').split(',')).map(r => String(r).trim()).filter(Boolean), house: String(c.house || ''), url: /^https?:\/\//i.test(String(c.url || '')) ? String(c.url) : '', pin: c.pin ? 1 : 0 }))
+    .map((c, i) => Object.assign(c, { _i: i })).sort((a, b) => (b.pin - a.pin) || (a._i - b._i)); /* ปักหมุดขึ้นก่อน แล้วตามลำดับที่จัดไว้หลังร้าน */
 }
 function renderCredits() {
   const box = $('credBody'); if (!box) return;
@@ -1048,7 +1049,7 @@ function renderCredits() {
   const shown = S.credAll ? list : list.slice(0, 5);
   const cnt = t => t === 'all' ? S.credits.length : S.credits.filter(c => c.type === t).length;
   box.innerHTML = (types.length > 1 ? '<div class="cr-filter" role="group" aria-label="กรองประเภทผลงาน">' + ['all'].concat(types).map(t => '<button type="button" data-crf="' + esc(t) + '" aria-pressed="' + (S.credF === t) + '">' + (t === 'all' ? 'ทั้งหมด' : esc(t)) + ' <span style="opacity:.6">' + cnt(t) + '</span></button>').join('') + '</div>' : '') +
-    '<ul class="cr-list">' + shown.map(c => '<li><span class="cr-y">' + esc(c.year || '–') + '</span><div class="cr-main"><div class="cr-t">' + esc(c.title) + (c.artist ? '<span class="cr-art"> — ' + esc(c.artist) + '</span>' : '') + '</div>' +
+    '<ul class="cr-list">' + shown.map(c => '<li><span class="cr-y">' + esc(c.year || '–') + '</span><div class="cr-main"><div class="cr-t">' + (c.pin ? '<span class="cr-pin" title="ผลงานเด่น" aria-label="ผลงานเด่น">★</span>' : '') + esc(c.title) + (c.artist ? '<span class="cr-art"> — ' + esc(c.artist) + '</span>' : '') + '</div>' +
       '<div class="cr-sub">' + esc(c.type) + (c.house ? '<span class="dot">·</span>' + esc(c.house) : '') + '</div>' +
       (c.roles.length ? '<div class="cr-roles">' + c.roles.map(r => '<span class="cr-role">' + esc(r) + '</span>').join('') + '</div>' : '') + '</div>' +
       (c.url ? '<a class="cr-go" href="' + esc(c.url) + '" target="_blank" rel="noopener noreferrer" aria-label="ดูงาน ' + esc(c.title) + '"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg>ดูงาน</a>' : '<span></span>') + '</li>').join('') +
@@ -1479,6 +1480,7 @@ const PubFx = (() => {
 
   function frame(now) {
     raf = requestAnimationFrame(frame);
+    if (mobile && last && now - last < 31) return; /* มือถือ: วาด ~30fps พอ ลดงาน GPU/แบตลงครึ่งหนึ่ง */
     const dt = Math.min(0.05, (now - (last || now)) / 1000); last = now;
     ctx.clearRect(0, 0, W, H);
     if (kind === 'snow') drawSnow(dt, now / 1000); else drawFireworks(dt);
