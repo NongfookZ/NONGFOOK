@@ -708,7 +708,7 @@ function tickerFill_() {
 }
 (function () { let t = 0, lastW = window.innerWidth; window.addEventListener('resize', () => { if (window.innerWidth === lastW) return; lastW = window.innerWidth; clearTimeout(t); t = setTimeout(tickerFill_, 200); }); try { document.fonts && document.fonts.ready.then(tickerFill_); } catch (e) {} })();
 /* 🌈 แยกข้อความเป็น grapheme (Intl.Segmenter) → อีโมจิทั้งก้อน (สีผิว 🙏🏻 / ZWJ 👨‍👩‍👧 / ธง 🇹🇭 / keycap) ไม่ถูกระบายสี · ตัวอักษรต่อเนื่องรวมเป็น <span class="rb"> */
-const RB_EMOJI_RE = (() => { try { return new RegExp('\\p{Extended_Pictographic}|\\p{Regional_Indicator}|\\u20E3', 'u'); } catch (e) { return /[←-⯿〰〽㊗㊙\uD83C-􏰀-\uDFFF]/; } })();
+const RB_EMOJI_RE = (() => { try { return new RegExp('\\p{Extended_Pictographic}|\\p{Emoji_Modifier}|\\p{Regional_Indicator}|[\\u200D\\uFE0E\\uFE0F\\u20E3]|[\\u{E0020}-\\u{E007F}]', 'u'); } catch (e) { return /[‍︎️⃣←-⯿〰〽㊗㊙\uD83C-􏰀-\uDFFF]/; } })();
 const RB_SEG = (() => { try { return new Intl.Segmenter('th', { granularity: 'grapheme' }); } catch (e) { return null; } })();
 function rbSplit_(t) {
   const parts = RB_SEG ? Array.from(RB_SEG.segment(String(t)), x => x.segment) : Array.from(String(t));
