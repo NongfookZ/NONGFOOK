@@ -506,7 +506,7 @@ html.yt-open { overflow: hidden; }
 .pub-notice { background: var(--accent-soft); border: 1px solid var(--accent-line); color: var(--text); border-radius: var(--r-xl); padding: 12px 16px; font-size: 14px; font-weight: 500; text-align: center; white-space: pre-wrap; }
 /* ---------- แถบประกาศวิ่ง แบบที่ 2 (News Badge Ticker) ---------- */
 .pub-ticker {
-  display: flex; align-items: center; gap: 10px; padding: 6px 10px 6px 6px;
+  display: flex; align-items: center; gap: 4px; padding: 8px 10px 8px 14px;
   border-radius: var(--r-xl); background: var(--surface); border: 1px solid var(--border);
   box-shadow: var(--shadow-sm); overflow: hidden;
 }
@@ -517,6 +517,10 @@ html.yt-open { overflow: hidden; }
   padding: 4px 10px; border-radius: var(--r-md); white-space: nowrap;
 }
 .pub-ticker .pt-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .9; animation: ptPulse 1.6s ease-in-out infinite; }
+/* จุดแดงกระพริบ (Live / On-Air) แทนป้าย “ประกาศ” */
+.pub-ticker .pt-live { flex: 0 0 auto; width: 9px; height: 9px; border-radius: 50%; background: #ef4444; margin-right: 6px; box-shadow: 0 0 0 0 rgba(239, 68, 68, .55); animation: ptLive 1.8s ease-out infinite; }
+@keyframes ptLive { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, .55); opacity: 1; } 55% { opacity: .7; } 70% { box-shadow: 0 0 0 7px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); opacity: 1; } }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 @keyframes ptPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
 .pub-ticker .pt-track {
   flex: 1; min-width: 0; overflow: hidden; position: relative;
@@ -531,13 +535,28 @@ html.yt-open { overflow: hidden; }
 .pub-ticker:hover .pt-move, .pub-ticker:active .pt-move { animation-play-state: paused; }
 .pub-ticker .pt-seg {
   display: inline-flex; align-items: center; white-space: nowrap;
-  padding-right: 48px; font-size: 14px; font-weight: 500; color: var(--text);
+  padding-left: 16px; padding-right: 48px; font-size: 14px; font-weight: 500; color: var(--text);
 }
+/* ข้อความสั้นกว่ากล่อง (เช่นจอคอม) → แสดงนิ่ง ไม่วิ่ง ไม่มีขอบจางมาบังตัวแรก */
+.pub-ticker.static .pt-track { -webkit-mask-image: none; mask-image: none; }
+.pub-ticker.static .pt-move { animation: none; transform: none; }
+.pub-ticker.static .pt-seg[aria-hidden] { display: none; }
+.pub-ticker.static .pt-seg { padding: 0 0 0 4px; }
+/* 🌈 สีตัวอักษรสายรุ้ง — ระบายเฉพาะตัวอักษร (.rb) อีโมจิคงสีเดิม */
+.rainbow .rb {
+  background: linear-gradient(90deg, #dc2626, #ea580c, #ca8a04, #16a34a, #0284c7, #7c3aed, #db2777, #dc2626);
+  background-size: 300% 100%; -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent; font-weight: 600;
+  animation: rbShift 8s linear infinite;
+}
+html[data-theme="dark"] .rainbow .rb { background-image: linear-gradient(90deg, #f87171, #fb923c, #facc15, #4ade80, #38bdf8, #a78bfa, #f472b6, #f87171); }
+@keyframes rbShift { to { background-position: 300% 0; } }
 @keyframes pubMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {
   .pub-ticker .pt-move { animation: none; }
   .pub-ticker .pt-seg:last-child { display: none; }
   .pub-ticker .pt-seg { white-space: normal; padding-right: 0; }
+  .pub-ticker .pt-live, .rainbow .rb { animation: none; }
 }
 
 /* 🎉 เอฟเฟกต์เทศกาลหน้าบ้าน (พลุ / หิมะ) — วาดบน Canvas เลเยอร์เดียว ไม่รับคลิก · เปิดได้จากหลังร้าน (ตั้งค่า > ปรับแต่งหน้าบ้าน) */
@@ -670,6 +689,18 @@ body.chat-open .float-clock { opacity: 0; visibility: hidden; pointer-events: no
   <svg class="fc-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
 </button>
 <script>
+/* แถบประกาศ: ข้อความสั้นกว่ากล่อง → แสดงนิ่ง (ไม่วิ่ง ไม่ตัดขอบซ้าย) · ยาวกว่า → วิ่งวนลื่น */
+function tickerFit_() {
+  document.querySelectorAll('.pub-ticker').forEach(tk => {
+    const tr = tk.querySelector('.pt-track'), seg = tk.querySelector('.pt-seg');
+    if (!tr || !seg) return;
+    tk.classList.remove('static');
+    const need = seg.scrollWidth - 64; /* หัก padding ซ้าย/ขวาของ segment */
+    tk.classList.toggle('static', need <= tr.clientWidth);
+  });
+}
+(function () { let t = 0; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(tickerFit_, 150); }); try { document.fonts && document.fonts.ready.then(tickerFit_); } catch (e) {} })();
+
 const RAW_URL = 'https://script.google.com/macros/s/AKfycbxonc213LYzv_3_oHg_ETfmgmp1XNyNWEd4D2rpNQ4TWM5MKHweEX1WN0iRwmHYcqxa/exec';
 const APP_URL = RAW_URL.indexOf('http') === 0 ? RAW_URL : '';
 const IS_GAS = typeof google !== 'undefined' && google.script && google.script.run;
@@ -1018,14 +1049,17 @@ function render(d) {
   const noticeLine = noticeRaw.replace(/\s*\n+\s*/g, '   •   ');
   const mqDur = Math.min(60, Math.max(5, Number(p.pubNoticeSpeed) || 18));
   const mqBadge = String(p.pubNoticeBadge || '').trim() || 'ประกาศ';
+  const rbOn = p.pubNoticeColor === 'rainbow';
+  /* สายรุ้ง: แยกอีโมจิออกจากตัวอักษร ระบายสีเฉพาะตัวอักษร */
+  const rbTxt = t => { if (!rbOn) return esc(t); let re; try { re = new RegExp('(\\p{Extended_Pictographic}(?:\\uFE0F|\\u200D\\p{Extended_Pictographic})*)', 'u'); } catch (e) { return '<span class="rb">' + esc(t) + '</span>'; } return t.split(re).map((x, i) => !x ? '' : i % 2 ? esc(x) : '<span class="rb">' + esc(x) + '</span>').join(''); };
   const noticeHtml = !noticeRaw ? '' : (p.pubNoticeMarquee !== 'no'
-    ? '<div class="pub-ticker" style="--mq-dur:' + mqDur + 's" role="region" aria-label="ประกาศ">' +
-        '<span class="pt-badge"><span class="pt-dot" aria-hidden="true"></span>' + esc(mqBadge) + '</span>' +
+    ? '<div class="pub-ticker' + (rbOn ? ' rainbow' : '') + '" style="--mq-dur:' + mqDur + 's" role="region" aria-label="' + esc(mqBadge) + '">' +
+        '<span class="pt-live" aria-hidden="true"></span><span class="sr-only">' + esc(mqBadge) + ': </span>' +
         '<div class="pt-track"><div class="pt-move">' +
-          '<span class="pt-seg">' + esc(noticeLine) + '</span>' +
-          '<span class="pt-seg" aria-hidden="true">' + esc(noticeLine) + '</span>' +
+          '<span class="pt-seg">' + rbTxt(noticeLine) + '</span>' +
+          '<span class="pt-seg" aria-hidden="true">' + rbTxt(noticeLine) + '</span>' +
         '</div></div></div>'
-    : '<div class="pub-notice">' + esc(noticeRaw) + '</div>');
+    : '<div class="pub-notice' + (rbOn ? ' rainbow' : '') + '">' + rbTxt(noticeRaw) + '</div>');
   let h = noticeHtml +
     '<section class="card profile">' + MODE_BTN +
     '<button type="button" class="pub-share" data-share="1" aria-label="แชร์ลิงก์หน้านี้" title="แชร์ลิงก์หน้านี้">' + ICON.share + 'แชร์</button>' +
@@ -1058,6 +1092,7 @@ function render(d) {
   root.classList.toggle('split', !!split);
   h += '<div class="foot"><a href="' + esc(ADMIN_URL) + '" target="_top" data-nav-top="1">สำหรับเจ้าของ</a></div>';
   root.innerHTML = h;
+  tickerFit_();
 
   const fallbackToday = (() => { const n = new Date(); return n.getFullYear() + '-' + pad(n.getMonth() + 1) + '-' + pad(n.getDate()); })();
   S.days = d.days || {}; S.today = /^\d{4}-\d{2}-\d{2}$/.test(String(d.today || '')) ? d.today : fallbackToday; S.pick = '';
