@@ -397,20 +397,20 @@ button.day:active { transform: scale(.96); }
 .gearlist { list-style: none; margin: var(--sp-3) 0 0; padding: 0; display: grid; gap: 8px; }
 .gearlist li { position: relative; padding-left: 18px; font-size: 15px; line-height: 1.5; color: var(--text); }
 .gearlist li::before { content: ""; position: absolute; left: 4px; top: .62em; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); }
-.credcard .cr-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.credcard .cr-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .credcard .cr-head h2 { font-size: 1.1rem; margin: 0; }
 .credcard .cr-count { font-size: 12px; color: var(--text-2); white-space: nowrap; }
-.credcard .cr-filter { display: flex; gap: 6px; margin: var(--sp-3) calc(-1 * var(--sp-1)) 0; padding: 0 var(--sp-1) 2px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-.credcard .cr-filter::-webkit-scrollbar { display: none; }
-.credcard .cr-filter button { flex: none; font: inherit; font-size: 13px; line-height: 1; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
-.credcard .cr-filter button:hover { color: var(--text); }
-.credcard .cr-filter button[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--surface); font-weight: 600; }
+.credcard .cr-sel { position: relative; flex: none; }
+.credcard .cr-sel select { appearance: none; -webkit-appearance: none; font: inherit; font-size: 13px; font-weight: 600; line-height: 1; height: 32px; padding: 0 30px 0 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; }
+.credcard .cr-sel select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.credcard .cr-sel::after { content: ""; position: absolute; right: 12px; top: 50%; width: 6px; height: 6px; margin-top: -5px; border-right: 1.5px solid var(--text-2); border-bottom: 1.5px solid var(--text-2); transform: rotate(45deg); pointer-events: none; }
 .cr-list { list-style: none; margin: var(--sp-3) 0 0; padding: 0; }
 .cr-list li { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--border); }
 .cr-list li:first-child { border-top: 0; }
 .cr-y { align-self: start; padding-top: 2px; font-size: 13px; font-weight: 600; color: var(--text-2); font-variant-numeric: tabular-nums; }
 .cr-main { min-width: 0; display: grid; gap: 4px; }
 .cr-t { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.35; overflow-wrap: anywhere; }
+.cr-art { font-weight: 500; color: var(--text-2); }
 .cr-sub { font-size: 13px; color: var(--text-2); line-height: 1.4; }
 .cr-sub .dot { margin: 0 6px; opacity: .5; }
 .cr-roles { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
@@ -841,7 +841,7 @@ const PubMock = {
   getPublicData: () => {
     const t = new Date(), iso = n => { const d = new Date(t); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
     const qp = new URLSearchParams(location.search);
-    return { today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', gearList: qp.get('gear') === 'none' ? '' : 'กล้อง Sony FX6 + เลนส์ชุด\nไฟ Aputure 600d ×2\nไมค์ไร้สาย Sennheiser', showGear: 'yes', showCredits: 'yes', creditsList: qp.get('credits') === 'none' ? '' : '[{"year":"2026","title":"Midnight Run","type":"MV","roles":["DIT","Colorist"],"house":"Moonlight Studio","url":"https://youtu.be/example"},{"year":"2025","title":"Fresh Brew TVC","type":"โฆษณา","roles":["DIT"],"house":"Bright House","url":""},{"year":"2025","title":"รักนะ ซีซั่น 2","type":"ซีรีส์","roles":["Data Wrangler"],"house":"Sunrise Pictures","url":""},{"year":"2024","title":"ทางกลับบ้าน","type":"หนังสั้น","roles":["Colorist"],"house":"Indie Lab","url":"https://vimeo.com/example"},{"year":"2024","title":"City Lights","type":"MV","roles":["DIT"],"house":"Neon House","url":""},{"year":"2023","title":"Summer Drink","type":"โฆษณา","roles":["Data Wrangler","DIT"],"house":"Bright House","url":""}]', phone: '080-000-0000', line: qp.get('chat') === 'none' ? '' : 'example', lineUrl: '', igUser: qp.get('chat') === 'none' || qp.get('chat') === 'line' ? '' : 'example.crew', chatGreeting: '', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '', pubEffect: qp.get('fx') || '', theme: qp.get('theme') || 'sky' } };
+    return { today: iso(0), days: { [iso(3)]: 'lock', [iso(6)]: 'off', [iso(10)]: 'loose', [iso(11)]: 'loose' }, profile: { displayName: 'ชื่อตัวอย่าง', headline: 'ทีมงานกองถ่าย · ฟรีแลนซ์', bio: 'ตัวอย่างข้อความแนะนำตัว', services: 'ผู้ช่วยผู้กำกับ\nควบคุมกอง\nCasting', gearList: qp.get('gear') === 'none' ? '' : 'กล้อง Sony FX6 + เลนส์ชุด\nไฟ Aputure 600d ×2\nไมค์ไร้สาย Sennheiser', showGear: 'yes', showCredits: 'yes', creditsList: qp.get('credits') === 'none' ? '' : '[{"year":"2026","title":"Midnight Run","artist":"NOVA","type":"MV","roles":["DIT","Colorist"],"house":"Moonlight Studio","url":"https://youtu.be/example"},{"year":"2025","title":"Fresh Brew TVC","type":"โฆษณา","roles":["DIT"],"house":"Bright House","url":""},{"year":"2025","title":"รักนะ ซีซั่น 2","type":"ซีรีส์","roles":["Data Wrangler"],"house":"Sunrise Pictures","url":""},{"year":"2024","title":"ทางกลับบ้าน","type":"หนังสั้น","roles":["Colorist"],"house":"Indie Lab","url":"https://vimeo.com/example"},{"year":"2024","title":"City Lights","artist":"The Lanterns","type":"MV","roles":["DIT"],"house":"Neon House","url":""},{"year":"2023","title":"Summer Drink","type":"โฆษณา","roles":["Data Wrangler","DIT"],"house":"Bright House","url":""}]', phone: '080-000-0000', line: qp.get('chat') === 'none' ? '' : 'example', lineUrl: '', igUser: qp.get('chat') === 'none' || qp.get('chat') === 'line' ? '' : 'example.crew', chatGreeting: '', email: '', showCalendar: 'yes', acceptRequests: 'yes', photo: '', pubEffect: qp.get('fx') || '', theme: qp.get('theme') || 'sky' } };
   },
   submitRequest: () => ({ ok: true }),
   submitMessage: m => { if (!String(m.message || '').trim()) throw new Error('พิมพ์ข้อความก่อนส่ง'); return { ok: true }; },
@@ -987,7 +987,7 @@ function render(d) {
     (services.length ? '<h2 style="font-size:1.1rem">ตำแหน่งที่รับงาน</h2><div class="services">' + services.map(s => '<span>' + esc(s) + '</span>').join('') + '</div>' : '') +
     (gear.length ? '<h2 style="font-size:1.1rem' + (services.length ? ';margin-top:var(--sp-4)' : '') + '">อุปกรณ์หลัก</h2><ul class="gearlist">' + gear.map(s => '<li>' + esc(s) + '</li>').join('') + '</ul>' : '') + '</section>' : '';
   S.credits = p.showCredits === 'no' ? [] : parseCredits_(p.creditsList);
-  const credH = S.credits.length ? '<section class="card credcard o-cred" id="credCard"><div class="cr-head"><h2>🎬 Selected Credits</h2><span class="cr-count">' + S.credits.length + ' ผลงาน</span></div><div class="hint">ผลงานที่ผ่านมา</div><div id="credBody"></div></section>' : '';
+  const credH = S.credits.length ? '<section class="card credcard o-cred" id="credCard"><div class="cr-head"><h2>🎬 Selected Credits</h2><span class="cr-fslot" id="credFilter"></span></div><div class="hint">ผลงานที่ผ่านมา</div><div id="credBody"></div></section>' : '';
   const split = p.showCalendar !== 'no' && (S.canReq || gearH || credH);
   h = h.replace('<section class="card profile">', '<div class="pcol pl"><section class="card profile o-prof">');
   if (!split) h += gearH + credH;
@@ -1026,7 +1026,7 @@ function render(d) {
 const CRED_TYPES = ['MV', 'โฆษณา', 'ซีรีส์', 'หนัง', 'หนังสั้น', 'Live-session'];
 function parseCredits_(raw) {
   let a = []; try { a = JSON.parse(raw || '[]'); } catch (e) { a = []; }
-  return (Array.isArray(a) ? a : []).filter(c => c && c.title).map(c => ({ year: String(c.year || ''), title: String(c.title), type: CRED_TYPES.includes(c.type) ? c.type : 'MV', roles: (Array.isArray(c.roles) ? c.roles : String(c.roles || '').split(',')).map(r => String(r).trim()).filter(Boolean), house: String(c.house || ''), url: /^https?:\/\//i.test(String(c.url || '')) ? String(c.url) : '' }))
+  return (Array.isArray(a) ? a : []).filter(c => c && c.title).map(c => ({ year: String(c.year || ''), title: String(c.title), artist: String(c.artist || ''), type: CRED_TYPES.includes(c.type) ? c.type : 'MV', roles: (Array.isArray(c.roles) ? c.roles : String(c.roles || '').split(',')).map(r => String(r).trim()).filter(Boolean), house: String(c.house || ''), url: /^https?:\/\//i.test(String(c.url || '')) ? String(c.url) : '' }))
     .sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0));
 }
 function renderCredits() {
@@ -1035,15 +1035,18 @@ function renderCredits() {
   const types = CRED_TYPES.filter(t => S.credits.some(c => c.type === t));
   const list = S.credF === 'all' ? S.credits : S.credits.filter(c => c.type === S.credF);
   const shown = S.credAll ? list : list.slice(0, 5);
-  box.innerHTML = (types.length > 1 ? '<div class="cr-filter" role="group" aria-label="กรองประเภทผลงาน">' + ['all'].concat(types).map(t => '<button type="button" data-crf="' + esc(t) + '" aria-pressed="' + (S.credF === t) + '">' + (t === 'all' ? 'ทั้งหมด' : esc(t)) + '</button>').join('') + '</div>' : '') +
-    '<ul class="cr-list">' + shown.map(c => '<li><span class="cr-y">' + esc(c.year || '–') + '</span><div class="cr-main"><div class="cr-t">' + esc(c.title) + '</div>' +
+  const cnt = t => t === 'all' ? S.credits.length : S.credits.filter(c => c.type === t).length;
+  const slot = $('credFilter');
+  if (slot) slot.innerHTML = types.length > 1 ? '<label class="cr-sel"><select id="credSel" aria-label="กรองประเภทผลงาน">' + ['all'].concat(types).map(t => '<option value="' + esc(t) + '"' + (S.credF === t ? ' selected' : '') + '>' + (t === 'all' ? 'ทั้งหมด' : esc(t)) + ' (' + cnt(t) + ')</option>').join('') + '</select></label>' : '<span class="cr-count">' + S.credits.length + ' ผลงาน</span>';
+  if ($('credSel')) $('credSel').onchange = e => { S.credF = e.target.value; S.credAll = false; renderCredits(); };
+  box.innerHTML =
+    '<ul class="cr-list">' + shown.map(c => '<li><span class="cr-y">' + esc(c.year || '–') + '</span><div class="cr-main"><div class="cr-t">' + esc(c.title) + (c.artist ? '<span class="cr-art"> — ' + esc(c.artist) + '</span>' : '') + '</div>' +
       '<div class="cr-sub">' + esc(c.type) + (c.house ? '<span class="dot">·</span>' + esc(c.house) : '') + '</div>' +
       (c.roles.length ? '<div class="cr-roles">' + c.roles.map(r => '<span class="cr-role">' + esc(r) + '</span>').join('') + '</div>' : '') + '</div>' +
       (c.url ? '<a class="cr-go" href="' + esc(c.url) + '" target="_blank" rel="noopener noreferrer" aria-label="ดูงาน ' + esc(c.title) + '"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg>ดูงาน</a>' : '<span></span>') + '</li>').join('') +
     '</ul>' +
     (list.length > 5 ? '<button type="button" class="cr-more" data-crmore="1">' + (S.credAll ? 'ย่อรายการ' : 'ดูผลงานทั้งหมด (' + list.length + ')') + '</button>' : '');
   box.onclick = e => {
-    const f = e.target.closest('[data-crf]'); if (f) { S.credF = f.dataset.crf; S.credAll = false; return renderCredits(); }
     if (e.target.closest('[data-crmore]')) { S.credAll = !S.credAll; renderCredits(); }
   };
 }
