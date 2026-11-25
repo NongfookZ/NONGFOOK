@@ -544,13 +544,14 @@ html.yt-open { overflow: hidden; }
 .pub-ticker.static .pt-seg { padding: 0 0 0 4px; }
 /* 🌈 สีตัวอักษรสายรุ้ง — ระบายเฉพาะตัวอักษร (.rb) อีโมจิคงสีเดิม */
 .rainbow .rb {
-  background: linear-gradient(90deg, #dc2626, #ea580c, #ca8a04, #16a34a, #0284c7, #7c3aed, #db2777, #dc2626);
-  background-size: 300% 100%; -webkit-background-clip: text; background-clip: text;
+  background: linear-gradient(90deg, #dc2626, #ea580c, #ca8a04, #16a34a, #0284c7, #7c3aed, #db2777);
+  -webkit-background-clip: text; background-clip: text;
   color: transparent; -webkit-text-fill-color: transparent; font-weight: 600;
-  animation: rbShift 8s linear infinite;
+  animation: rbShift 9s linear infinite; will-change: filter; /* hue-rotate = ไม่ต้องวาดพื้นหลังใหม่ทุกเฟรมแบบ background-position */
 }
+.pg-hidden .pub-ticker .pt-move, .pg-hidden .rainbow .rb, .pg-hidden .pt-live, .pub-ticker.offscreen .pt-move, .pub-ticker.offscreen .rb { animation-play-state: paused; }
 html[data-theme="dark"] .rainbow .rb { background-image: linear-gradient(90deg, #f87171, #fb923c, #facc15, #4ade80, #38bdf8, #a78bfa, #f472b6, #f87171); }
-@keyframes rbShift { to { background-position: 300% 0; } }
+@keyframes rbShift { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg); } }
 @keyframes pubMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {
   .pub-ticker .pt-move { animation: none; }
@@ -692,6 +693,7 @@ body.chat-open .float-clock { opacity: 0; visibility: hidden; pointer-events: no
 /* แถบประกาศวิ่ง: ข้อความสั้น (เช่นจอคอม) → ทำซ้ำให้ยาวพอเต็มกล่อง แล้ววิ่งวนต่อเนื่องไม่มีช่องว่าง · ความเร็วคงที่ */
 function tickerFill_() {
   document.querySelectorAll('.pub-ticker').forEach(tk => {
+    if (!tk._io && 'IntersectionObserver' in window) { tk._io = new IntersectionObserver(es => es.forEach(e => tk.classList.toggle('offscreen', !e.isIntersecting))); tk._io.observe(tk); }
     const tr = tk.querySelector('.pt-track'), mv = tk.querySelector('.pt-move');
     if (!tr || !mv) return;
     if (!tk._seg) tk._seg = mv.querySelector('.pt-seg').outerHTML.replace(' aria-hidden="true"', '');
@@ -705,6 +707,19 @@ function tickerFill_() {
   });
 }
 (function () { let t = 0, lastW = window.innerWidth; window.addEventListener('resize', () => { if (window.innerWidth === lastW) return; lastW = window.innerWidth; clearTimeout(t); t = setTimeout(tickerFill_, 200); }); try { document.fonts && document.fonts.ready.then(tickerFill_); } catch (e) {} })();
+/* 🌈 แยกข้อความเป็น grapheme (Intl.Segmenter) → อีโมจิทั้งก้อน (สีผิว 🙏🏻 / ZWJ 👨‍👩‍👧 / ธง 🇹🇭 / keycap) ไม่ถูกระบายสี · ตัวอักษรต่อเนื่องรวมเป็น <span class="rb"> */
+const RB_EMOJI_RE = (() => { try { return new RegExp('\\p{Extended_Pictographic}|\\p{Regional_Indicator}|\\u20E3', 'u'); } catch (e) { return /[←-⯿〰〽㊗㊙\uD83C-􏰀-\uDFFF]/; } })();
+const RB_SEG = (() => { try { return new Intl.Segmenter('th', { granularity: 'grapheme' }); } catch (e) { return null; } })();
+function rbSplit_(t) {
+  const parts = RB_SEG ? Array.from(RB_SEG.segment(String(t)), x => x.segment) : Array.from(String(t));
+  let out = '', buf = '';
+  const flush = () => { if (buf) { out += '<span class="rb">' + esc(buf) + '</span>'; buf = ''; } };
+  parts.forEach(g => { if (RB_EMOJI_RE.test(g)) { flush(); out += esc(g); } else buf += g; });
+  flush();
+  return out;
+}
+/* ประหยัดแบต/CPU: หยุดแอนิเมชันแถบประกาศเมื่อสลับแท็บ หรือเลื่อนพ้นจอ */
+document.addEventListener('visibilitychange', () => document.documentElement.classList.toggle('pg-hidden', document.hidden));
 
 const RAW_URL = 'https://script.google.com/macros/s/AKfycbxonc213LYzv_3_oHg_ETfmgmp1XNyNWEd4D2rpNQ4TWM5MKHweEX1WN0iRwmHYcqxa/exec';
 const APP_URL = RAW_URL.indexOf('http') === 0 ? RAW_URL : '';
@@ -1056,7 +1071,7 @@ function render(d) {
   const mqBadge = String(p.pubNoticeBadge || '').trim() || 'ประกาศ';
   const rbOn = p.pubNoticeColor === 'rainbow';
   /* สายรุ้ง: แยกอีโมจิออกจากตัวอักษร ระบายสีเฉพาะตัวอักษร */
-  const rbTxt = t => { if (!rbOn) return esc(t); let re; try { re = new RegExp('(\\p{Extended_Pictographic}(?:\\uFE0F|\\u200D\\p{Extended_Pictographic})*)', 'u'); } catch (e) { return '<span class="rb">' + esc(t) + '</span>'; } return t.split(re).map((x, i) => !x ? '' : i % 2 ? esc(x) : '<span class="rb">' + esc(x) + '</span>').join(''); };
+  const rbTxt = t => rbOn ? rbSplit_(t) : esc(t);
   const noticeHtml = !noticeRaw ? '' : (p.pubNoticeMarquee !== 'no'
     ? '<div class="pub-ticker' + (rbOn ? ' rainbow' : '') + '" style="--mq-dur:' + mqDur + 's" role="region" aria-label="' + esc(mqBadge) + '">' +
         '<span class="pt-badge"><span class="pt-live" aria-hidden="true"></span>' + esc(mqBadge) + '</span>' +
