@@ -557,6 +557,15 @@ html.yt-open { overflow: hidden; }
 html[data-theme="dark"] .mapembed iframe { filter: invert(.9) hue-rotate(180deg) saturate(.85) brightness(.95); }
 .mapembed .me-open { display: flex; align-items: center; justify-content: center; gap: 6px; height: 40px; font-size: 13px; font-weight: 600; text-decoration: none; color: var(--accent); background: var(--surface); border-top: 1px solid var(--border); transition: background-color 120ms var(--ease); }
 .mapembed .me-open:hover { background: var(--accent-softer); }
+.mapbar .acc { margin-left: 6px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.mapbar .acc.bad { color: var(--amber); font-weight: 600; }
+.mapbtns { display: flex; gap: 6px; flex: none; }
+.pinmap { height: 240px; background: var(--surface-2); }
+.pin-hint { padding: 8px 12px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--border); }
+.mapembed .pin-done { width: 100%; border: 0; cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; }
+.pin-ic { color: var(--accent); background: none; border: 0; }
+.pin-ic svg { width: 34px; height: 34px; fill: var(--surface); filter: drop-shadow(0 2px 3px rgba(0,0,0,.35)); }
+html[data-theme="dark"] .pinmap .leaflet-tile-pane { filter: invert(.9) hue-rotate(180deg) saturate(.85) brightness(.95); }
 
 /* ---------- ปุ่มแชร์ลิงก์ (มุมขวาบนการ์ดโปรไฟล์ ข้างปุ่มรีเฟรช) ---------- */
 .pub-share { position: absolute; top: 14px; right: 58px; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px 0 10px; border-radius: var(--r-md); border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: background-color 120ms var(--ease), color 120ms var(--ease); }
@@ -1179,8 +1188,8 @@ const MAP_HIDE_KEY = 'wk_pub_map_hide';
 function pubGps_() {
   return new Promise((res, rej) => {
     if (!navigator.geolocation) return rej('no-gps');
-    navigator.geolocation.getCurrentPosition(p => res({ lat: p.coords.latitude, lng: p.coords.longitude }),
-      e => rej(e && e.message || 'denied'), { enableHighAccuracy: true, timeout: 9000, maximumAge: 300000 });
+    navigator.geolocation.getCurrentPosition(p => res({ lat: p.coords.latitude, lng: p.coords.longitude, acc: Math.round(p.coords.accuracy || 0) }),
+      e => rej(e && e.message || 'denied'), { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
   });
 }
 async function pubPosition_() {
@@ -1198,7 +1207,7 @@ async function pubPosition_() {
 function rPlaceBind_() {
   const loc = $('r_loc'), res = $('r_placeRes'), btn = $('r_placeBtn'), box = $('r_mapBox');
   if (!loc || !res) return;
-  S.rPlace = { name: '', mapUrl: '' }; S.rItems = []; S.rIdx = -1; S.rLocating = false; S.rLoading = ''; S.rErr = null;
+  S.rPlace = { name: '', mapUrl: '' }; S.rItems = []; S.rIdx = -1; S.rLocating = false; S.rLoading = ''; S.rErr = null;  S.rPin = false;
   try { S.rMapHide = localStorage.getItem(MAP_HIDE_KEY) === '1'; } catch (e) { S.rMapHide = false; }
   res.addEventListener('mousedown', e => e.preventDefault());   // กดรายการแล้วโฟกัสยังอยู่ที่ช่องพิมพ์
   res.addEventListener('click', e => { const b = e.target.closest('.pr-item'); if (b && res.contains(b)) rPlacePick_(Number(b.dataset.i)); });
@@ -1223,12 +1232,15 @@ function rPlaceBind_() {
     const q = loc.value.trim();
     clearTimeout(st);
     if (!q && S.rPlace.mapUrl) { S.rPlace = { name: '', mapUrl: '' }; rMapRender_(); }
+    if (S.rPlace.auto) S.rPlace.auto = false;   // แก้ชื่อเองแล้ว หมุดที่ย้ายต่อจะไม่เขียนชื่อทับ
     rPlaceRender_(q);
     if (isLink_(q)) st = setTimeout(() => rPlaceLink_(q), 400);
     else if (q.length >= 3 && !PUB_PLACE_CACHE.has(q)) st = setTimeout(() => rPlaceRemote_(q), 600);
   });
   if (btn) btn.addEventListener('click', rPlaceSearch_);
   if (box) box.addEventListener('click', e => {
+    if (e.target.closest('[data-mappin]')) { S.rPin = true; rMapRender_(); return; }
+    if (e.target.closest('[data-pindone]')) { S.rPin = false; rMapRender_(); toast('ปักหมุดแล้ว — ' + (S.rPlace.name || 'ตำแหน่งที่เลือก')); return; }
     if (!e.target.closest('[data-maptog]')) return;
     S.rMapHide = !S.rMapHide;
     try { S.rMapHide ? localStorage.setItem(MAP_HIDE_KEY, '1') : localStorage.removeItem(MAP_HIDE_KEY); } catch (err) {}
@@ -1322,10 +1334,11 @@ async function rPlaceSearch_() {
   finally { if (btn) { btn.disabled = false; btn.textContent = '🔎 ค้นหาสถานที่'; } }
 }
 
-function rPlaceApply_(name, mapUrl, msg) {
+function rPlaceApply_(name, mapUrl, msg, extra) {
   const loc = $('r_loc'); if (!loc) return;
   loc.value = name;
-  S.rPlace = { name, mapUrl: mapUrl || '' };
+  S.rPlace = Object.assign({ name, mapUrl: mapUrl || '' }, extra || {});
+  S.rPin = !!(extra && extra.pin);
   rPlaceClose_();
   if (S.rPlace.mapUrl && S.rMapHide) { S.rMapHide = false; try { localStorage.removeItem(MAP_HIDE_KEY); } catch (e) {} }
   rMapRender_();
@@ -1348,9 +1361,17 @@ async function rPlaceHere_() {
     let place = null;
     try { place = await run('reverseGeocodePublic', lat, lng); } catch (e) { /* ใช้พิกัดอย่างเดียว */ }
     S.rLocating = false;
+    const acc = pos.acc || 0, rough = pos.approx || acc > 500;
+    if (rough) {
+      rPlaceApply_((place && place.name) || 'ตำแหน่งปัจจุบัน (' + lat + ', ' + lng + ')',
+        'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lng,
+        (pos.approx ? 'ตำแหน่งนี้เป็นค่าโดยประมาณ' : 'ตำแหน่งคลาดเคลื่อนประมาณ ±' + rAccTxt_(acc)) + ' — แตะหรือลากหมุดบนแผนที่เพื่อปักจุดที่ถูกต้อง',
+        { acc, approx: !!pos.approx, auto: true, pin: true });
+      return;
+    }
     rPlaceApply_((place && place.name) || 'ตำแหน่งปัจจุบัน (' + lat + ', ' + lng + ')',
       'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lng,
-      pos.approx ? 'ใช้ตำแหน่งโดยประมาณ (เครื่องไม่อนุญาต GPS) — ตรวจหมุดและแก้ชื่อได้' : 'ใส่ตำแหน่งปัจจุบันแล้ว — แก้ชื่อสถานที่ต่อได้');
+      pos.approx ? 'ใช้ตำแหน่งโดยประมาณ (เครื่องไม่อนุญาต GPS) — ตรวจหมุดและแก้ชื่อได้' : 'ใส่ตำแหน่งปัจจุบันแล้ว — แก้ชื่อสถานที่ต่อได้', { acc, auto: true });
   } catch (e) {
     toast('หาตำแหน่งปัจจุบันไม่ได้ — อนุญาตการเข้าถึงตำแหน่ง หรือพิมพ์ชื่อสถานที่แทน');
   } finally {
@@ -1365,18 +1386,74 @@ function rMapQ_(name, url) {
   return name && !isLink_(name) ? name : '';
 }
 
+const rAccTxt_ = m => m >= 1000 ? (Math.round(m / 100) / 10) + ' กม.' : Math.round(m) + ' ม.';
 function rMapRender_() {
   const box = $('r_mapBox'); if (!box) return;
   const pl = S.rPlace || {}, q = pl.mapUrl ? rMapQ_(pl.name, pl.mapUrl) : '';
   if (!q) { box.innerHTML = ''; box.dataset.k = ''; return; }
-  const k = q + '|' + (S.rMapHide ? 0 : 1);
+  const pin = S.rPin && !S.rMapHide && /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(q);
+  const k = q + '|' + (S.rMapHide ? 0 : 1) + '|' + (pin ? 'pin' : '') + '|' + (pl.acc || 0) + '|' + (pl.name || '');
   if (box.dataset.k === k) return;   // ตำแหน่งเดิม ไม่โหลด iframe ซ้ำ
   box.dataset.k = k;
   const label = pl.name || 'ตำแหน่งที่เลือก';
-  box.innerHTML = '<div class="mapbar"><span class="hint">' + P_ICON.pin + ' ' + esc(label.length > 48 ? label.slice(0, 48) + '…' : label) + '</span>' +
-    '<button type="button" class="btn sm" data-maptog="1" aria-expanded="' + !S.rMapHide + '">' + (S.rMapHide ? 'แสดงแผนที่' : 'ซ่อนแผนที่') + '</button></div>' +
-    (S.rMapHide ? '' : '<div class="mapembed"><iframe src="https://maps.google.com/maps?q=' + encodeURIComponent(q) + '&hl=th&z=15&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="แผนที่: ' + esc(label) + '"></iframe>' +
-      '<a class="me-open" href="' + esc(pl.mapUrl) + '" target="_blank" rel="noopener">' + P_ICON.pin.replace('<svg ', '<svg width="14" height="14" ') + ' เปิดใน Google Maps</a></div>');
+  const accTxt = pl.approx ? ' · โดยประมาณ' : pl.acc ? ' · ±' + rAccTxt_(pl.acc) : '';
+  const canPin = !S.rMapHide && /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(q);
+  box.innerHTML = '<div class="mapbar"><span class="hint">' + P_ICON.pin + ' ' + esc(label.length > 48 ? label.slice(0, 48) + '…' : label) +
+      (accTxt ? '<span class="acc' + (pl.approx || pl.acc > 500 ? ' bad' : '') + '">' + esc(accTxt) + '</span>' : '') + '</span>' +
+    '<span class="mapbtns">' + (canPin && !pin ? '<button type="button" class="btn sm" data-mappin="1">ปรับหมุด</button>' : '') +
+    '<button type="button" class="btn sm" data-maptog="1" aria-expanded="' + !S.rMapHide + '">' + (S.rMapHide ? 'แสดงแผนที่' : 'ซ่อนแผนที่') + '</button></span></div>' +
+    (pin ? '<div class="mapembed"><div id="r_pinMap" class="pinmap" role="application" aria-label="แผนที่สำหรับปักหมุด"></div>' +
+      '<div class="pin-hint">แตะบนแผนที่หรือลากหมุดไปยังจุดที่ถูกต้อง</div>' +
+      '<button type="button" class="me-open pin-done" data-pindone="1">✓ ใช้ตำแหน่งนี้</button></div>'
+    : (S.rMapHide ? '' : '<div class="mapembed"><iframe src="https://maps.google.com/maps?q=' + encodeURIComponent(q) + '&hl=th&z=15&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="แผนที่: ' + esc(label) + '"></iframe>' +
+      '<a class="me-open" href="' + esc(pl.mapUrl) + '" target="_blank" rel="noopener">' + P_ICON.pin.replace('<svg ', '<svg width="14" height="14" ') + ' เปิดใน Google Maps</a></div>'));
+  if (pin) rPinMap_(q);
+}
+
+/* หมุดลากได้ (Leaflet + OpenStreetMap) โหลดเฉพาะตอนใช้ · แตะ/ลากแล้วอัปเดตพิกัด + ชื่อพื้นที่ */
+let LEAFLET_P_ = null;
+function leaflet_() {
+  if (window.L && L.map) return Promise.resolve(L);
+  if (LEAFLET_P_) return LEAFLET_P_;
+  LEAFLET_P_ = new Promise((res, rej) => {
+    const c = document.createElement('link'); c.rel = 'stylesheet'; c.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css'; document.head.appendChild(c);
+    const j = document.createElement('script'); j.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+    j.onload = () => res(window.L); j.onerror = () => { LEAFLET_P_ = null; rej(new Error('leaflet')); };
+    document.head.appendChild(j);
+  });
+  return LEAFLET_P_;
+}
+async function rPinMap_(q) {
+  let Lf;
+  try { Lf = await leaflet_(); } catch (e) { S.rPin = false; rMapRender_(); toast('โหลดแผนที่ปักหมุดไม่ได้ — ลองใหม่ หรือวางลิงก์ Google Maps แทน'); return; }
+  const el = $('r_pinMap'); if (!el || el._lf) return;
+  const [la, ln] = q.split(',').map(Number);
+  const map = Lf.map(el, { zoomControl: true, attributionControl: true }).setView([la, ln], S.rPlace.acc > 2000 || S.rPlace.approx ? 13 : 16);
+  el._lf = map;
+  Lf.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+  const icon = Lf.divIcon({ className: 'pin-ic', html: P_ICON.pin, iconSize: [34, 34], iconAnchor: [17, 32] });
+  const mk = Lf.marker([la, ln], { draggable: true, icon, keyboard: true, title: 'ลากเพื่อย้ายหมุด' }).addTo(map);
+  let t = 0, seq = 0;
+  const move = ll => {
+    const lat = Math.round(ll.lat * 1e5) / 1e5, lng = Math.round(ll.lng * 1e5) / 1e5;
+    mk.setLatLng([lat, lng]);
+    S.rPlace.mapUrl = 'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lng;
+    S.rPlace.acc = 0; S.rPlace.approx = false;
+    const acc = document.querySelector('#r_mapBox .mapbar .acc'); if (acc) acc.remove();
+    clearTimeout(t);
+    if (!S.rPlace.auto) return;   // ชื่อที่ผู้ใช้เลือก/พิมพ์เอง ไม่เขียนทับ
+    const my = ++seq;
+    t = setTimeout(async () => {
+      let p = null; try { p = await run('reverseGeocodePublic', lat, lng); } catch (e) { /* ใช้พิกัด */ }
+      if (my !== seq || !S.rPlace.auto) return;
+      const nm = (p && p.name) || 'ตำแหน่งที่ปักหมุด (' + lat + ', ' + lng + ')';
+      S.rPlace.name = nm; const loc = $('r_loc'); if (loc) loc.value = nm;
+      const h = document.querySelector('#r_mapBox .mapbar .hint'); if (h) h.innerHTML = P_ICON.pin + ' ' + esc(nm.length > 48 ? nm.slice(0, 48) + '…' : nm);
+    }, 500);
+  };
+  mk.on('dragend', () => move(mk.getLatLng()));
+  map.on('click', e => move(e.latlng));
+  setTimeout(() => map.invalidateSize(), 60);
 }
 
 /* ===== 🎉 เอฟเฟกต์เทศกาล (พลุ / หิมะ) — Canvas เลเยอร์เดียว ไม่รับคลิก
