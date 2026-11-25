@@ -376,6 +376,13 @@ body::selection { background: color-mix(in srgb, var(--accent) 28%, transparent)
 @keyframes spin { to { transform: rotate(360deg); } }
 .pub-refresh { position: absolute; top: 14px; right: 14px; }
 .pub-mode { position: absolute; top: 14px; left: 14px; }
+/* ปุ่มสลับธีม: iPad/Safari ใส่ padding ปุ่มเอง + grid บน <button> จัดกลางไม่นิ่ง → ล้างค่าแล้วจัดด้วย flex · ล็อกขนาด SVG */
+.pub-mode { -webkit-appearance: none; appearance: none; width: 36px; height: 36px; min-width: 36px; padding: 0; margin: 0; display: inline-flex; align-items: center; justify-content: center; line-height: 1; font-size: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.pub-mode svg { width: 18px; height: 18px; flex: 0 0 18px; display: none; pointer-events: none; overflow: visible; }
+html[data-appearance="light"] .pub-mode .ic-sun,
+html[data-appearance="dark"] .pub-mode .ic-moon,
+html:not([data-appearance="light"]):not([data-appearance="dark"]) .pub-mode .ic-auto { display: block; }
+@media (hover: none) { .pub-mode:hover:not(:disabled) { background: var(--surface); color: var(--text-2); } }
 .cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
 .dow { text-align: center; font-size: 12px; color: var(--text-2); font-weight: 500; padding-bottom: 6px; }
 .day { aspect-ratio: 1; border-radius: var(--r-lg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: 500; font-size: 14px; min-width: 0; border: 1px solid transparent; padding: 0; transition: transform 100ms var(--ease), box-shadow 120ms var(--ease); }
