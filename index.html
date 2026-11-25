@@ -106,6 +106,8 @@ html[data-accent="xmas"]        { --accent-l: #13733A; --accent-d: #4ADE80; --ac
 html[data-accent="songkran"]    { --accent-l: #0E7490; --accent-d: #2CC5DB; }
 html[data-accent="loykrathong"] { --accent-l: #8F5A0B; --accent-d: #E3B341; }
 html[data-accent="national"]    { --accent-l: #2D3192; --accent-d: #8F96EC; --accent2-l: #C8102E; --accent2-d: #F2687A; }
+html[data-accent="vivid"]       { --accent-l: #7C3AED; --accent-d: #B79BFF; --accent2-l: #DB2777; --accent2-d: #F472B6; --a3: #0F766E; }
+html[data-theme="dark"][data-accent="vivid"] { --a3: #5EEAD4; }
 
 :root {
   --accent: var(--accent-l);
@@ -207,6 +209,22 @@ html[data-theme="dark"][data-accent] {
 html[data-accent] { --day-past-ink: color-mix(in oklab, var(--text-2) 70%, var(--text-3)); }
 /* กลางวัน: พื้นป้ายสีเน้นอ่อนลงอีกนิด ให้ตัวอักษรสีเน้นบนป้ายผ่าน AA ทุกธีม */
 html[data-accent]:not([data-theme="dark"]) { --accent-soft: color-mix(in oklab, var(--accent) 8%, var(--surface)); --accent-softer: color-mix(in oklab, var(--accent) 4%, var(--surface)); }
+
+/* ================= ธีม "สีสัน" (vivid): ตัวอักษรมีสีแบบพอดี — หัวข้อม่วง · ป้ายกำกับเขียวอมฟ้า · ไฮไลต์ชมพู ================= */
+html[data-accent="vivid"] #viewTitle,
+html[data-accent="vivid"] .sec-title h2,
+html[data-accent="vivid"] .card h2,
+html[data-accent="vivid"] .sc-h h2,
+html[data-accent="vivid"] .sheet-h h2 { color: var(--accent); }
+html[data-accent="vivid"] .hello .greet { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+html[data-accent="vivid"] .hero h3 { color: var(--accent-2); }
+html[data-accent="vivid"] .lbl,
+html[data-accent="vivid"] .navlabel,
+html[data-accent="vivid"] .field > span { color: var(--a3); }
+html[data-accent="vivid"] .side .navbtn:nth-of-type(4n+1) svg { color: var(--accent); }
+html[data-accent="vivid"] .side .navbtn:nth-of-type(4n+2) svg { color: var(--accent-2); }
+html[data-accent="vivid"] .side .navbtn:nth-of-type(4n+3) svg { color: var(--a3); }
+html[data-accent="vivid"] .side .navbtn:nth-of-type(4n) svg { color: var(--amber); }
 
 /* ================= Base ================= */
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -958,7 +976,7 @@ function render(d) {
   const p = d.profile || {};
   S.profile = p;
   renderChat_(p);
-  document.documentElement.dataset.accent = (['midnight','sunset','xmas','songkran','loykrathong','national'].indexOf(p.theme) >= 0 ? p.theme : 'sky');
+  document.documentElement.dataset.accent = (['midnight','sunset','vivid','xmas','songkran','loykrathong','national'].indexOf(p.theme) >= 0 ? p.theme : 'sky');
   document.documentElement.dataset.pubeffect = (['fireworks','snow'].indexOf(p.pubEffect) >= 0 ? p.pubEffect : '');
   PubFx.set(document.documentElement.dataset.pubeffect);
   if (p.pubCustomBrand && /^#[0-9a-fA-F]{3,6}$/.test(String(p.pubCustomBrand).trim())) {
