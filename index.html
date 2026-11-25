@@ -306,6 +306,19 @@ html[data-theme="dark"] { --hol: #E7A6DC; --hol-soft: color-mix(in oklab, #E7A6D
 .hollist { display: flex; flex-wrap: wrap; gap: 6px; }
 .hollist span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--hol-soft); color: var(--hol); font-size: 12.5px; font-weight: 500; }
 .hollist span b { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: 600; }
+/* 🗓️ สีสถานะปฏิทิน — ใช้ร่วมกันหลังร้าน + หน้าลูกค้า · แยกโทนชัด ไม่ขึ้นกับธีมสี */
+html, html[data-theme], html[data-accent] {
+  --cal-lock: #E11D48;  --cal-lock-bg: rgba(244, 63, 94, .12);  --cal-lock-bd: rgba(225, 29, 72, .38);
+  --cal-loose: #B45309; --cal-loose-bg: rgba(245, 158, 11, .16); --cal-loose-bd: rgba(217, 119, 6, .45);
+  --cal-off: #0E7490;   --cal-off-bg: rgba(6, 182, 212, .12);    --cal-off-bd: rgba(8, 145, 178, .40);
+  --cal-free: #047857;  --cal-free-bg: rgba(16, 185, 129, .10);  --cal-free-bd: rgba(5, 150, 105, .35);
+}
+html[data-theme="dark"], html[data-theme="dark"][data-accent] {
+  --cal-lock: #FB7185;  --cal-lock-bg: rgba(244, 63, 94, .18);  --cal-lock-bd: rgba(251, 113, 133, .45);
+  --cal-loose: #FBBF24; --cal-loose-bg: rgba(245, 158, 11, .16); --cal-loose-bd: rgba(251, 191, 36, .42);
+  --cal-off: #67E8F9;   --cal-off-bg: rgba(34, 211, 238, .13);   --cal-off-bd: rgba(103, 232, 249, .40);
+  --cal-free: #34D399;  --cal-free-bg: rgba(16, 185, 129, .13);  --cal-free-bd: rgba(52, 211, 153, .38);
+}
 </style>
 <script>
 /* วันสำคัญ/วันหยุดไทย — ข้อมูลในเครื่อง ไม่ยิง API (ใช้ทั้งหน้าบ้าน หลังร้าน และ GitHub Pages)
@@ -390,12 +403,12 @@ button.day { cursor: pointer; }
 button.day:hover { box-shadow: 0 0 0 1px currentColor; }
 button.day:active { transform: scale(.96); }
 .day small { font-family: var(--font-sans); font-size: 10px; font-weight: 500; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.day.free { background: var(--mint-soft); color: var(--mint); }
-.day.loose { background: var(--amber-soft); color: var(--amber); }
-.day.lock { background: var(--rose-soft); color: var(--rose); }
-.day.off { background: var(--rest-soft); color: var(--rest); }
+.day.free { background: var(--cal-free-bg); color: var(--cal-free); box-shadow: inset 0 0 0 1px var(--cal-free-bd); }
+.day.loose { background: var(--cal-loose-bg); color: var(--cal-loose); box-shadow: inset 0 0 0 1px var(--cal-loose-bd); }
+.day.lock { background: var(--cal-lock-bg); color: var(--cal-lock); box-shadow: inset 0 0 0 1px var(--cal-lock-bd); }
+.day.off { background: var(--cal-off-bg); color: var(--cal-off); box-shadow: inset 0 0 0 1px var(--cal-off-bd); }
 .day.past { color: var(--day-past-ink); background: transparent; }
-.day.today { box-shadow: inset 0 0 0 2px var(--accent); }
+.day.today { box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 1px var(--accent); font-weight: 700; }
 .day.pick { box-shadow: 0 0 0 2px var(--accent), var(--ring); }
 .day.blank { visibility: hidden; }
 .legend { display: flex; gap: 8px 16px; justify-content: center; margin-top: var(--sp-4); font-size: 13px; color: var(--text-2); flex-wrap: wrap; }
@@ -1110,8 +1123,8 @@ function render(d) {
     h += '<section class="card o-cal"><h2 style="font-size:1.1rem">เช็กคิวว่าง</h2><div class="hint">อัปเดตตามตารางงานจริง</div>' +
       '<div class="monthbar" style="margin-top:12px"><button class="iconbtn" id="prev" aria-label="เดือนก่อน">' + ICON.left + '</button><h2 id="mTitle"></h2><button class="iconbtn" id="next" aria-label="เดือนถัดไป">' + ICON.right + '</button></div>' +
       '<div class="cal" id="cal"></div><div class="sum" id="sum"></div>' +
-      '<div class="legend"><span><i style="background:var(--mint-soft);border:1px solid var(--mint)"></i>' + esc(LBL.free) + '</span><span><i style="background:var(--amber-soft);border:1px solid var(--amber)"></i>' + esc(LBL.loose) + '</span>' +
-      '<span><i style="background:var(--rose-soft);border:1px solid var(--rose)"></i>' + esc(LBL.lock) + '</span><span><i style="background:var(--rest-soft);border:1px solid var(--rest)"></i>' + esc(LBL.off) + '</span></div></section>';
+      '<div class="legend"><span><i style="background:var(--cal-free-bg);border:1px solid var(--cal-free)"></i>' + esc(LBL.free) + '</span><span><i style="background:var(--cal-loose-bg);border:1px solid var(--cal-loose)"></i>' + esc(LBL.loose) + '</span>' +
+      '<span><i style="background:var(--cal-lock-bg);border:1px solid var(--cal-lock)"></i>' + esc(LBL.lock) + '</span><span><i style="background:var(--cal-off-bg);border:1px solid var(--cal-off)"></i>' + esc(LBL.off) + '</span></div></section>';
   }
   h += '</div><div class="pcol pr">' + (split ? gearH + credH : '');
   if (S.canReq) h += '<button type="button" class="btn primary block o-reqbtn" id="reqOpen" data-jump="1" style="min-height:54px;font-size:1.05rem">' + esc(reqBtnTxt) + '</button>' + requestForm(p);
