@@ -506,7 +506,7 @@ html.yt-open { overflow: hidden; }
 .pub-notice { background: var(--accent-soft); border: 1px solid var(--accent-line); color: var(--text); border-radius: var(--r-xl); padding: 12px 16px; font-size: 14px; font-weight: 500; text-align: center; white-space: pre-wrap; }
 /* ---------- แถบประกาศวิ่ง แบบที่ 2 (News Badge Ticker) ---------- */
 .pub-ticker {
-  display: flex; align-items: center; gap: 4px; padding: 8px 10px 8px 14px;
+  display: flex; align-items: center; gap: 10px; padding: 6px 10px 6px 6px;
   border-radius: var(--r-xl); background: var(--surface); border: 1px solid var(--border);
   box-shadow: var(--shadow-sm); overflow: hidden;
 }
@@ -518,7 +518,7 @@ html.yt-open { overflow: hidden; }
 }
 .pub-ticker .pt-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .9; animation: ptPulse 1.6s ease-in-out infinite; }
 /* จุดแดงกระพริบ (Live / On-Air) แทนป้าย “ประกาศ” */
-.pub-ticker .pt-live { flex: 0 0 auto; width: 9px; height: 9px; border-radius: 50%; background: #ef4444; margin-right: 6px; box-shadow: 0 0 0 0 rgba(239, 68, 68, .55); animation: ptLive 1.8s ease-out infinite; }
+.pub-ticker .pt-live { flex: 0 0 auto; width: 8px; height: 8px; border-radius: 50%; background: #ef4444; border: 1.5px solid rgba(255, 255, 255, .9); box-sizing: content-box; box-shadow: 0 0 0 0 rgba(239, 68, 68, .55); animation: ptLive 1.8s ease-out infinite; }
 @keyframes ptLive { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, .55); opacity: 1; } 55% { opacity: .7; } 70% { box-shadow: 0 0 0 7px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); opacity: 1; } }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 @keyframes ptPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
@@ -554,7 +554,7 @@ html[data-theme="dark"] .rainbow .rb { background-image: linear-gradient(90deg, 
 @keyframes pubMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {
   .pub-ticker .pt-move { animation: none; }
-  .pub-ticker .pt-seg:last-child { display: none; }
+  .pub-ticker .pt-seg[aria-hidden] { display: none; }
   .pub-ticker .pt-seg { white-space: normal; padding-right: 0; }
   .pub-ticker .pt-live, .rainbow .rb { animation: none; }
 }
@@ -689,17 +689,22 @@ body.chat-open .float-clock { opacity: 0; visibility: hidden; pointer-events: no
   <svg class="fc-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
 </button>
 <script>
-/* แถบประกาศ: ข้อความสั้นกว่ากล่อง → แสดงนิ่ง (ไม่วิ่ง ไม่ตัดขอบซ้าย) · ยาวกว่า → วิ่งวนลื่น */
-function tickerFit_() {
+/* แถบประกาศวิ่ง: ข้อความสั้น (เช่นจอคอม) → ทำซ้ำให้ยาวพอเต็มกล่อง แล้ววิ่งวนต่อเนื่องไม่มีช่องว่าง · ความเร็วคงที่ */
+function tickerFill_() {
   document.querySelectorAll('.pub-ticker').forEach(tk => {
-    const tr = tk.querySelector('.pt-track'), seg = tk.querySelector('.pt-seg');
-    if (!tr || !seg) return;
-    tk.classList.remove('static');
-    const need = seg.scrollWidth - 64; /* หัก padding ซ้าย/ขวาของ segment */
-    tk.classList.toggle('static', need <= tr.clientWidth);
+    const tr = tk.querySelector('.pt-track'), mv = tk.querySelector('.pt-move');
+    if (!tr || !mv) return;
+    if (!tk._seg) tk._seg = mv.querySelector('.pt-seg').outerHTML.replace(' aria-hidden="true"', '');
+    if (!tk._dur) tk._dur = parseFloat(getComputedStyle(tk).getPropertyValue('--mq-dur')) || 18;
+    mv.innerHTML = tk._seg;
+    const w = mv.firstElementChild.offsetWidth || 1;
+    const n = Math.max(1, Math.ceil(tr.clientWidth / w));
+    const half = Array.from({ length: n }, (_, i) => i ? tk._seg.replace('class="pt-seg"', 'class="pt-seg" aria-hidden="true"') : tk._seg).join('');
+    mv.innerHTML = half + half.replace(/class="pt-seg"(?! aria-hidden)/g, 'class="pt-seg" aria-hidden="true"');
+    tk.style.setProperty('--mq-dur', (tk._dur * n) + 's');
   });
 }
-(function () { let t = 0; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(tickerFit_, 150); }); try { document.fonts && document.fonts.ready.then(tickerFit_); } catch (e) {} })();
+(function () { let t = 0, lastW = window.innerWidth; window.addEventListener('resize', () => { if (window.innerWidth === lastW) return; lastW = window.innerWidth; clearTimeout(t); t = setTimeout(tickerFill_, 200); }); try { document.fonts && document.fonts.ready.then(tickerFill_); } catch (e) {} })();
 
 const RAW_URL = 'https://script.google.com/macros/s/AKfycbxonc213LYzv_3_oHg_ETfmgmp1XNyNWEd4D2rpNQ4TWM5MKHweEX1WN0iRwmHYcqxa/exec';
 const APP_URL = RAW_URL.indexOf('http') === 0 ? RAW_URL : '';
@@ -1054,7 +1059,7 @@ function render(d) {
   const rbTxt = t => { if (!rbOn) return esc(t); let re; try { re = new RegExp('(\\p{Extended_Pictographic}(?:\\uFE0F|\\u200D\\p{Extended_Pictographic})*)', 'u'); } catch (e) { return '<span class="rb">' + esc(t) + '</span>'; } return t.split(re).map((x, i) => !x ? '' : i % 2 ? esc(x) : '<span class="rb">' + esc(x) + '</span>').join(''); };
   const noticeHtml = !noticeRaw ? '' : (p.pubNoticeMarquee !== 'no'
     ? '<div class="pub-ticker' + (rbOn ? ' rainbow' : '') + '" style="--mq-dur:' + mqDur + 's" role="region" aria-label="' + esc(mqBadge) + '">' +
-        '<span class="pt-live" aria-hidden="true"></span><span class="sr-only">' + esc(mqBadge) + ': </span>' +
+        '<span class="pt-badge"><span class="pt-live" aria-hidden="true"></span>' + esc(mqBadge) + '</span>' +
         '<div class="pt-track"><div class="pt-move">' +
           '<span class="pt-seg">' + rbTxt(noticeLine) + '</span>' +
           '<span class="pt-seg" aria-hidden="true">' + rbTxt(noticeLine) + '</span>' +
@@ -1092,7 +1097,7 @@ function render(d) {
   root.classList.toggle('split', !!split);
   h += '<div class="foot"><a href="' + esc(ADMIN_URL) + '" target="_top" data-nav-top="1">สำหรับเจ้าของ</a></div>';
   root.innerHTML = h;
-  tickerFit_();
+  tickerFill_();
 
   const fallbackToday = (() => { const n = new Date(); return n.getFullYear() + '-' + pad(n.getMonth() + 1) + '-' + pad(n.getDate()); })();
   S.days = d.days || {}; S.today = /^\d{4}-\d{2}-\d{2}$/.test(String(d.today || '')) ? d.today : fallbackToday; S.pick = '';
