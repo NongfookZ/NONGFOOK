@@ -736,8 +736,9 @@ body.chat-open .float-clock { opacity: 0; visibility: hidden; pointer-events: no
 .chat-pop .cp-copy:hover { color: var(--text); background: var(--surface-3); }
 .chat-pop .cp-copy:focus-visible { outline: none; box-shadow: var(--ring); }
 @media print { .chat-fab, .chat-pop { display: none !important; } }
-.fnote.bad { color: var(--rose); font-weight: 600; }
-#r_phone[aria-invalid="true"] { border-color: var(--rose); }
+.fnote.bad { color: #E5484D; font-weight: 700; }
+html[data-theme="dark"] .fnote.bad { color: #FF7B7F; }
+#r_phone[aria-invalid="true"] { border-color: #E5484D; box-shadow: 0 0 0 3px color-mix(in srgb, #E5484D 22%, transparent); }
 </style>
 <style id="pubCustomStyle"></style>
 </head>
@@ -759,10 +760,10 @@ body.chat-open .float-clock { opacity: 0; visibility: hidden; pointer-events: no
 function thPhoneCheck_(raw) {
   let d = String(raw == null ? '' : raw).trim().replace(/[\s\-().]/g, '');
   if (/^\+66/.test(d)) d = '0' + d.slice(3); else if (/^66\d{8,9}$/.test(d)) d = '0' + d.slice(2);
-  const fmt = 'มือถือ 10 หลัก ขึ้นต้น 06/08/09 หรือเบอร์บ้าน 9 หลัก ขึ้นต้น 02–07';
+  const fmt = 'มือถือ 10 หลัก ขึ้นต้น 06/08/09 หรือเบอร์บ้าน 9 หลัก ขึ้นต้น 02–05, 07';
   if (!d) return { ok: false, err: 'กรุณาใส่เบอร์โทรที่ติดต่อกลับได้' };
   if (!/^\d+$/.test(d)) return { ok: false, err: 'เบอร์โทรใส่ได้เฉพาะตัวเลข (' + fmt + ')' };
-  const mobile = /^0[689]\d{8}$/.test(d), land = /^0[2-7]\d{7}$/.test(d);
+  const mobile = /^0[689]\d{8}$/.test(d), land = /^0[2-57]\d{7}$/.test(d);
   if (!mobile && !land) return { ok: false, err: 'เบอร์โทรไม่ถูกต้อง — ' + fmt };
   const rest = d.slice(mobile ? 2 : 2);
   const same = /^(\d)\1+$/.test(rest), uniq = new Set(d.split('')).size;
@@ -1309,12 +1310,20 @@ function wireForm() {
   pmShow_(pmLoad_(), qh);
   ['r_date', 'r_end'].forEach(id => { $(id).addEventListener('input', checkDates); $(id).addEventListener('change', checkDates); });
   rPlaceBind_();
+  const phoneMark_ = (pc) => {   // ข้อความเตือนสีแดงใต้ช่องเบอร์ + ล็อกปุ่มส่งจนกว่าจะแก้ถูก
+    const el = $('r_phone'), ok = !pc || pc.ok;
+    if (pc) el.setAttribute('aria-invalid', String(!ok)); else el.removeAttribute('aria-invalid');
+    $('r_contactNote').textContent = ok ? 'ใส่เบอร์โทรจริงที่ติดต่อกลับได้ (มือถือ 10 หลัก) · LINE ไม่บังคับ' : '⚠️ กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง (10 หลัก) — ' + pc.err;
+    $('r_contactNote').classList.toggle('bad', !ok);
+    if (ok) $('r_contactNote').removeAttribute('role'); else $('r_contactNote').setAttribute('role', 'alert');
+  };
   $('r_phone').addEventListener('blur', () => {   // เตือนทันทีที่ออกจากช่อง (ไม่ต้องรอกดส่ง)
-    const el = $('r_phone'), raw = el.value.trim(); if (!raw) { el.removeAttribute('aria-invalid'); return; }
-    const pc = thPhoneCheck_(raw);
-    el.setAttribute('aria-invalid', String(!pc.ok));
-    $('r_contactNote').textContent = pc.ok ? 'ใส่เบอร์โทรจริงที่ติดต่อกลับได้ (มือถือ 10 หลัก) · LINE ไม่บังคับ' : '⚠️ ' + pc.err;
-    $('r_contactNote').classList.toggle('bad', !pc.ok);
+    const raw = $('r_phone').value.trim(); phoneMark_(raw ? thPhoneCheck_(raw) : null);
+  });
+  $('r_phone').addEventListener('input', () => {   // พิมพ์ได้เฉพาะตัวเลข + - ช่องว่าง · แก้ถูกแล้วเอาคำเตือนออกทันที
+    const el = $('r_phone'), clean = el.value.replace(/[^0-9+\-\s]/g, '');
+    if (clean !== el.value) el.value = clean;
+    if (el.getAttribute('aria-invalid') === 'true') { const pc = thPhoneCheck_(clean); if (pc.ok) phoneMark_(pc); }
   });
   $('reqForm').addEventListener('submit', async e => {
     e.preventDefault();
@@ -1324,7 +1333,7 @@ function wireForm() {
     if (v('r_end') && v('r_end') < v('r_date')) return bad('“ถึงวันที่” ต้องไม่ก่อนวันเริ่ม', 'r_end');
     if (!v('r_name')) return bad('ใส่ชื่อ PM หรือผู้ประสานงานก่อนส่ง', 'r_name');
     const pc = thPhoneCheck_(v('r_phone'));
-    if (!pc.ok) return bad(pc.err, 'r_phone');
+    if (!pc.ok) { phoneMark_(pc); return bad('⚠️ กรุณากรอกเบอร์โทรศัพท์ที่ถูกต้อง (10 หลัก) — ' + pc.err, 'r_phone'); }
     $('r_phone').value = pc.phone.replace(/^(0[689])(\d{4})(\d{4})$/, '$1-$2-$3');
     const loc = v('r_loc'), isUrl = /^https:\/\//i.test(loc), pin = (S.rPlace && S.rPlace.mapUrl) || (isUrl ? loc : '');
     $('r_send').disabled = true; $('r_send').textContent = 'กำลังส่ง…'; $('r_msg').innerHTML = '';
