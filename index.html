@@ -725,6 +725,8 @@ body.chat-open .float-clock { opacity: 0; visibility: hidden; pointer-events: no
 .chat-pop .cp-copy:hover { color: var(--text); background: var(--surface-3); }
 .chat-pop .cp-copy:focus-visible { outline: none; box-shadow: var(--ring); }
 @media print { .chat-fab, .chat-pop { display: none !important; } }
+.fnote.bad { color: var(--rose); font-weight: 600; }
+#r_phone[aria-invalid="true"] { border-color: var(--rose); }
 </style>
 <style id="pubCustomStyle"></style>
 </head>
@@ -742,6 +744,22 @@ body.chat-open .float-clock { opacity: 0; visibility: hidden; pointer-events: no
   <svg class="fc-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
 </button>
 <script>
+/* 📞 ตรวจเบอร์โทรไทยให้เป็นเบอร์จริง: มือถือ 10 หลัก (06/08/09) หรือเบอร์บ้าน 9 หลัก (02–07) · รองรับ +66 · กันเลขมั่ว (ซ้ำทั้งเบอร์ / เรียงลำดับ / สลับ 2 ตัว) → คืน { ok, phone, err } */
+function thPhoneCheck_(raw) {
+  let d = String(raw == null ? '' : raw).trim().replace(/[\s\-().]/g, '');
+  if (/^\+66/.test(d)) d = '0' + d.slice(3); else if (/^66\d{8,9}$/.test(d)) d = '0' + d.slice(2);
+  const fmt = 'มือถือ 10 หลัก ขึ้นต้น 06/08/09 หรือเบอร์บ้าน 9 หลัก ขึ้นต้น 02–07';
+  if (!d) return { ok: false, err: 'กรุณาใส่เบอร์โทรที่ติดต่อกลับได้' };
+  if (!/^\d+$/.test(d)) return { ok: false, err: 'เบอร์โทรใส่ได้เฉพาะตัวเลข (' + fmt + ')' };
+  const mobile = /^0[689]\d{8}$/.test(d), land = /^0[2-7]\d{7}$/.test(d);
+  if (!mobile && !land) return { ok: false, err: 'เบอร์โทรไม่ถูกต้อง — ' + fmt };
+  const rest = d.slice(mobile ? 2 : 2);
+  const same = /^(\d)\1+$/.test(rest), uniq = new Set(d.split('')).size;
+  let up = true, dn = true; for (let i = 1; i < rest.length; i++) { const a = +rest[i - 1], b = +rest[i]; if (b !== (a + 1) % 10) up = false; if (b !== (a + 9) % 10) dn = false; }
+  if (same || up || dn || uniq <= 2) return { ok: false, err: 'เบอร์นี้ดูไม่ใช่เบอร์จริง กรุณาใส่เบอร์ที่โทรติดต่อได้' };
+  return { ok: true, phone: d };
+}
+
 /* แถบประกาศวิ่ง: ข้อความสั้น (เช่นจอคอม) → ทำซ้ำให้ยาวพอเต็มกล่อง แล้ววิ่งวนต่อเนื่องไม่มีช่องว่าง · ความเร็วคงที่ */
 function tickerFill_() {
   document.querySelectorAll('.pub-ticker').forEach(tk => {
@@ -1059,9 +1077,9 @@ function requestForm(p) {
     '<div class="full grid2 pmfields" id="r_pmFields">' +
     '<input type="hidden" id="r_house">' + /* ไม่ให้ลูกค้ากรอก House แล้ว: เก็บเงียบ ๆ จากลิงก์ ?house= หรือข้อมูลที่จำไว้ */
     '<label class="field full" for="r_name">ชื่อ PM / ผู้ประสานงาน *<input id="r_name" autocomplete="name" required></label>' +
-    '<label class="field" for="r_phone">เบอร์ PM<input id="r_phone" type="tel" inputmode="tel" autocomplete="tel" aria-describedby="r_contactNote"></label>' +
+    '<label class="field" for="r_phone">เบอร์โทร PM *<input id="r_phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="08x-xxx-xxxx" required aria-describedby="r_contactNote"></label>' +
     '<label class="field" for="r_line">LINE ID<input id="r_line" aria-describedby="r_contactNote"></label>' +
-    '<p class="full fnote" id="r_contactNote">ใส่เบอร์หรือ LINE อย่างน้อย 1 ช่อง</p></div>' +
+    '<p class="full fnote" id="r_contactNote">ใส่เบอร์โทรจริงที่ติดต่อกลับได้ (มือถือ 10 หลัก) · LINE ไม่บังคับ</p></div>' +
     '<div class="full placewrap" id="r_placeWrap"><label class="field" for="r_loc">โลเคชันถ่ายทำ<input id="r_loc" autocomplete="off" placeholder="ชื่อสถานที่ หรือลิงก์ Google Maps" role="combobox" aria-autocomplete="list" aria-controls="r_placeRes" aria-expanded="false"></label>' +
     '<div class="placeres" id="r_placeRes" role="listbox" aria-label="แนะนำสถานที่" hidden></div></div>' +
     '<div class="full placebar"><button type="button" class="btn sm soft" id="r_placeBtn">🔎 ค้นหาสถานที่</button><span class="hint">พิมพ์ 3 ตัวอักษรขึ้นไป ระบบจะค้นหาให้</span></div>' +
@@ -1280,6 +1298,13 @@ function wireForm() {
   pmShow_(pmLoad_(), qh);
   ['r_date', 'r_end'].forEach(id => { $(id).addEventListener('input', checkDates); $(id).addEventListener('change', checkDates); });
   rPlaceBind_();
+  $('r_phone').addEventListener('blur', () => {   // เตือนทันทีที่ออกจากช่อง (ไม่ต้องรอกดส่ง)
+    const el = $('r_phone'), raw = el.value.trim(); if (!raw) { el.removeAttribute('aria-invalid'); return; }
+    const pc = thPhoneCheck_(raw);
+    el.setAttribute('aria-invalid', String(!pc.ok));
+    $('r_contactNote').textContent = pc.ok ? 'ใส่เบอร์โทรจริงที่ติดต่อกลับได้ (มือถือ 10 หลัก) · LINE ไม่บังคับ' : '⚠️ ' + pc.err;
+    $('r_contactNote').classList.toggle('bad', !pc.ok);
+  });
   $('reqForm').addEventListener('submit', async e => {
     e.preventDefault();
     const v = id => $(id).value.trim();
@@ -1287,7 +1312,9 @@ function wireForm() {
     if (!v('r_date')) return bad('เลือกวันออกกองก่อน', 'r_date');
     if (v('r_end') && v('r_end') < v('r_date')) return bad('“ถึงวันที่” ต้องไม่ก่อนวันเริ่ม', 'r_end');
     if (!v('r_name')) return bad('ใส่ชื่อ PM หรือผู้ประสานงานก่อนส่ง', 'r_name');
-    if (!v('r_phone') && !v('r_line')) return bad('ใส่เบอร์โทรหรือ LINE อย่างน้อย 1 ช่อง จะได้ทักกลับได้', 'r_phone');
+    const pc = thPhoneCheck_(v('r_phone'));
+    if (!pc.ok) return bad(pc.err, 'r_phone');
+    $('r_phone').value = pc.phone.replace(/^(0[689])(\d{4})(\d{4})$/, '$1-$2-$3');
     const loc = v('r_loc'), isUrl = /^https:\/\//i.test(loc), pin = (S.rPlace && S.rPlace.mapUrl) || (isUrl ? loc : '');
     $('r_send').disabled = true; $('r_send').textContent = 'กำลังส่ง…'; $('r_msg').innerHTML = '';
     const reqDate = v('r_date'), reqEnd = v('r_end'), reqQ = (document.querySelector('input[name="r_queue"]:checked') || {}).value || 'lock';
