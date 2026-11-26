@@ -303,6 +303,22 @@ html[data-appearance="auto"] .modebtn .ic-auto { display: block; }
 .float-clock.min .fc-ic { display: block; }
 body.noscroll .float-clock, body.has-savebar .float-clock, body.drawer-open .float-clock, .float-clock.scrolling { opacity: 0; visibility: hidden; transform: translateY(8px); pointer-events: none; }
 @media (max-width: 420px) { .float-clock .fc-date { display: none; } }
+/* ⏱️ มีงานกำลังจับเวลา → นาฬิกาขยายเป็น 2 ชั้น (บรรทัดงาน + นาฬิกา) */
+.float-clock.job:not(.min) { height: auto; flex-wrap: wrap; row-gap: 6px; padding: 8px 12px; border-radius: 14px; max-width: min(320px, calc(100vw - 32px)); border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+.float-clock .fc-job { display: grid; gap: 2px; width: 100%; text-align: left; padding-bottom: 6px; border-bottom: 1px solid var(--border); line-height: 1.25; }
+.float-clock .fc-job[hidden] { display: none; }
+.float-clock.min .fc-job { display: none; }
+.float-clock .fj-t { font-size: 12px; font-weight: 600; color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.float-clock .fj-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; font-size: 12px; }
+.float-clock .fj-row b { font-size: 14px; font-weight: 600; }
+.float-clock .fj-eta { color: var(--text-2); }
+.float-clock .fj-ot { color: var(--rose); font-weight: 700; }
+.float-clock.job .fc-dot { background: var(--accent); animation: fcPulse 1.6s ease-in-out infinite; }
+.float-clock.job.ot .fc-dot { background: var(--rose); }
+.float-clock.min.job { border-color: var(--accent); } .float-clock.min.job.ot { border-color: var(--rose); }
+.float-clock.min.job .fc-ic { color: var(--accent); } .float-clock.min.job.ot .fc-ic { color: var(--rose); }
+@keyframes fcPulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .float-clock.job .fc-dot { animation: none; } }
 @media print { .float-clock { display: none !important; } }
 
 /* ================= วันสำคัญ / วันหยุดไทย (ใช้ร่วมกันทั้งหน้าบ้าน-หลังร้าน) =================
