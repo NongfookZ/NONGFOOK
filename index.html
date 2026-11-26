@@ -108,6 +108,21 @@ html[data-accent="loykrathong"] { --accent-l: #8F5A0B; --accent-d: #E3B341; }
 html[data-accent="national"]    { --accent-l: #2D3192; --accent-d: #8F96EC; --accent2-l: #C8102E; --accent2-d: #F2687A; }
 html[data-accent="vivid"]       { --accent-l: #7C3AED; --accent-d: #B79BFF; --accent2-l: #DB2777; --accent2-d: #F472B6; --a3: #0F766E; }
 html[data-theme="dark"][data-accent="vivid"] { --a3: #5EEAD4; }
+/* 🎨 ทุกธีมมีสีสันแบบธีม "สีสัน" แต่ใช้ 3 สีจากพาเลตต์ของธีมตัวเอง (สีหลัก · สีรอง · สีที่ 3) — โหมดสว่างผ่าน AA บนพื้นขาว */
+html[data-accent="sky"], html:not([data-accent]) { --accent2-l: #0E7490; --accent2-d: #67E8F9; --a3: #047857; }
+html[data-accent="midnight"]    { --accent2-l: #7C3AED; --accent2-d: #C4B5FD; --a3: #0369A1; }
+html[data-accent="sunset"]      { --accent2-l: #BE123C; --accent2-d: #FB7185; --a3: #A16207; }
+html[data-accent="xmas"]        { --a3: #A16207; }
+html[data-accent="songkran"]    { --accent2-l: #C2410C; --accent2-d: #FDBA74; --a3: #1D4ED8; }
+html[data-accent="loykrathong"] { --accent2-l: #BE185D; --accent2-d: #F9A8D4; --a3: #4338CA; }
+html[data-accent="national"]    { --a3: #A16207; }
+html[data-theme="dark"][data-accent="sky"], html[data-theme="dark"]:not([data-accent]) { --a3: #6EE7B7; }
+html[data-theme="dark"][data-accent="midnight"]    { --a3: #7DD3FC; }
+html[data-theme="dark"][data-accent="sunset"]      { --a3: #FCD34D; }
+html[data-theme="dark"][data-accent="xmas"]        { --a3: #FACC15; }
+html[data-theme="dark"][data-accent="songkran"]    { --a3: #93C5FD; }
+html[data-theme="dark"][data-accent="loykrathong"] { --a3: #A5B4FC; }
+html[data-theme="dark"][data-accent="national"]    { --a3: #FACC15; }
 
 :root {
   --accent: var(--accent-l);
@@ -210,22 +225,22 @@ html[data-accent] { --day-past-ink: color-mix(in oklab, var(--text-2) 70%, var(-
 /* กลางวัน: พื้นป้ายสีเน้นอ่อนลงอีกนิด ให้ตัวอักษรสีเน้นบนป้ายผ่าน AA ทุกธีม */
 html[data-accent]:not([data-theme="dark"]) { --accent-soft: color-mix(in oklab, var(--accent) 8%, var(--surface)); --accent-softer: color-mix(in oklab, var(--accent) 4%, var(--surface)); }
 
-/* ================= ธีม "สีสัน" (vivid): ตัวอักษรมีสีแบบพอดี — หัวข้อม่วง · ป้ายกำกับเขียวอมฟ้า · ไฮไลต์ชมพู ================= */
-html[data-accent="vivid"] #viewTitle,
-html[data-accent="vivid"] .sec-title h2,
-html[data-accent="vivid"] .card h2,
-html[data-accent="vivid"] .sc-h h2,
-html[data-accent="vivid"] .sheet-h h2 { color: var(--accent); }
-html[data-accent="vivid"] .hello .greet { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
-html[data-accent="vivid"] .hello .greet .g-emo { color: initial; -webkit-text-fill-color: initial; background: none; }
-html[data-accent="vivid"] .hero h3 { color: var(--accent-2); }
-html[data-accent="vivid"] .lbl,
-html[data-accent="vivid"] .navlabel,
-html[data-accent="vivid"] .field > span { color: var(--a3); }
-html[data-accent="vivid"] .side .navbtn:nth-of-type(4n+1) svg { color: var(--accent); }
-html[data-accent="vivid"] .side .navbtn:nth-of-type(4n+2) svg { color: var(--accent-2); }
-html[data-accent="vivid"] .side .navbtn:nth-of-type(4n+3) svg { color: var(--a3); }
-html[data-accent="vivid"] .side .navbtn:nth-of-type(4n) svg { color: var(--amber); }
+/* ================= ทุกธีม (เดิมเฉพาะ "สีสัน"): ตัวอักษรมีสีแบบพอดี — หัวข้อม่วง · ป้ายกำกับเขียวอมฟ้า · ไฮไลต์ชมพู ================= */
+html[data-accent] #viewTitle,
+html[data-accent] .sec-title h2,
+html[data-accent] .card h2,
+html[data-accent] .sc-h h2,
+html[data-accent] .sheet-h h2 { color: var(--accent); }
+html[data-accent] .hello .greet { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+html[data-accent] .hello .greet .g-emo { color: initial; -webkit-text-fill-color: initial; background: none; }
+html[data-accent] .hero h3 { color: var(--accent-2); }
+html[data-accent] .lbl,
+html[data-accent] .navlabel,
+html[data-accent] .field > span { color: var(--a3); }
+html[data-accent] .side .navbtn:nth-of-type(4n+1) svg { color: var(--accent); }
+html[data-accent] .side .navbtn:nth-of-type(4n+2) svg { color: var(--accent-2); }
+html[data-accent] .side .navbtn:nth-of-type(4n+3) svg { color: var(--a3); }
+html[data-accent] .side .navbtn:nth-of-type(4n) svg { color: var(--amber); }
 
 /* ================= Base ================= */
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
