@@ -242,6 +242,17 @@ html[data-accent] .side .navbtn:nth-of-type(4n+2) svg { color: var(--accent-2); 
 html[data-accent] .side .navbtn:nth-of-type(4n+3) svg { color: var(--a3); }
 html[data-accent] .side .navbtn:nth-of-type(4n) svg { color: var(--amber); }
 
+/* ================= ✨ แอนิเมชันปุ่ม (Micro-interaction) — ปิดได้: html.no-btn-anim ================= */
+:root { --btn-ease: cubic-bezier(.2, .8, .2, 1); }
+html :is(.btn, .iconbtn, .navbtn, .addbtn, .fab, .holtog, .chipbtn, .qseg button, .ftabs button, .seg-ctl button, .dtab, .hero-done, .mitem, .hedit, .themesw, .tool-tabs button, .dun-var, .otc summary, .dmore > summary, .setgrp > summary) { transition: transform 180ms var(--btn-ease), box-shadow 200ms var(--btn-ease), background-color 160ms ease, border-color 160ms ease, color 160ms ease, opacity 160ms ease; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+@media (hover: hover) and (pointer: fine) {
+  html :is(.btn, .iconbtn, .fab, .hero-done, .hedit, .themesw, .addbtn):hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 16px -8px color-mix(in srgb, var(--accent) 55%, transparent); }
+}
+html :is(.btn, .iconbtn, .navbtn, .addbtn, .fab, .holtog, .chipbtn, .qseg button, .ftabs button, .seg-ctl button, .dtab, .hero-done, .mitem, .hedit, .themesw, .tool-tabs button, .dun-var, .otc summary, .dmore > summary, .setgrp > summary):active:not(:disabled) { transform: scale(.96); transition-duration: 70ms; }
+html :is(.btn.primary, .fab):active:not(:disabled) { filter: brightness(.95); }
+@media (prefers-reduced-motion: reduce) { html :is(.btn, .iconbtn, .navbtn, .addbtn, .fab, .holtog, .chipbtn, .qseg button, .ftabs button, .seg-ctl button, .dtab, .hero-done, .mitem, .hedit, .themesw, .tool-tabs button, .dun-var, .otc summary, .dmore > summary, .setgrp > summary) { transition-duration: 1ms !important; } html :is(.btn, .iconbtn, .navbtn, .addbtn, .fab, .holtog, .chipbtn, .qseg button, .ftabs button, .seg-ctl button, .dtab, .hero-done, .mitem, .hedit, .themesw, .tool-tabs button, .dun-var, .otc summary, .dmore > summary, .setgrp > summary):hover { transform: none !important; } }
+html.no-btn-anim :is(.btn, .iconbtn, .navbtn, .addbtn, .fab, .holtog, .chipbtn, .qseg button, .ftabs button, .seg-ctl button, .dtab, .hero-done, .mitem, .hedit, .themesw, .tool-tabs button, .dun-var, .otc summary, .dmore > summary, .setgrp > summary), html.no-btn-anim :is(.btn, .iconbtn, .navbtn, .addbtn, .fab, .holtog, .chipbtn, .qseg button, .ftabs button, .seg-ctl button, .dtab, .hero-done, .mitem, .hedit, .themesw, .tool-tabs button, .dun-var, .otc summary, .dmore > summary, .setgrp > summary):hover, html.no-btn-anim :is(.btn, .iconbtn, .navbtn, .addbtn, .fab, .holtog, .chipbtn, .qseg button, .ftabs button, .seg-ctl button, .dtab, .hero-done, .mitem, .hedit, .themesw, .tool-tabs button, .dun-var, .otc summary, .dmore > summary, .setgrp > summary):active { transition: none !important; transform: none !important; animation: none !important; filter: none !important; }
+
 /* ================= Base ================= */
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; }
